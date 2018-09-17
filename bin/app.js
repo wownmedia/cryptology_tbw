@@ -36,7 +36,6 @@ async function start () {
       }
       logger.info(results.data.transactionIds)
     }
-    console.log(transactions.concat(adminTransactions))
   } catch (error) {
     console.error(error)
   }
