@@ -2,7 +2,6 @@
 'use strict'
 require('dotenv').config()
 const TrueBlockWeight = require('../lib/utils/trueblockweight')
-const Transaction = require('../lib/utils/transactions')
 const payoutBuilder = require('../lib/utils/payouts')
 const network = require('../lib/services/network')
 const logger = require('../lib/services/logger')
@@ -10,32 +9,13 @@ const BigNumber = require('bignumber.js')
 
 const ARKTOSHI = Math.pow(10, 8)
 const FEES = 0.1 * ARKTOSHI
-const VENDORFIELD_MESSAGE = process.env.VENDORFIELD_MESSAGE ? process.env.VENDORFIELD_MESSAGE : 'Voter Share'
-const DELEGATE = process.env.DELEGATE ? process.env.DELEGATE.toLowerCase().trim() : null
-
-if (DELEGATE === null) {
-  logger.error('No delegate configured!')
-  process.exit(1)
-}
 
 async function start () {
   try {
     const trueblockweight = new TrueBlockWeight()
     const {payouts, delegateProfit} = await trueblockweight.generatePayouts()
 
-    let totalAmount = new BigNumber(0)
-    let totalFees = new BigNumber(0)
-    const transactions = []
-    for (const [address] of payouts) {
-      logger.info(`Payout to ${address} prepared: ${payouts.get(address).div(ARKTOSHI).toFixed(8)}`)
-      const recipientId = address
-      const amount = new BigNumber(payouts.get(address).div(ARKTOSHI).toFixed(8)).times(ARKTOSHI).toFixed(0) // getting precision right and rounded down
-      const vendorField = `${DELEGATE} - ${VENDORFIELD_MESSAGE}`
-      const transaction = new Transaction(recipientId, amount, vendorField)
-      totalAmount = totalAmount.plus(new BigNumber(amount))
-      totalFees = totalFees.plus(FEES)
-      transactions.push(transaction.createTransaction())
-    }
+    let {totalAmount, totalFees, transactions} = payoutBuilder.generatePayouts(payouts)
 
     const amount = new BigNumber(delegateProfit.div(ARKTOSHI).toFixed(8)).times(ARKTOSHI).toFixed(0)
     const adminTransactions = payoutBuilder.generateAdminPayouts(amount)
