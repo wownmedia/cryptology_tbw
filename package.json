@@ -1,0 +1,57 @@
+{
+  "name": "cryptology_tbw",
+  "version": "1.0.0",
+  "description": "Cryptology True Block Weight",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest --forceExit",
+    "test:watch": "jest --watch",
+    "lint": "eslint ./ --fix",
+    "depcheck": "depcheck ./"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/wownmedia/cryptology_tbw.git"
+  },
+  "author": "Cryptology ltd",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/wownmedia/cryptology_tbw/issues"
+  },
+  "homepage": "https://github.com/wownmedia/cryptology_tbw#readme",
+  "dependencies": {
+    "@arkecosystem/crypto": "^0.1.2",
+    "axios": "^0.18.0",
+    "bignumber.js": "^7.2.1",
+    "dotenv": "^6.0.0",
+    "is-reachable": "^2.4.0",
+    "pg": "^7.4.3",
+    "pg-query-stream": "^1.1.1",
+    "pino": "^4.17.3"
+  },
+  "devDependencies": {
+    "depcheck": "^0.6.9",
+    "eslint": "^4.19.1",
+    "eslint-config-standard": "^11.0.0",
+    "eslint-plugin-import": "^2.12.0",
+    "eslint-plugin-node": "^6.0.1",
+    "eslint-plugin-promise": "^3.8.0",
+    "eslint-plugin-standard": "^3.1.0",
+    "husky": "^0.14.3",
+    "jest": "^23.3.0",
+    "jest-extended": "^0.7.2",
+    "lint-staged": "^7.1.3",
+    "regenerator-runtime": "^0.11.1",
+    "standard": "^11.0.1"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "*.js": [
+      "eslint --fix"
+    ]
+  }
+}
