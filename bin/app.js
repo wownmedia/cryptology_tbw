@@ -23,19 +23,8 @@ async function start () {
     const trueblockweight = new TrueBlockWeight()
     const {payouts, delegateProfit} = await trueblockweight.generatePayouts()
 
-    let totalAmount = new BigNumber(0)
-    let totalFees = new BigNumber(0)
-    const transactions = []
-    for (const [address] of payouts) {
-      logger.info(`Payout to ${address} prepared: ${payouts.get(address).div(ARKTOSHI).toFixed(8)}`)
-      const recipientId = address
-      const amount = new BigNumber(payouts.get(address).div(ARKTOSHI).toFixed(8)).times(ARKTOSHI).toFixed(0) // getting precision right and rounded down
-      const vendorField = `${DELEGATE} - ${VENDORFIELD_MESSAGE}`
-      const transaction = new Transaction(recipientId, amount, vendorField)
-      totalAmount = totalAmount.plus(new BigNumber(amount))
-      totalFees = totalFees.plus(FEES)
-      transactions.push(transaction.createTransaction())
-    }
+    let {totalAmount, totalFees, transactions} = payoutBuilder.generatePayouts(payouts)
+    
 
     const amount = new BigNumber(delegateProfit.div(ARKTOSHI).toFixed(8)).times(ARKTOSHI).toFixed(0)
     const adminTransactions = payoutBuilder.generateAdminPayouts(amount)
