@@ -6,6 +6,12 @@ BigNumber.config({
   ERRORS: false
 })
 
+describe('payouts.generatePayouts', () => {
+  it('should be a function', () => {
+    expect(payouts.generatePayouts).toBeFunction()
+  })
+})
+
 describe('payouts.generateAdminPayouts', () => {
   it('should be a function', () => {
     expect(payouts.generateAdminPayouts).toBeFunction()
