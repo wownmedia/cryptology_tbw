@@ -13,15 +13,24 @@ const FEES = 0.1 * ARKTOSHI
 async function start () {
   try {
     const trueblockweight = new TrueBlockWeight()
-    const {payouts, delegateProfit} = await trueblockweight.generatePayouts()
+    const {payouts, delegateProfit, acfDonation} = await trueblockweight.generatePayouts()
 
     let {totalAmount, totalFees, transactions} = payoutBuilder.generatePayouts(payouts)
 
     const amount = new BigNumber(delegateProfit.div(ARKTOSHI).toFixed(8)).times(ARKTOSHI).toFixed(0)
+    
     const adminTransactions = payoutBuilder.generateAdminPayouts(amount)
     if (adminTransactions.length) {
       totalAmount = totalAmount.plus(amount)
       totalFees = totalFees.plus(FEES * adminTransactions.length)
+    }
+    
+    if(acfDonation.gt(0)) {
+      const acfAmount = new BigNumber(acfDonation.div(ARKTOSHI).toFixed(8)).times(ARKTOSHI).toFixed(0)
+      const acfTransaction = payoutBuilder.generateAcfPayout(acfAmount)
+      totalAmount = totalAmount.plus(acfAmount)
+      totalFees = totalFees.plus(FEES)
+      adminTransactions.push(acfTransaction)
     }
 
     logger.info('==================================================================================')
