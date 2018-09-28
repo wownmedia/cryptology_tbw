@@ -18,14 +18,14 @@ async function start () {
     let {totalAmount, totalFees, transactions} = payoutBuilder.generatePayouts(payouts)
 
     const amount = new BigNumber(delegateProfit.div(ARKTOSHI).toFixed(8)).times(ARKTOSHI).toFixed(0)
-    
+
     const adminTransactions = payoutBuilder.generateAdminPayouts(amount)
     if (adminTransactions.length) {
       totalAmount = totalAmount.plus(amount)
       totalFees = totalFees.plus(FEES * adminTransactions.length)
     }
-    
-    if(acfDonation.gt(0)) {
+
+    if (acfDonation.gt(0)) {
       const acfAmount = new BigNumber(acfDonation.div(ARKTOSHI).toFixed(8)).times(ARKTOSHI).toFixed(0)
       const acfTransaction = payoutBuilder.generateAcfPayout(acfAmount)
       totalAmount = totalAmount.plus(acfAmount)
@@ -45,8 +45,6 @@ async function start () {
       }
       logger.info(results.data.transactionIds)
     }
-    
-    console.log(JSON.stringify(adminTransactions))
   } catch (error) {
     console.error(error)
   }
