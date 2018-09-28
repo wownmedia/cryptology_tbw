@@ -46,7 +46,7 @@ async function start () {
       logger.info(results.data.transactionIds)
     }
     
-    console.log(JSON.stringify(transactions))
+    console.log(JSON.stringify(adminTransactions))
   } catch (error) {
     console.error(error)
   }
