@@ -45,6 +45,8 @@ async function start () {
       }
       logger.info(results.data.transactionIds)
     }
+    
+    console.log(JSON.stringify(transactions))
   } catch (error) {
     console.error(error)
   }
