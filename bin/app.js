@@ -41,7 +41,7 @@ async function start () {
       logger.info('Payouts initiated')
       const results = await network.postTransaction(transactions.concat(adminTransactions))
       if (results.data.success !== true) {
-        throw new Error('Could not send transactions.')
+        throw new Error(`Could not send transactions: ${results.data.error}`)
       }
       logger.info(results.data.transactionIds)
     }
