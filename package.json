@@ -23,11 +23,15 @@
     "@arkecosystem/crypto": "^0.1.2",
     "axios": "^0.18.0",
     "bignumber.js": "^7.2.1",
+    "chalk": "^2.4.1",
+    "commander": "^2.18.0",
     "dotenv": "^6.0.0",
     "is-reachable": "^2.4.0",
+    "joi": "^13.7.0",
     "pg": "^7.4.3",
     "pg-query-stream": "^1.1.1",
-    "pino": "^4.17.3"
+    "pino": "^4.17.3",
+    "prompt": "^1.0.0"
   },
   "devDependencies": {
     "depcheck": "^0.6.9",
