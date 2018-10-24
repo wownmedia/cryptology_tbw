@@ -6,6 +6,7 @@ const payoutBuilder = require('../lib/utils/payouts')
 const network = require('../lib/services/network')
 const logger = require('../lib/services/logger')
 const BigNumber = require('bignumber.js')
+BigNumber.config({ROUNDING_MODE : BigNumber.ROUND_DOWN})
 
 const ARKTOSHI = new BigNumber(Math.pow(10, 8))
 const FEES = new BigNumber(0.1).times(ARKTOSHI)
