@@ -18,12 +18,10 @@ async function start () {
 
     let {totalAmount, totalFees, transactions} = payoutBuilder.generatePayouts(payouts)
 
-    const amount = delegateProfit.toFixed(0); //new BigNumber(delegateProfit.div(ARKTOSHI).toFixed(8)).times(ARKTOSHI).toFixed(0)
-logger.warn(`DELEGATE PROFITS: ${delegateProfit.toString()} vs ${amount}`)
-    const adminTransactions = payoutBuilder.generateAdminPayouts(amount)
+    const adminTransactions = payoutBuilder.generateAdminPayouts(delegateProfit)
     if (adminTransactions.length) {
-      totalAmount = totalAmount.plus(amount)
-      totalFees = totalFees.plus(FEES * adminTransactions.length)
+      totalAmount = totalAmount.plus(delegateProfit)
+      totalFees = totalFees.plus(FEES.times(adminTransactions.length))
     }
 
     if (acfDonation.gt(0)) {
