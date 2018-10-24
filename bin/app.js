@@ -20,14 +20,13 @@ async function start () {
 
     const adminTransactions = payoutBuilder.generateAdminPayouts(delegateProfit)
     if (adminTransactions.length) {
-      totalAmount = totalAmount.plus(delegateProfit)
+      totalAmount = totalAmount.plus(delegateProfit.toFixed(0))
       totalFees = totalFees.plus(FEES.times(adminTransactions.length))
     }
 
     if (acfDonation.gt(0)) {
-      const acfAmount = new BigNumber(acfDonation.div(ARKTOSHI).toFixed(8)).times(ARKTOSHI).toFixed(0)
-      const acfTransaction = payoutBuilder.generateAcfPayout(acfAmount)
-      totalAmount = totalAmount.plus(acfAmount)
+      const acfTransaction = payoutBuilder.generateAcfPayout(acfDonation)
+      totalAmount = totalAmount.plus(acfDonation.toFixed(0))
       totalFees = totalFees.plus(FEES)
       adminTransactions.push(acfTransaction)
     }
