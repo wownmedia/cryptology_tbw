@@ -7,8 +7,8 @@ const network = require('../lib/services/network')
 const logger = require('../lib/services/logger')
 const BigNumber = require('bignumber.js')
 
-const ARKTOSHI = Math.pow(10, 8)
-const FEES = 0.1 * ARKTOSHI
+const ARKTOSHI = new BigNumber(Math.pow(10, 8))
+const FEES = new BigNumber(0.1).times(ARKTOSHI)
 
 async function start () {
   try {
