@@ -6,9 +6,10 @@ const payoutBuilder = require('../lib/utils/payouts')
 const network = require('../lib/services/network')
 const logger = require('../lib/services/logger')
 const BigNumber = require('bignumber.js')
+BigNumber.config({ROUNDING_MODE : BigNumber.ROUND_DOWN})
 
-const ARKTOSHI = Math.pow(10, 8)
-const FEES = 0.1 * ARKTOSHI
+const ARKTOSHI = new BigNumber(Math.pow(10, 8))
+const FEES = new BigNumber(0.1).times(ARKTOSHI)
 
 async function start () {
   try {
@@ -17,18 +18,15 @@ async function start () {
 
     let {totalAmount, totalFees, transactions} = payoutBuilder.generatePayouts(payouts)
 
-    const amount = new BigNumber(delegateProfit.div(ARKTOSHI).toFixed(8)).times(ARKTOSHI).toFixed(0)
-
-    const adminTransactions = payoutBuilder.generateAdminPayouts(amount)
+    const adminTransactions = payoutBuilder.generateAdminPayouts(delegateProfit)
     if (adminTransactions.length) {
-      totalAmount = totalAmount.plus(amount)
-      totalFees = totalFees.plus(FEES * adminTransactions.length)
+      totalAmount = totalAmount.plus(delegateProfit.toFixed(0))
+      totalFees = totalFees.plus(FEES.times(adminTransactions.length))
     }
 
     if (acfDonation.gt(0)) {
-      const acfAmount = new BigNumber(acfDonation.div(ARKTOSHI).toFixed(8)).times(ARKTOSHI).toFixed(0)
-      const acfTransaction = payoutBuilder.generateAcfPayout(acfAmount)
-      totalAmount = totalAmount.plus(acfAmount)
+      const acfTransaction = payoutBuilder.generateAcfPayout(acfDonation)
+      totalAmount = totalAmount.plus(acfDonation.toFixed(0))
       totalFees = totalFees.plus(FEES)
       adminTransactions.push(acfTransaction)
     }
