@@ -18,7 +18,7 @@ async function start () {
 
     let {totalAmount, totalFees, transactions} = payoutBuilder.generatePayouts(payouts)
 
-    const amount = new BigNumber(delegateProfit.div(ARKTOSHI).toFixed(8)).times(ARKTOSHI).toFixed(0)
+    const amount = delegateProfit.toFixed(0); //new BigNumber(delegateProfit.div(ARKTOSHI).toFixed(8)).times(ARKTOSHI).toFixed(0)
 logger.warn(`DELEGATE PROFITS: ${delegateProfit.toString()} vs ${amount}`)
     const adminTransactions = payoutBuilder.generateAdminPayouts(amount)
     if (adminTransactions.length) {
