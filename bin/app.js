@@ -38,10 +38,10 @@ async function start () {
     if (args.length >= 1 && args[0] === 'payout') {
       logger.info('Payouts initiated')
       const results = await network.postTransaction(transactions.concat(adminTransactions))
-      if (results.data.success !== true) {
+      if (!results.data.hasOwnProperty('data')) {
         throw new Error(`Could not send transactions: ${results.data.error}`)
       }
-      logger.info(results.data.transactionIds)
+      logger.info(JSON.stringify(results.data.data))
     }
   } catch (error) {
     console.error(error)
