@@ -16,7 +16,10 @@ async function start () {
     const trueblockweight = new TrueBlockWeight()
     const {payouts, delegateProfit, acfDonation} = await trueblockweight.generatePayouts()
 
-    let {totalAmount, totalFees, transactions} = payoutBuilder.generatePayouts(payouts)
+    const transactions=[]
+    let {totalAmount, totalFees, multiPayment} = payoutBuilder.generatePayouts(payouts)
+logger.info(JSON.stringify(multiPayment))
+    transactions.push(multiPayment)
 
     const adminTransactions = payoutBuilder.generateAdminPayouts(delegateProfit)
     if (adminTransactions.length) {
