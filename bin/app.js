@@ -42,6 +42,12 @@ async function start () {
         throw new Error(`Could not send transactions: ${results.data.error}`)
       }
       logger.info(results.data.transactionIds)
+    } else if (args.length >= 1 && args[0] === 'check') {
+      logger.info('Transactions Generated')
+      transactions.concat(adminTransactions)
+      for(const transaction of transactions) {
+        console.log(JSON.stringify(transaction))
+      }
     }
   } catch (error) {
     console.error(error)
