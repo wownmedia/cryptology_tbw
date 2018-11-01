@@ -43,9 +43,8 @@ async function start () {
       }
       logger.info(JSON.stringify(results.data.data))
     } else if (args.length >= 1 && args[0] === 'check') {
-      logger.info('Transactions Generated')
-      transactions.concat(adminTransactions)
-      for(const transaction of transactions) {
+      logger.info('Transactions Generated')      
+      for(const transaction of transactions.concat(adminTransactions)) {
         console.log(JSON.stringify(transaction))
       }
     }
