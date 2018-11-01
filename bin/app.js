@@ -32,7 +32,7 @@ async function start () {
     }
 
     logger.info('==================================================================================')
-    logger.info(`Ready to Payout: ${totalAmount.div(ARKTOSHI).toFixed(8)} + ${totalFees.div(ARKTOSHI).toFixed(1)} fees.`)
+    logger.info(`Ready to Payout: ${totalAmount.div(ARKTOSHI).toFixed(8)} + ${totalFees.div(ARKTOSHI).toFixed(8)} fees.`)
     logger.info('==================================================================================')
     const args = process.argv.slice(2)
     if (args.length >= 1 && args[0] === 'payout') {
