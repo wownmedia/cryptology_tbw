@@ -9,7 +9,8 @@ const BigNumber = require('bignumber.js')
 BigNumber.config({ROUNDING_MODE: BigNumber.ROUND_DOWN})
 
 const ARKTOSHI = new BigNumber(Math.pow(10, 8))
-const FEE = process.env.FEE ? new BigNumber(process.env.FEE).times(ARKTOSHI) : new BigNumber(0.1).times(ARKTOSHI)
+const FEES = new BigNumber(0.1).times(ARKTOSHI)
+const MAX_TRANSACTIONS_PER_REQUEST = process.env.MAX_TRANSACTIONS_PER_REQUEST ? parseInt(process.env.MAX_TRANSACTIONS_PER_REQUEST, 10) : 40
 
 async function start () {
   try {
@@ -21,31 +22,41 @@ async function start () {
     const adminTransactions = payoutBuilder.generateAdminPayouts(delegateProfit)
     if (adminTransactions.length) {
       totalAmount = totalAmount.plus(delegateProfit.toFixed(0))
-      totalFees = totalFees.plus(FEE.times(adminTransactions.length))
+      totalFees = totalFees.plus(FEES.times(adminTransactions.length))
     }
 
     if (acfDonation.gt(0)) {
       const acfTransaction = payoutBuilder.generateAcfPayout(acfDonation)
       totalAmount = totalAmount.plus(acfDonation.toFixed(0))
-      totalFees = totalFees.plus(FEE)
+      totalFees = totalFees.plus(FEES)
       adminTransactions.push(acfTransaction)
     }
 
     logger.info('==================================================================================')
-    logger.info(`Ready to Payout: ${totalAmount.div(ARKTOSHI).toFixed(8)} + ${totalFees.div(ARKTOSHI).toFixed(8)} fees.`)
+    logger.info(`Ready to Payout: ${totalAmount.div(ARKTOSHI).toFixed(8)} + ${totalFees.div(ARKTOSHI).toFixed(1)} fees.`)
     logger.info('==================================================================================')
     const args = process.argv.slice(2)
     if (args.length >= 1 && args[0] === 'payout') {
       logger.info('Payouts initiated')
-      const results = await network.postTransaction(transactions.concat(adminTransactions))
-      if (!results.data.hasOwnProperty('data')) {
-        throw new Error(`Could not send transactions: ${results.data.error}`)
-      }
-      logger.info(JSON.stringify(results.data.data))
-    } else if (args.length >= 1 && args[0] === 'check') {
-      logger.info('Transactions Generated')      
-      for(const transaction of transactions.concat(adminTransactions)) {
-        console.log(JSON.stringify(transaction))
+      transactions = transactions.concat(adminTransactions)
+      for (let i = 0; i < transactions.length; i += MAX_TRANSACTIONS_PER_REQUEST) {
+        const transactionsChunk = transactions.slice(i, i + MAX_TRANSACTIONS_PER_REQUEST)
+
+        try {
+          const response = await network.postTransactions(transactionsChunk)
+
+          if (response.data.success !== true) {
+            throw new Error(`Could not send transactions: ${response.data.error}`)
+          }
+
+          if (response.data.hasOwnProperty('data')) {
+            if (parseInt(response.data.data.invalid.length, 10) > 0 || parseInt(response.data.data.excess.length, 10) > 0) {
+              logger.error(`Error posting transactions: ${JSON.stringify(response.data.data)}`)
+            }
+          }
+        } catch (error) {
+          logger.error(error.message)
+        }
       }
     }
   } catch (error) {
