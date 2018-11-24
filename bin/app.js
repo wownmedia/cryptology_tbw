@@ -40,11 +40,21 @@ async function start () {
       logger.info('Payouts initiated')
       
       transactions = transactions.concat(adminTransactions)
-      const results = await network.postTransaction(transactions.concat(adminTransactions))
-      if (results.data.success !== true) {
-        throw new Error(`Could not send transactions: ${results.data.error}`)
+      for (let i = 0; i < transactions.length; i += MAX_TRANSACTIONS_PER_REQUEST) {
+        const transactionsChunk = transactions.slice(i, i + MAX_TRANSACTIONS_PER_REQUEST)
+
+        try {
+          const response = await network.postTransaction(transactionsChunk)
+
+          if (response.data.success !== true) {
+            logger.error(`Could not send transactions: ${response.data.error}`)
+          } else {   
+            logger.info(`Posted ${response.data.transactionIds.length} transactions.`)
+          }
+        } catch (error) {
+          logger.error(error.message)
+        }
       }
-      logger.info(results.data.transactionIds)
     } else if (args.length >= 1 && args[0] === 'check') {
       logger.info('Transactions Generated')      
       for(const transaction of transactions.concat(adminTransactions)) {
