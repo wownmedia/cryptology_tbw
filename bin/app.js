@@ -58,6 +58,11 @@ async function start () {
           logger.error(error.message)
         }
       }
+    } else if (args.length >= 1 && args[0] === 'check') {
+      logger.info('Transactions Generated')      
+      for(const transaction of transactions.concat(adminTransactions)) {
+        console.log(JSON.stringify(transaction))
+      }
     }
   } catch (error) {
     console.error(error)

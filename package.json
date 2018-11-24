@@ -1,6 +1,6 @@
 {
   "name": "cryptology_tbw",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "Cryptology True Block Weight",
   "main": "index.js",
   "scripts": {
