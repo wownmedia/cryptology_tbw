@@ -43,7 +43,7 @@ async function start () {
         const transactionsChunk = transactions.slice(i, i + MAX_TRANSACTIONS_PER_REQUEST)
 
         try {
-          const response = await network.postTransactions(transactionsChunk)
+          const response = await network.postTransaction(transactionsChunk)
 
           if (response.data.success !== true) {
             throw new Error(`Could not send transactions: ${response.data.error}`)
