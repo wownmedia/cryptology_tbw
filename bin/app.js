@@ -45,14 +45,12 @@ async function start () {
         try {
           const response = await network.postTransaction(transactionsChunk)
 
-          if (response.data.success !== true) {
-            throw new Error(`Could not send transactions: ${response.data.error}`)
-          }
-
           if (response.data.hasOwnProperty('data')) {
             if (parseInt(response.data.data.invalid.length, 10) > 0 || parseInt(response.data.data.excess.length, 10) > 0) {
               logger.error(`Error posting transactions: ${JSON.stringify(response.data.data)}`)
             }
+            
+            logger.info(`Posted ${response.data.data.broadcast.length} transactions.`)
           }
         } catch (error) {
           logger.error(error.message)
