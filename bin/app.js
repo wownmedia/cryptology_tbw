@@ -10,6 +10,7 @@ BigNumber.config({ROUNDING_MODE : BigNumber.ROUND_DOWN})
 
 const ARKTOSHI = new BigNumber(Math.pow(10, 8))
 const FEES = new BigNumber(0.1).times(ARKTOSHI)
+const MAX_TRANSACTIONS_PER_REQUEST = process.env.MAX_TRANSACTIONS_PER_REQUEST ? parseInt(process.env.MAX_TRANSACTIONS_PER_REQUEST, 10) : 40
 
 async function start () {
   try {
@@ -37,6 +38,8 @@ async function start () {
     const args = process.argv.slice(2)
     if (args.length >= 1 && args[0] === 'payout') {
       logger.info('Payouts initiated')
+      
+      transactions = transactions.concat(adminTransactions)
       const results = await network.postTransaction(transactions.concat(adminTransactions))
       if (results.data.success !== true) {
         throw new Error(`Could not send transactions: ${results.data.error}`)
