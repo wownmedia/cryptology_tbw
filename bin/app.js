@@ -49,7 +49,7 @@ async function start () {
             if (parseInt(response.data.data.invalid.length, 10) > 0 || parseInt(response.data.data.excess.length, 10) > 0) {
               logger.error(`Error posting transactions: ${JSON.stringify(response.data.data)}`)
             }
-            
+
             logger.info(`Posted ${response.data.data.broadcast.length} transactions.`)
           }
         } catch (error) {
@@ -57,8 +57,8 @@ async function start () {
         }
       }
     } else if (args.length >= 1 && args[0] === 'check') {
-      logger.info('Transactions Generated')      
-      for(const transaction of transactions.concat(adminTransactions)) {
+      logger.info('Transactions Generated')
+      for (const transaction of transactions.concat(adminTransactions)) {
         console.log(JSON.stringify(transaction))
       }
     }
