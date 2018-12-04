@@ -44,7 +44,7 @@ async function start () {
 
         try {
           const response = await network.postTransaction(transactionsChunk)
-
+          logger.debug(`Post transactions response: ${resonse.data}`);
           if (response.data.hasOwnProperty('data')) {
             if (parseInt(response.data.data.invalid.length, 10) > 0 || parseInt(response.data.data.excess.length, 10) > 0) {
               logger.error(`Error posting transactions: ${JSON.stringify(response.data.data)}`)
@@ -59,11 +59,11 @@ async function start () {
     } else if (args.length >= 1 && args[0] === 'check') {
       logger.info('Transactions Generated')
       for (const transaction of transactions.concat(adminTransactions)) {
-        console.log(JSON.stringify(transaction))
+        logger.log(JSON.stringify(transaction))
       }
     }
   } catch (error) {
-    console.error(error)
+    logger.error(error)
   }
 }
 
