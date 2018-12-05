@@ -44,7 +44,7 @@ async function start () {
 
         try {
           const response = await network.broadcastTransactions(transactionsChunk)
-          console.log(response)
+          console.log(JSON.stringify(response))
           //if (response.data.hasOwnProperty('data')) {
           //  if (parseInt(response.data.data.invalid.length, 10) > 0 || parseInt(response.data.data.excess.length, 10) > 0) {
           //    logger.error(`Error posting transactions: ${JSON.stringify(response.data.data)}`)
