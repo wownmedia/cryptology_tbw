@@ -43,7 +43,7 @@ async function start () {
         const transactionsChunk = transactions.slice(i, i + MAX_TRANSACTIONS_PER_REQUEST)
 
         try {
-          const response = await network.postTransaction(transactionsChunk)
+          const response = await network.broadcastTransactions(transactionsChunk)
 
           if (response.data.hasOwnProperty('data')) {
             if (parseInt(response.data.data.invalid.length, 10) > 0 || parseInt(response.data.data.excess.length, 10) > 0) {
