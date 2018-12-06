@@ -49,9 +49,9 @@ async function start () {
           //  if (parseInt(response.data.data.invalid.length, 10) > 0 || parseInt(response.data.data.excess.length, 10) > 0) {
           //    logger.error(`Error posting transactions: ${JSON.stringify(response.data.data)}`)
           //  }
-
             //logger.info(`Posted ${response.data.data.broadcast.length} transactions.`)
           //}
+
         } catch (error) {
           logger.error(error.message)
         }
