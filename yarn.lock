@@ -5571,9 +5571,9 @@ timed-out@^4.0.1:
   integrity sha1-8y6srFoXW+ol1/q1Zas+2HQe9W8=
 
 tiny-glob@^0.2.2:
-  version "0.2.3"
-  resolved "https://registry.yarnpkg.com/tiny-glob/-/tiny-glob-0.2.3.tgz#9dba7fe22b1e4e2e7bb59815b10152bdf3d085b4"
-  integrity sha512-pkCxlClaL6MznxrgW4D2VDk5w6hz3SEOtXcJ9CPhxLjhpsvTd1g3qkMAqxoJNjKsCQlJj6w485ij5d5/Fb9jUQ==
+  version "0.2.6"
+  resolved "https://registry.yarnpkg.com/tiny-glob/-/tiny-glob-0.2.6.tgz#9e056e169d9788fe8a734dfa1ff02e9b92ed7eda"
+  integrity sha512-A7ewMqPu1B5PWwC3m7KVgAu96Ch5LA0w4SnEN/LbDREj/gAD0nPWboRbn8YoP9ISZXqeNAlMvKSKoEuhcfK3Pw==
   dependencies:
     globalyzer "^0.1.0"
     globrex "^0.1.1"
