@@ -15,9 +15,9 @@ const MAX_TRANSACTIONS_PER_REQUEST = process.env.MAX_TRANSACTIONS_PER_REQUEST ? 
 async function start () {
   try {
     const trueblockweight = new TrueBlockWeight()
-    const {payouts, delegateProfit, acfDonation} = await trueblockweight.generatePayouts()
+    const {payouts, delegateProfit, acfDonation, timestamp} = await trueblockweight.generatePayouts()
 
-    let {totalAmount, totalFees, transactions} = payoutBuilder.generatePayouts(payouts)
+    let {totalAmount, totalFees, transactions} = payoutBuilder.generatePayouts(payouts, timestamp)
 
     const adminTransactions = payoutBuilder.generateAdminPayouts(delegateProfit)
     if (adminTransactions.length) {
