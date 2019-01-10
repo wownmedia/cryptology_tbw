@@ -19,14 +19,14 @@ async function start () {
 
     let {totalAmount, totalFees, transactions} = payoutBuilder.generatePayouts(payouts, timestamp)
 
-    const adminTransactions = payoutBuilder.generateAdminPayouts(delegateProfit)
+    const adminTransactions = payoutBuilder.generateAdminPayouts(delegateProfit, timestamp)
     if (adminTransactions.length) {
       totalAmount = totalAmount.plus(delegateProfit.toFixed(0))
       totalFees = totalFees.plus(FEES.times(adminTransactions.length))
     }
 
     if (acfDonation.gt(0)) {
-      const acfTransaction = payoutBuilder.generateAcfPayout(acfDonation)
+      const acfTransaction = payoutBuilder.generateAcfPayout(acfDonation, timestamp)
       totalAmount = totalAmount.plus(acfDonation.toFixed(0))
       totalFees = totalFees.plus(FEES)
       adminTransactions.push(acfTransaction)
