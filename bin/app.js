@@ -9,7 +9,7 @@ const BigNumber = require('bignumber.js')
 BigNumber.config({ROUNDING_MODE: BigNumber.ROUND_DOWN})
 
 const ARKTOSHI = new BigNumber(Math.pow(10, 8))
-const FEES = new BigNumber(0.1).times(ARKTOSHI)
+const FEES = process.env.FEE ? new BigNumber(process.env.FEE).times(ARKTOSHI) : new BigNumber(0.1).times(ARKTOSHI)
 const MAX_TRANSACTIONS_PER_REQUEST = process.env.MAX_TRANSACTIONS_PER_REQUEST ? parseInt(process.env.MAX_TRANSACTIONS_PER_REQUEST, 10) : 40
 
 async function start () {
