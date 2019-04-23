@@ -1,3 +1,5 @@
+**Make sure to set your `startheight` to the block after your last payout in case you upgrade**
+
 # cryptology_tbw
 Cryptology True Block Weight and Fair Fees
 
