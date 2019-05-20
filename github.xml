@@ -1,0 +1,7 @@
+<application>
+  <component name="GithubAccounts">
+    <account id="79cd8f6c-b10f-4879-9105-b74776b2671e" name="wownmedia">
+      <server host="github.com" />
+    </account>
+  </component>
+</application>
