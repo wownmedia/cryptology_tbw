@@ -1,6 +1,7 @@
 <application>
   <component name="FileTypeManager" version="17">
     <extensionMap>
+      <mapping pattern="twitter-listener" type="JavaScript" />
       <mapping pattern="temp" type="PLAIN_TEXT" />
     </extensionMap>
   </component>
