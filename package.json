@@ -22,7 +22,7 @@
   "homepage": "https://github.com/wownmedia/cryptology_tbw#readme",
   "dependencies": {
     "@arkecosystem/crypto": "^0.1.2",
-    "axios": "^0.18.0",
+    "axios": "^0.18.1",
     "bignumber.js": "^7.2.1",
     "chalk": "^2.4.1",
     "commander": "^2.18.0",
