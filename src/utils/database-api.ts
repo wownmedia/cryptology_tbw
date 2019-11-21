@@ -96,7 +96,7 @@ export class DatabaseAPI {
         return {
           height: parseInt(transaction.height, 10),
           recipientId: transaction.recipient_id,
-          vendorField: data ? data.data.vendorField : null,
+          vendorField: data && data.hasVendorField() ? data.data.vendorField : null,
           timestamp: parseInt(transaction.timestamp, 10)
         };
       })
