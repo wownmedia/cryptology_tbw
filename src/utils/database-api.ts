@@ -132,10 +132,11 @@ export class DatabaseAPI {
     return result.rows
       .map(transaction => {
         const data = DatabaseAPI.deserializeTransaction(transaction.serialized);
+        logger.info(`DATA: ${data}`);
         return {
           height: parseInt(transaction.height, 10),
           address: transaction.recipient_id,
-          vote: data.data.asset.votes[0]
+          vote: data ? data.data.asset.votes[0] : ""
         };
       })
       .filter(transaction => {
