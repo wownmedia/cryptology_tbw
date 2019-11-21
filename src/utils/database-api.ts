@@ -25,7 +25,8 @@ export class DatabaseAPI {
     try {
       logger.info(`TX: ${JSON.stringify(transaction)}`);
       const buffer = Buffer.from(transaction, "hex");
-      const serialized = Buffer.from(buffer).toString("hex");
+      const serialized: string = Buffer.from(buffer).toString("hex");
+      logger.info(`SE: ${serialized}`);
       return Crypto.deserializeTransaction(serialized);
     } catch (error) {
       logger.error(`Deserializing transaction: ${error.message}`);
