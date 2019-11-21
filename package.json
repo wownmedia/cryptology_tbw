@@ -1,63 +1,137 @@
 {
   "name": "cryptology_tbw",
-
-  "version": "2.5.0",
+  "version": "2.6.0",
+  "private": true,
   "description": "Cryptology True Block Weight",
-  "main": "index.js",
+  "license": "MIT",
+  "author": "Cryptology",
+  "files": [
+    "dist",
+    "bin"
+  ],
+  "main": "dist/app",
+  "types": "dist/app",
+  "bin": {
+    "tbw": "./bin/app"
+  },
   "scripts": {
-    "test": "jest --forceExit",
-    "test:watch": "jest --watch",
-    "lint": "eslint ./ --fix",
-    "depcheck": "depcheck ./"
+    "build": "yarn clean && yarn compile",
+    "build:watch": "yarn clean && yarn compile -w",
+    "clean": "del dist",
+    "compile": "./node_modules/typescript/bin/tsc",
+    "format": "yarn lint && yarn prettier",
+    "lerna": "./node_modules/lerna/cli.js",
+    "lint": "./node_modules/tslint/bin/tslint -c ./tslint.json 'src/**/*.ts' '__tests__/**/*.ts' --fix",
+    "docs": "./node_modules/typedoc/bin/typedoc src --out docs",
+    "prepublishOnly": "yarn build",
+    "publish:alpha": "npm publish --tag alpha",
+    "publish:beta": "npm publish --tag beta",
+    "publish:latest": "npm publish --tag latest",
+    "publish:rc": "npm publish --tag rc",
+    "prettier": "prettier --write \"./*.{ts,js,json,md}\" \"./**/*.{ts,js,json,md}\"",
+    "setup": "yarn && yarn clean && yarn build",
+    "snyk": "./node_modules/.bin/snyk protect",
+    "deps:missing": "node ./scripts/deps/missing.js",
+    "pretest": "bash ./scripts/pre-test.sh",
+    "test": "snyk test && cross-env CORE_ENV=test jest --runInBand --forceExit",
+    "test:coverage": "cross-env CORE_ENV=test jest --coverage --coveragePathIgnorePatterns='/(defaults.ts|index.ts)$' --runInBand --forceExit",
+    "test:debug": "cross-env CORE_ENV=test node --inspect-brk ../../node_modules/.bin/jest --runInBand",
+    "test:watch": "cross-env CORE_ENV=test jest --runInBand --watch",
+    "test:watch:all": "cross-env CORE_ENV=test jest --runInBand --watchAll",
+    "updates": "./node_modules/npm-check-updates/bin/npm-check-updates"
+  },
+  "jest": {
+    "collectCoverageFrom": [
+      "src/**/*.ts",
+      "!**/node_modules/**"
+    ],
+    "preset": "./jest-preset.json"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/wownmedia/cryptology_tbw.git"
   },
-  "author": "Cryptology ltd",
-  "license": "MIT",
   "bugs": {
     "url": "https://github.com/wownmedia/cryptology_tbw/issues"
   },
   "homepage": "https://github.com/wownmedia/cryptology_tbw#readme",
   "dependencies": {
-    "@arkecosystem/crypto": "^0.1.2",
-    "axios": "^0.18.0",
-    "bignumber.js": "^7.2.1",
-    "chalk": "^2.4.1",
-    "commander": "^2.18.0",
-    "dotenv": "^6.0.0",
-    "is-reachable": "^2.4.0",
-    "joi": "^13.7.0",
-    "pg": "^7.4.3",
-    "pg-query-stream": "^1.1.1",
-    "pino": "^4.17.3",
+    "@arkecosystem/crypto": "^2.6.0-next.4",
+    "axios": "0.19.0",
+    "bignumber.js": "^9.0.0",
+    "chalk": "^2.4.2",
+    "commander": "^4.0.0",
+    "dotenv": "^8.2.0",
+    "is-reachable": "^4.0.0",
+    "@hapi/joi": "^16.1.7",
+    "pg": "^7.12.1",
+    "pg-query-stream": "^2.0.1",
+    "pino": "^5.13.6",
+    "pino-pretty": "^3.3.0",
     "prompt": "^1.0.0"
   },
   "devDependencies": {
-    "depcheck": "^0.6.9",
-    "eslint": "^4.19.1",
-    "eslint-config-standard": "^11.0.0",
-    "eslint-plugin-import": "^2.12.0",
-    "eslint-plugin-node": "^6.0.1",
-    "eslint-plugin-promise": "^3.8.0",
-    "eslint-plugin-standard": "^3.1.0",
-    "husky": "^0.14.3",
-    "merge": "^1.2.1",
-    "jest": "^23.6.0",
-    "jest-extended": "^0.11.0",
-    "lint-staged": "^7.1.3",
-    "regenerator-runtime": "^0.11.1",
-    "standard": "^11.0.1"
-  },
-  "husky": {
-    "hooks": {
-      "pre-commit": "lint-staged"
-    }
+    "@babel/core": "^7.7.2",
+    "@babel/preset-env": "^7.7.1",
+    "@sindresorhus/tsconfig": "^0.6.0",
+    "@types/babel__core": "^7.1.3",
+    "@types/body-parser": "^1.17.1",
+    "@types/express": "^4.17.2",
+    "@types/jest": "^24.0.22",
+    "@types/joi": "^14.3.4",
+    "@types/js-yaml": "^3.12.1",
+    "@types/node": "^12.12.6",
+    "@types/prettier": "^1.18.3",
+    "@types/prompts": "^2.4.0",
+    "@types/request": "^2.48.3",
+    "@types/request-promise": "^4.1.44",
+    "@types/rimraf": "^2.0.3",
+    "@types/uuid": "^3.4.6",
+    "@types/webpack": "^4.39.8",
+    "@types/webpack-merge": "^4.1.5",
+    "@types/webpack-node-externals": "^1.6.3",
+    "babel-loader": "^8.0.6",
+    "body-parser": "^1.19.0",
+    "codecov": "^3.6.1",
+    "cross-env": "^6.0.3",
+    "del-cli": "^3.0.0",
+    "depcheck": "^0.9.0",
+    "docdash": "^1.1.1",
+    "express": "^4.17.1",
+    "husky": "^3.0.9",
+    "jest": "^24.9.0",
+    "jest-extended": "^0.11.2",
+    "js-yaml": "^3.13.1",
+    "lerna": "^3.18.4",
+    "lint-staged": "^9.4.2",
+    "npm-check-updates": "^3.2.1",
+    "prettier": "^1.18.2",
+    "prompts": "^2.2.1",
+    "regenerator-runtime": "^0.13.3",
+    "request": "^2.88.0",
+    "request-promise": "^4.2.5",
+    "rimraf": "^3.0.0",
+    "snyk": "^1.244.0",
+    "ts-jest": "^24.1.0",
+    "tslint": "^5.20.1",
+    "tslint-config-prettier": "^1.18.0",
+    "typedoc": "^0.15.0",
+    "typescript": "^3.7.2",
+    "uuid": "^3.3.3",
+    "webpack": "^4.41.2",
+    "webpack-cli": "^3.3.10",
+    "webpack-merge": "^4.2.2",
+    "webpack-node-externals": "^1.7.2"
   },
   "lint-staged": {
     "*.js": [
       "eslint --fix"
     ]
+  },
+  "engines": {
+    "node": ">=10.x"
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }
