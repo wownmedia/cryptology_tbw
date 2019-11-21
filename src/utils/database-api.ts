@@ -23,6 +23,7 @@ export class DatabaseAPI {
 
   private static deserializeTransaction(transaction): Interfaces.ITransaction {
     try {
+      logger.info(`TX: ${JSON.stringify(transaction)}`);
       const buffer = Buffer.from(transaction, "hex");
       const serialized = Buffer.from(buffer).toString("hex");
       return Crypto.deserializeTransaction(serialized);
