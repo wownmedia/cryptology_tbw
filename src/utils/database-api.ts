@@ -93,7 +93,7 @@ export class DatabaseAPI {
     const delegatePayoutTransactions = result.rows
       .map(transaction => {
         const data = DatabaseAPI.deserializeTransaction(transaction.serialized);
-        logger.info(`DATA: ${data}`);
+        logger.info(`DATA: ${JSON.stringify(data)}`);
         return {
           height: parseInt(transaction.height, 10),
           recipientId: transaction.recipient_id,
@@ -132,7 +132,7 @@ export class DatabaseAPI {
     return result.rows
       .map(transaction => {
         const data = DatabaseAPI.deserializeTransaction(transaction.serialized);
-        logger.info(`DATA: ${data}`);
+        logger.info(`DATA: ${JSON.stringify(data)}`);
         return {
           height: parseInt(transaction.height, 10),
           address: transaction.recipient_id,
