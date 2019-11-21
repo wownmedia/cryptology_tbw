@@ -18,7 +18,7 @@ export class Crypto {
   }
 
   public static deserializeTransaction(serialized: string): Interfaces.ITransaction  {
-    return Transactions.deserializer.deserialize(serialized);
+    return Transactions.Deserializer.deserialize(serialized);
   }
 
   /*
