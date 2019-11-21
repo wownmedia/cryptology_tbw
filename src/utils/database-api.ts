@@ -23,10 +23,8 @@ export class DatabaseAPI {
 
   private static deserializeTransaction(transaction): Interfaces.ITransaction {
     try {
-      logger.info(`TX: ${JSON.stringify(transaction)}`);
       const buffer = Buffer.from(transaction, "hex");
       const serialized: string = Buffer.from(buffer).toString("hex");
-      logger.info(`SE: ${serialized}`);
       return Crypto.deserializeTransaction(serialized);
     } catch (error) {
       logger.error(`Deserializing transaction: ${error.message}`);
