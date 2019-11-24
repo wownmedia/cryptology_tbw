@@ -6,9 +6,11 @@
       <mapping pattern="twitter-listener" type="JavaScript" />
       <mapping pattern="app" type="JavaScript" />
       <mapping pattern="temp" type="PLAIN_TEXT" />
+      <mapping pattern=".snyk" type="PLAIN_TEXT" />
       <removed_mapping ext="cmd" approved="true" type="PLAIN_TEXT" />
       <removed_mapping ext="log" approved="true" type="PLAIN_TEXT" />
       <removed_mapping ext="bat" approved="true" type="PLAIN_TEXT" />
+      <mapping pattern=".eslint" type="tsconfig" />
       <removed_mapping ext="bat" approved="true" type="PLAIN_TEXT" />
       <removed_mapping ext="log" approved="true" type="PLAIN_TEXT" />
       <removed_mapping ext="dockerfile" approved="true" type="textmate" />
