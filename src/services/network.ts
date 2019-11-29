@@ -12,6 +12,25 @@ export class Network {
     this.nodes = nodes;
   }
 
+  public async getNetworkConfig(): Promise<any> {
+    try {
+      const config = await this.getFromAPI("/api/node/configuration/crypto");
+      return config.data;
+    } catch (e) {
+      return null;
+    }
+  }
+
+  public async getNonceForDelegate(delegate: string): Promise<number> {
+    try {
+      const delegateWallet = await this.getDelegateAddress(delegate);
+      const walletInfo = await this.getFromAPI(`/api/node/wallets/${delegateWallet}`);
+      return parseInt(walletInfo.data.nonce, 10);
+    } catch (e) {
+      return null;
+    }
+  }
+
   public async getFromAPI(endPoint: string, params = {}): Promise<APIResults> {
     try {
       const node: string =
@@ -51,6 +70,22 @@ export class Network {
         `${delegate}'s Public Key: ${delegateAPIResults.data.publicKey}`
       );
       return delegateAPIResults.data.publicKey;
+    }
+
+    throw new Error("Could not retrieve delegate data.");
+  }
+
+  public async getDelegateAddress(delegate: string): Promise<string> {
+    const getDelegateEndpoint = `/api/delegates/${delegate}/`;
+    const delegateAPIResults: APIResults = await this.getFromAPI(
+        getDelegateEndpoint
+    );
+
+    if (
+        delegateAPIResults.hasOwnProperty("data") &&
+        delegateAPIResults.data.hasOwnProperty("address")
+    ) {
+      return delegateAPIResults.data.address;
     }
 
     throw new Error("Could not retrieve delegate data.");

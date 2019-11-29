@@ -19,7 +19,7 @@ import {
 } from "../interfaces";
 import { Config, logger, Network } from "../services";
 import { DatabaseAPI } from "./database-api";
-import { ProposalEngine } from "./proposalEngine";
+import { ProposalEngine } from "./proposal-engine";
 
 export class TrueBlockWeightEngine {
 

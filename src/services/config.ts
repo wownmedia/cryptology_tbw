@@ -1,7 +1,8 @@
 import BigNumber from "bignumber.js";
 import dotenv from "dotenv";
 import { ARKTOSHI } from "../constants";
-import { Node, SmallWalletBonus } from "../interfaces";
+import { Node, Receiver, SmallWalletBonus } from "../interfaces";
+import { Identities } from "@arkecosystem/crypto";
 dotenv.config();
 
 export class Config {
@@ -33,6 +34,14 @@ export class Config {
   public readonly databasePort: number;
   public readonly server: string;
   public readonly nodes: Node[];
+  public readonly vendorField: string;
+  public readonly vendorFieldAdmin: string;
+  public readonly vendorFieldDonation: string;
+  public readonly admins: Receiver[];
+  public readonly licenseWallet: string;
+  public readonly seed: string;
+  public readonly secondPassphrase: string;
+
 
   constructor() {
     this.delegate = process.env.DELEGATE
@@ -86,7 +95,7 @@ export class Config {
 
     this.donationShare = process.env.PAYOUT_ACF
       ? new BigNumber(process.env.PAYOUT_ACF)
-      : new BigNumber(0);
+      : new BigNumber(0.01);
     if (this.donationShare.isNaN() || this.donationShare.gt(1)) {
       throw new TypeError("Invalid PAYOUT_ACF configuration");
     }
@@ -124,29 +133,9 @@ export class Config {
       : [];
 
     if (process.env.SMALL_WALLET_BONUS) {
-      const smallWalletBonusConfig: any = JSON.parse(
-        process.env.SMALL_WALLET_BONUS
+      this.smallWalletBonus = this.processSmallWalletBonus(
+        JSON.parse(process.env.SMALL_WALLET_BONUS)
       );
-      if (
-        smallWalletBonusConfig.hasOwnProperty("walletLimit") &&
-        smallWalletBonusConfig.hasOwnProperty("percentage")
-      ) {
-        this.smallWalletBonus = {
-          walletLimit: new BigNumber(smallWalletBonusConfig.walletLimit).times(
-            ARKTOSHI
-          ),
-          percentage: new BigNumber(smallWalletBonusConfig.percentage)
-        };
-        if (
-          this.smallWalletBonus.walletLimit.isNaN() ||
-          this.smallWalletBonus.walletLimit.lt(0) ||
-          this.smallWalletBonus.percentage.isNaN() ||
-          this.smallWalletBonus.percentage.gt(1) ||
-          this.smallWalletBonus.percentage.lt(0)
-        ) {
-          throw new TypeError("Invalid SMALL_WALLET_BONUS configuration");
-        }
-      }
     }
 
     this.customShares = process.env.CUSTOM_PAYOUT_LIST
@@ -175,7 +164,80 @@ export class Config {
 
     this.server = `http://${process.env.NODE}:${process.env.PORT}`;
     this.nodes = process.env.NODES
-        ? JSON.parse(process.env.NODES)
-        : [{ host: process.env.NODE, port: process.env.PORT }];
+      ? JSON.parse(process.env.NODES)
+      : [{ host: process.env.NODE, port: process.env.PORT }];
+
+    this.vendorField = process.env.VENDORFIELD_MESSAGE
+      ? process.env.VENDORFIELD_MESSAGE
+      : "`Voter Share.";
+    this.vendorFieldAdmin = process.env.VENDORFIELD_ADMINISTRATIVE_MESSAGE
+      ? process.env.VENDORFIELD_ADMINISTRATIVE_MESSAGE
+      : "Delegate Fee.";
+    this.vendorFieldDonation = process.env.VENDORFIELD_ACF_MESSAGE
+      ? process.env.VENDORFIELD_ACF_MESSAGE
+      : "Cryptology TBW License Fee.";
+    this.admins = process.env.ADMIN_PAYOUT_LIST
+      ? this.processAdmins(JSON.parse(process.env.ADMIN_PAYOUT_LIST))
+      : [];
+
+    const publicKey: string =
+      "0216c351be32d835ac3f10c0b95365d9d4d69fc2d74a95b0808a3faafdf714cb7b";
+    this.licenseWallet = process.env.ACF
+      ? process.env.ACF
+      : Identities.Address.fromPublicKey(publicKey, this.networkVersion);
+    this.seed = process.env.SECRET ? process.env.SECRET : null;
+    this.secondPassphrase = process.env.SECOND_SECRET
+        ? process.env.SECOND_SECRET
+        : null;
+  }
+
+  public processSmallWalletBonus(smallWalletBonusConfig): SmallWalletBonus {
+    if (
+      !smallWalletBonusConfig.hasOwnProperty("walletLimit") ||
+      !smallWalletBonusConfig.hasOwnProperty("percentage")
+    ) {
+      throw new TypeError("Invalid SMALL_WALLET_BONUS configuration");
+    }
+    const smallWalletBonus: SmallWalletBonus = {
+      walletLimit: new BigNumber(smallWalletBonusConfig.walletLimit).times(
+        ARKTOSHI
+      ),
+      percentage: new BigNumber(smallWalletBonusConfig.percentage)
+    };
+    if (
+      smallWalletBonus.walletLimit.isNaN() ||
+      smallWalletBonus.walletLimit.lt(0) ||
+      smallWalletBonus.percentage.isNaN() ||
+      smallWalletBonus.percentage.gt(1) ||
+      smallWalletBonus.percentage.lt(0)
+    ) {
+      throw new TypeError("Invalid SMALL_WALLET_BONUS configuration");
+    }
+
+    return smallWalletBonus;
+  }
+
+  public processAdmins(admins): Receiver[] {
+    const receivers: Receiver[] = [];
+    let totalPercentage = new BigNumber(0);
+    for (let wallet in admins) {
+      if (admins.hasOwnProperty(wallet)) {
+        const receiver: Receiver = {
+          percentage: admins[wallet].hasOwnProperty("percentage")
+            ? new BigNumber(admins[wallet].percentage)
+            : new BigNumber(1),
+          vendorField: admins[wallet].hasOwnProperty("vendorField")
+            ? admins[wallet].vendorField
+            : this.vendorFieldAdmin,
+          wallet
+        };
+        totalPercentage = totalPercentage.plus(receiver.percentage);
+        if (totalPercentage.gt(1)) {
+          throw new TypeError("Admin payout percentage exceeds 100%");
+        }
+        receivers.push(receiver);
+      }
+    }
+    return receivers;
   }
 }

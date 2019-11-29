@@ -111,3 +111,10 @@ export interface LatestPayouts {
   latestPayouts: Map<string, number>;
   latestPayoutsTimeStamp: Map<string, number>;
 }
+
+export interface Receiver {
+  wallet: string;
+  percentage?: BigNumber;
+  amount?: BigNumber;
+  vendorField: string;
+}
