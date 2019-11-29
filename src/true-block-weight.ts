@@ -14,20 +14,26 @@ export class TrueBlockWeight {
         this.transactionEngine = new TransactionEngine();
     }
 
-    public async calculate(): Promise<Payouts> {
+    public async calculate(): Promise<any> {
         const trueBlockWeightEngine = new TrueBlockWeightEngine();
-        return await trueBlockWeightEngine.generatePayouts();
+        const payouts: Payouts = await trueBlockWeightEngine.generatePayouts();
+        const transfers = await this.generateTransactions(payouts);
+        const adminTransactions = await this.generateAdminPayouts(payouts.delegateProfit, payouts.timestamp);
+        transfers.transactions = transfers.transactions.concat(adminTransactions);
+        const acfDonationTransaction = await this.generateDonationPayout(payouts.acfDonation, payouts.timestamp);
+        transfers.transactions.push(acfDonationTransaction);
+        return transfers;
     }
 
     public async payout() {
-        const payouts: Payouts = await this.calculate();
-        const transactions = this.generateTransactions(payouts);
+        //const payouts: Payouts = await this.calculate();
+        //const transactions = this.generateTransactions(payouts);
         // todo payout
     }
 
     public async check() {
-        const payouts: Payouts = await this.calculate();
-        const transactions = this.generateTransactions(payouts);
+        //const payouts: Payouts = await this.calculate();
+        //const transactions = this.generateTransactions(payouts);
         // todo show transactions
     }
 
@@ -71,5 +77,58 @@ export class TrueBlockWeight {
             return this.config.walletRedirections[address];
         }
         return address;
+    }
+
+    private async generateAdminPayouts(totalAmount: BigNumber, timestamp: number) {
+        let payoutAmount: BigNumber = new BigNumber(0);
+        let adminTransactions = [];
+        for (let admin of this.config.admins) {
+            const amount: BigNumber = totalAmount.times(admin.percentage);
+            const vendorField = `${this.config.delegate} - ${admin.vendorField}`;
+            const receiver: Receiver = {
+                amount,
+                vendorField,
+                wallet: admin.wallet
+            };
+            const transaction = await this.transactionEngine.createTransaction(
+                receiver,
+                timestamp
+            );
+            adminTransactions.push(transaction);
+            payoutAmount = payoutAmount.plus(amount);
+        }
+
+        if (payoutAmount.gt(totalAmount)) {
+            logger.error("Check admin payout percentages!");
+            return [];
+        }
+
+        for (let item in adminTransactions) {
+            const admin = adminTransactions[item].recipientId;
+            const amount = new BigNumber(adminTransactions[item].amount);
+            logger.info(
+                `Administrative Payout to ${admin} prepared: ${amount
+                    .div(ARKTOSHI)
+                    .toFixed(8)}`
+            );
+        }
+        return adminTransactions;
+    }
+
+    private async generateDonationPayout(amount: BigNumber, timestamp: number): Promise<any> {
+        amount = new BigNumber(amount);
+        logger.info(
+            `License fee Payout to prepared: ${amount.div(ARKTOSHI).toFixed(8)}`
+        );
+        const vendorField = `${this.config.delegate} - ${this.config.vendorFieldDonation}`;
+        const receiver: Receiver = {
+            amount,
+            vendorField,
+            wallet:this.config.licenseWallet
+        };
+        return await this.transactionEngine.createTransaction(
+            receiver,
+            timestamp
+        );
     }
 }
