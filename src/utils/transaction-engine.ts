@@ -71,7 +71,7 @@ export class TransactionEngine {
     }
 
     // todo WTF figure out how to generalize this
-    Managers.configManager.setHeight(4006000);
+    Managers.configManager.setHeight(this.config.startFromBlockHeight);
 
     if (this.nonce === null) {
       this.nonce = await this.network.getNonceForDelegate(this.config.delegate);

@@ -20,11 +20,11 @@ import {
 } from "./queries";
 
 export class DatabaseAPI {
-  private static deserializeTransaction(transaction): Interfaces.ITransaction {
+  private static deserializeTransaction(transaction, blockHeight: number): Interfaces.ITransaction {
     try {
       const buffer = Buffer.from(transaction, "hex");
       const serialized: string = Buffer.from(buffer).toString("hex");
-      return Crypto.deserializeTransaction(serialized);
+      return Crypto.deserializeTransaction(serialized, blockHeight);
     } catch (error) {
       logger.error(`Deserializing transaction: ${error.message}`);
       return null;
@@ -89,7 +89,7 @@ export class DatabaseAPI {
 
     const delegatePayoutTransactions = result.rows
       .map(transaction => {
-        const data = DatabaseAPI.deserializeTransaction(transaction.serialized);
+        const data = DatabaseAPI.deserializeTransaction(transaction.serialized, startBlockHeight);
         return {
           height: parseInt(transaction.height, 10),
           recipientId: transaction.recipient_id,
@@ -128,7 +128,7 @@ export class DatabaseAPI {
 
     return result.rows
       .map(transaction => {
-        const data = DatabaseAPI.deserializeTransaction(transaction.serialized);
+        const data = DatabaseAPI.deserializeTransaction(transaction.serialized, startBlockHeight);
         return {
           height: parseInt(transaction.height, 10),
           address: transaction.recipient_id,

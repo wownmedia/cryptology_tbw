@@ -1,11 +1,14 @@
-import { Identities, Interfaces, Transactions, Managers } from "@arkecosystem/crypto";
+import {
+  Identities,
+  Interfaces,
+  Managers,
+  Transactions
+} from "@arkecosystem/crypto";
 // const arkUtils = arkecosystem.utils;
 // const ECPair = arkecosystem.ECPair;
 // const ECSignature = arkecosystem.ECSignature;
 // const arkCrypto = arkecosystem.crypto;
 // const transactionBuilder = arkecosystem.transactionBuilder;
-// todo WTF figure out how to generalize this
-Managers.configManager.setHeight(4006000);
 
 export class Crypto {
   public static getAddress(passphrase, networkVersion) {
@@ -23,8 +26,10 @@ export class Crypto {
   }
 
   public static deserializeTransaction(
-    serialized: string
+    serialized: string,
+    blockHeight: number
   ): Interfaces.ITransaction {
+    Managers.configManager.setHeight(blockHeight);
     return Transactions.Deserializer.deserialize(serialized);
   }
 
