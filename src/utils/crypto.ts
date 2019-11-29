@@ -13,11 +13,16 @@ export class Crypto {
     return { address, publicKey };
   }
 
-  public static getAddressFromPublicKey(publicKey: string, networkVersion: number): string {
+  public static getAddressFromPublicKey(
+    publicKey: string,
+    networkVersion: number
+  ): string {
     return Identities.Address.fromPublicKey(publicKey, networkVersion);
   }
 
-  public static deserializeTransaction(serialized: string): Interfaces.ITransaction  {
+  public static deserializeTransaction(
+    serialized: string
+  ): Interfaces.ITransaction {
     return Transactions.Deserializer.deserialize(serialized);
   }
 

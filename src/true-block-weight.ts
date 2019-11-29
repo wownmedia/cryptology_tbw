@@ -43,17 +43,17 @@ export class TrueBlockWeight {
       transfers.totalFees = transfers.totalFees.plus(this.config.transferFee);
     }
 
-      logger.info(
-          "=================================================================================="
-      );
-      logger.info(
-          `Ready to Payout: ${transfers.totalAmount
-              .div(ARKTOSHI)
-              .toFixed(8)} + ${transfers.totalFees.div(ARKTOSHI).toFixed(8)} fees.`
-      );
-      logger.info(
-          "=================================================================================="
-      );
+    logger.info(
+      "=================================================================================="
+    );
+    logger.info(
+      `Ready to Payout: ${transfers.totalAmount
+        .div(ARKTOSHI)
+        .toFixed(8)} + ${transfers.totalFees.div(ARKTOSHI).toFixed(8)} fees.`
+    );
+    logger.info(
+      "=================================================================================="
+    );
     return transfers;
   }
 
@@ -136,9 +136,9 @@ export class TrueBlockWeight {
       return [];
     }
 
-    for (const item in adminTransactions) {
-      const admin = adminTransactions[item].recipientId;
-      const amount = new BigNumber(adminTransactions[item].amount);
+    for (const item of adminTransactions) {
+      const admin = item.recipientId;
+      const amount = new BigNumber(item.amount);
       logger.info(
         `Administrative Payout to ${admin} prepared: ${amount
           .div(ARKTOSHI)

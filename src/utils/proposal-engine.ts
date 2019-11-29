@@ -16,7 +16,7 @@ export class ProposalEngine {
     try {
       this.config = new Config();
       this.minimalPayoutArktoshiValue = this.config.minimalPayoutValue.times(
-          ARKTOSHI
+        ARKTOSHI
       );
     } catch (e) {
       logger.error(e.message);
@@ -42,7 +42,10 @@ export class ProposalEngine {
         this.isFrequencyMinimumReached(address, currentBlock, latestPayouts)
       ) {
         // Percentages
-        const percentage: BigNumber = this.getSharePercentage(address, smallWallets);
+        const percentage: BigNumber = this.getSharePercentage(
+          address,
+          smallWallets
+        );
         const acfPayout: BigNumber = new BigNumber(balance).times(
           this.config.donationShare
         );
@@ -117,7 +120,7 @@ export class ProposalEngine {
       "=================================================================================="
     );
 
-    return { payouts, acfDonation, delegateProfit, timestamp:0 };
+    return { payouts, acfDonation, delegateProfit, timestamp: 0 };
   }
 
   /*
@@ -192,17 +195,17 @@ export class ProposalEngine {
     return this.config.voterShare;
   }
 
-    public getAdminFeeCount(): number {
-        const ADMIN_PAYOUT_LIST = process.env.ADMIN_PAYOUT_LIST
-            ? JSON.parse(process.env.ADMIN_PAYOUT_LIST)
-            : {};
-        return Object.keys(ADMIN_PAYOUT_LIST).length;
-    }
+  public getAdminFeeCount(): number {
+    const ADMIN_PAYOUT_LIST = process.env.ADMIN_PAYOUT_LIST
+      ? JSON.parse(process.env.ADMIN_PAYOUT_LIST)
+      : {};
+    return Object.keys(ADMIN_PAYOUT_LIST).length;
+  }
 
-    public getACFFeeCount(): number {
-        if (this.config.donationShare.gt(0)) {
-            return 1;
-        }
-        return 0;
+  public getACFFeeCount(): number {
+    if (this.config.donationShare.gt(0)) {
+      return 1;
     }
+    return 0;
+  }
 }

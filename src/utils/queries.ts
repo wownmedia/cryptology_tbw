@@ -1,5 +1,8 @@
-
-export const getForgedBlocks = (publicKey: string, startBlockHeight: number, limit: number): string => {
+export const getForgedBlocks = (
+  publicKey: string,
+  startBlockHeight: number,
+  limit: number
+): string => {
   return `SELECT blocks.height, blocks.timestamp, blocks.total_fee AS "totalFee" \
           FROM public.blocks \
           WHERE blocks."generator_public_key" = '${publicKey}' \
@@ -24,7 +27,11 @@ export const getVoterSinceHeight = (startBlockHeight: number): string => {
 };
 
 // TODO interfaces
-export const getTransactions = (voters, votersKeys, startBlockHeight: number): string => {
+export const getTransactions = (
+  voters,
+  votersKeys,
+  startBlockHeight: number
+): string => {
   const votersAddresses = voters.map(address => `'${address}'`).join(",");
   const votersPublicKeys = votersKeys
     .map(publicKey => `'${publicKey}'`)
@@ -39,7 +46,10 @@ export const getTransactions = (voters, votersKeys, startBlockHeight: number): s
                ORDER BY blocks."height" DESC;`;
 };
 
-export const getDelegateTransactions = (startBlockHeight: number, delegatePublicKey: string): string => {
+export const getDelegateTransactions = (
+  startBlockHeight: number,
+  delegatePublicKey: string
+): string => {
   return `SELECT DISTINCT ON (transactions."recipient_id") transactions."serialized", transactions."recipient_id", \
                transactions."vendor_field", transactions."timestamp", blocks."height" \
                FROM transactions INNER JOIN blocks ON blocks."id" = transactions."block_id"  

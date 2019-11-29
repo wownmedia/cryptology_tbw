@@ -103,8 +103,8 @@ export interface Payouts {
 }
 
 export interface PayoutBalances {
-    payouts: Map<string, BigNumber>;
-    feesPayouts: Map<string, BigNumber>;
+  payouts: Map<string, BigNumber>;
+  feesPayouts: Map<string, BigNumber>;
 }
 
 export interface LatestPayouts {

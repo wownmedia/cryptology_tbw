@@ -6,7 +6,7 @@ export class Postgres {
   private client: Client;
   private databaseConfig: DatabaseConfig;
 
-  constructor( databaseConfig:DatabaseConfig) {
+  constructor(databaseConfig: DatabaseConfig) {
     this.databaseConfig = databaseConfig;
     this.client = new Client(this.databaseConfig);
   }

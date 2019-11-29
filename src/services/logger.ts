@@ -7,6 +7,6 @@ export const logger = pino({
   safe: true,
   prettyPrint: {
     translateTime: true,
-    ignore: "hostname",
-  },
+    ignore: "hostname"
+  }
 });

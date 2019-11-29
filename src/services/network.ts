@@ -24,7 +24,9 @@ export class Network {
   public async getNonceForDelegate(delegate: string): Promise<number> {
     try {
       const delegateWallet = await this.getDelegateAddress(delegate);
-      const walletInfo = await this.getFromAPI(`/api/node/wallets/${delegateWallet}`);
+      const walletInfo = await this.getFromAPI(
+        `/api/node/wallets/${delegateWallet}`
+      );
       return parseInt(walletInfo.data.nonce, 10);
     } catch (e) {
       return null;
@@ -78,12 +80,12 @@ export class Network {
   public async getDelegateAddress(delegate: string): Promise<string> {
     const getDelegateEndpoint = `/api/delegates/${delegate}/`;
     const delegateAPIResults: APIResults = await this.getFromAPI(
-        getDelegateEndpoint
+      getDelegateEndpoint
     );
 
     if (
-        delegateAPIResults.hasOwnProperty("data") &&
-        delegateAPIResults.data.hasOwnProperty("address")
+      delegateAPIResults.hasOwnProperty("data") &&
+      delegateAPIResults.data.hasOwnProperty("address")
     ) {
       return delegateAPIResults.data.address;
     }

@@ -22,7 +22,6 @@ import { DatabaseAPI } from "./database-api";
 import { ProposalEngine } from "./proposal-engine";
 
 export class TrueBlockWeightEngine {
-
   /**
    * @dev   Retrieve the CURRENT voters of the delegate
    */
@@ -383,13 +382,15 @@ export class TrueBlockWeightEngine {
     votingDelegateBlocks
   ): Map<string, BigNumber> {
     // Only process mutations that are in range
-    const  calculatedTransactions: Transaction[] = transactions.filter(transaction => {
-      return (
-        transaction.height >= height && transaction.height < previousHeight
-      );
-    });
+    const calculatedTransactions: Transaction[] = transactions.filter(
+      transaction => {
+        return (
+          transaction.height >= height && transaction.height < previousHeight
+        );
+      }
+    );
 
-    for (const item of  calculatedTransactions) {
+    for (const item of calculatedTransactions) {
       const recipientId: string = item.recipientId;
       const senderId: string = item.senderId;
       const amount: BigNumber = item.amount;
@@ -412,9 +413,11 @@ export class TrueBlockWeightEngine {
       }
     }
 
-    const calculatedVotingDelegateBlocks = votingDelegateBlocks.filter(block => {
-      return block.height > height && block.height <= previousHeight;
-    });
+    const calculatedVotingDelegateBlocks = votingDelegateBlocks.filter(
+      block => {
+        return block.height > height && block.height <= previousHeight;
+      }
+    );
 
     for (const item of calculatedVotingDelegateBlocks) {
       const delegateAddress: string = item.address;

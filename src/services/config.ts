@@ -42,7 +42,6 @@ export class Config {
   public readonly seed: string;
   public readonly secondPassphrase: string;
 
-
   constructor() {
     this.delegate = process.env.DELEGATE
       ? process.env.DELEGATE.toLowerCase().trim()
@@ -187,8 +186,8 @@ export class Config {
       : Identities.Address.fromPublicKey(publicKey, this.networkVersion);
     this.seed = process.env.SECRET ? process.env.SECRET : null;
     this.secondPassphrase = process.env.SECOND_SECRET
-        ? process.env.SECOND_SECRET
-        : null;
+      ? process.env.SECOND_SECRET
+      : null;
   }
 
   public processSmallWalletBonus(smallWalletBonusConfig): SmallWalletBonus {

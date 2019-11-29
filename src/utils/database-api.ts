@@ -20,7 +20,6 @@ import {
 } from "./queries";
 
 export class DatabaseAPI {
-
   private static deserializeTransaction(transaction): Interfaces.ITransaction {
     try {
       const buffer = Buffer.from(transaction, "hex");
@@ -94,7 +93,8 @@ export class DatabaseAPI {
         return {
           height: parseInt(transaction.height, 10),
           recipientId: transaction.recipient_id,
-          vendorField: data && data.hasVendorField() ? data.data.vendorField : null,
+          vendorField:
+            data && data.hasVendorField() ? data.data.vendorField : null,
           timestamp: parseInt(transaction.timestamp, 10)
         };
       })
