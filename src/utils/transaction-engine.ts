@@ -70,6 +70,9 @@ export class TransactionEngine {
       Managers.configManager.setConfig(networkConfig);
     }
 
+    // todo WTF figure out how to generalize this
+    Managers.configManager.setHeight(4006000);
+
     if (this.nonce === null) {
       this.nonce = await this.network.getNonceForDelegate(this.config.delegate);
       logger.info(
