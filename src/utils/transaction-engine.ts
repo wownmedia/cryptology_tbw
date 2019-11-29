@@ -1,4 +1,4 @@
-import { Managers, Transactions } from "@arkecosystem/crypto";
+import {Managers, Transactions} from "@arkecosystem/crypto";
 import BigNumber from "bignumber.js";
 import { ARKTOSHI } from "../constants";
 import { Receiver } from "../interfaces";
@@ -24,8 +24,40 @@ export class TransactionEngine {
     }
   }
 
-  public async createMultiPayment(receivers): Promise<any> {
+  public async createMultiPayment(receivers: Receiver[], timestamp: number): Promise<any> {
     await this.setupNetwork();
+    const transactions = [];
+    const vendorField: string = `${this.config.delegate} - ${this.config.vendorField}`;
+
+    for (
+        let i = 0;
+        i < receivers.length;
+        i += this.config.transactionsPerMultitransfer
+    ) {
+      const chunk = receivers.slice(
+          i,
+          i + this.config.transactionsPerMultitransfer
+      );
+      this.nonce += 1;
+      let transaction = Transactions.BuilderFactory.multiPayment()
+          .vendorField(vendorField)
+          .fee(this.config.transferFee.toFixed(0))
+          .nonce(this.nonce.toString());
+      for(let receiver of chunk) {
+        transaction.addPayment(receiver.wallet, receiver.amount.toFixed(0));
+      }
+      if (timestamp) {
+        transaction.data.timestamp = timestamp;
+      }
+
+      transaction = transaction.sign(this.config.seed);
+
+      if (this.config.secondPassphrase !== null) {
+        transaction = transaction.secondSign(this.config.secondPassphrase);
+      }
+      transactions.push(transaction.getStruct());
+    }
+    return transactions;
   }
 
   public async createTransaction(
@@ -40,7 +72,6 @@ export class TransactionEngine {
       .recipientId(receiver.wallet)
       .vendorField(receiver.vendorField)
       .fee(this.config.transferFee.toFixed(0))
-      .version(2)
       .nonce(this.nonce.toString());
 
     // todo somehow it doesn't take it as 255 from the setConfig with ARK mainnet

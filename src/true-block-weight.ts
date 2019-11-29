@@ -19,7 +19,7 @@ export class TrueBlockWeight {
     const trueBlockWeightEngine = new TrueBlockWeightEngine();
     const payouts: Payouts = await trueBlockWeightEngine.generatePayouts();
     const transfers = await this.generateTransactions(payouts);
-    const adminTransactions = await this.generateAdminPayouts(
+    const adminTransactions: [] = await this.generateAdminPayouts(
       payouts.delegateProfit,
       payouts.timestamp
     );
@@ -91,11 +91,11 @@ export class TrueBlockWeight {
     }
   }
 
-  private async generateTransactions(payouts: Payouts) {
+  private async generateTransactions(payouts: Payouts): Promise<any> {
     let totalAmount: BigNumber = new BigNumber(0);
     let totalFees: BigNumber = new BigNumber(0);
 
-    const transactions = [];
+    const receivers: Receiver[] = [];
     for (const [address] of payouts.payouts) {
       const wallet: string = this.getRedirectAddress(address);
       logger.info(
@@ -105,20 +105,17 @@ export class TrueBlockWeight {
           .toFixed(8)}`
       );
       const amount: BigNumber = payouts.payouts.get(address);
-      const vendorField: string = `${this.config.delegate} - ${this.config.vendorField}`;
+
       const receiver: Receiver = {
         amount,
-        vendorField,
         wallet
       };
-      const transaction = await this.transactionEngine.createTransaction(
-        receiver,
-        payouts.timestamp
-      );
       totalAmount = totalAmount.plus(amount);
       totalFees = totalFees.plus(this.config.transferFee);
-      transactions.push(transaction);
+      receivers.push(receiver);
     }
+
+    const transactions = await this.transactionEngine.createMultiPayment(receivers, payouts.timestamp);
 
     return { totalAmount, totalFees, transactions };
   }
@@ -136,7 +133,7 @@ export class TrueBlockWeight {
   private async generateAdminPayouts(
     totalAmount: BigNumber,
     timestamp: number
-  ) {
+  ): Promise<any> {
     let payoutAmount: BigNumber = new BigNumber(0);
     const adminTransactions = [];
     for (const admin of this.config.admins) {

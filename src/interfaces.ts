@@ -116,5 +116,5 @@ export interface Receiver {
   wallet: string;
   percentage?: BigNumber;
   amount?: BigNumber;
-  vendorField: string;
+  vendorField?: string;
 }
