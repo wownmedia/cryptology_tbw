@@ -66,11 +66,13 @@ export class TransactionEngine {
   private async setupNetwork() {
     const networkConfig = await this.network.getNetworkConfig();
     if (networkConfig !== null) {
+      logger.info(`Network Config loaded: ${JSON.stringify(networkConfig)}`);
       Managers.configManager.setConfig(networkConfig);
     }
 
     if (this.nonce === null) {
       this.nonce = await this.network.getNonceForDelegate(this.config.delegate);
+      logger.info(`Retrieved nonce: ${this.nonce} for ${this.config.delegate}.`);
     }
   }
 }

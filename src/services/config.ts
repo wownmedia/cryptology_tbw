@@ -192,12 +192,12 @@ export class Config {
       : null;
 
     this.transactionsPerRequest = process.env.MAX_TRANSACTIONS_PER_REQUEST
-        ? parseInt(process.env.MAX_TRANSACTIONS_PER_REQUEST, 10)
-        : 40;
+      ? parseInt(process.env.MAX_TRANSACTIONS_PER_REQUEST, 10)
+      : 40;
 
     this.transactionsPerMultitransfer = process.env.MAX_TRANSFERS_PER_MULTI
-        ? parseInt(process.env.MAX_TRANSFERS_PER_MULTI, 10)
-        : 120;
+      ? parseInt(process.env.MAX_TRANSFERS_PER_MULTI, 10)
+      : 120;
   }
 
   public processSmallWalletBonus(smallWalletBonusConfig): SmallWalletBonus {
