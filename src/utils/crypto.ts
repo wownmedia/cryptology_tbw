@@ -1,9 +1,11 @@
-import { Identities, Interfaces, Transactions } from "@arkecosystem/crypto";
+import { Identities, Interfaces, Transactions, Managers } from "@arkecosystem/crypto";
 // const arkUtils = arkecosystem.utils;
 // const ECPair = arkecosystem.ECPair;
 // const ECSignature = arkecosystem.ECSignature;
 // const arkCrypto = arkecosystem.crypto;
 // const transactionBuilder = arkecosystem.transactionBuilder;
+// todo WTF figure out how to generalize this
+Managers.configManager.setHeight(4006000);
 
 export class Crypto {
   public static getAddress(passphrase, networkVersion) {
