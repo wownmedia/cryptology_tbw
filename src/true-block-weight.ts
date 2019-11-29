@@ -1,15 +1,17 @@
 import BigNumber from "bignumber.js";
 import { ARKTOSHI } from "./constants";
 import { Payouts, Receiver } from "./interfaces";
-import { Config, logger } from "./services";
+import { Config, logger, Network } from "./services";
 import { TransactionEngine, TrueBlockWeightEngine } from "./utils";
 
 export class TrueBlockWeight {
   private readonly config: Config;
+  private readonly network: Network;
   private transactionEngine: TransactionEngine;
 
   constructor() {
     this.config = new Config();
+    this.network = new Network(this.config.server, this.config.nodes);
     this.transactionEngine = new TransactionEngine();
   }
 
@@ -59,12 +61,34 @@ export class TrueBlockWeight {
 
   public async payout() {
     const transfers = await this.calculate();
-    // todo payout
+    logger.info("Payouts initiated");
+    for (
+      let i = 0;
+      i < transfers.transactions.length;
+      i += this.config.transactionsPerRequest
+    ) {
+      const transactionsChunk = transfers.transactions.slice(
+        i,
+        i + this.config.transactionsPerRequest
+      );
+
+      try {
+        const response = await this.network.broadcastTransactions(
+          transactionsChunk
+        );
+        logger.info(JSON.stringify(response));
+      } catch (error) {
+        logger.error(error.message);
+      }
+    }
   }
 
   public async check() {
     const transfers = await this.calculate();
-    // todo show transactions
+    logger.info("Transactions Generated");
+    for (const transaction of transfers.transactions) {
+      console.log(JSON.stringify(transaction));
+    }
   }
 
   private async generateTransactions(payouts: Payouts) {
