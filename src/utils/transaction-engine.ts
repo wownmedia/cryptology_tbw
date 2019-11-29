@@ -70,7 +70,6 @@ export class TransactionEngine {
       Managers.configManager.setConfig(networkConfig);
     }
 
-    // todo WTF figure out how to generalize this
     Managers.configManager.setHeight(this.config.startFromBlockHeight);
 
     if (this.nonce === null) {
