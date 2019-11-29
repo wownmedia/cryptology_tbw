@@ -14,7 +14,6 @@ export class Postgres {
   public async connect(): Promise<void> {
     try {
       await this.client.connect();
-      logger.info("Connection to the database established.");
     } catch (error) {
       logger.error(error);
     }
@@ -24,7 +23,6 @@ export class Postgres {
     try {
       await this.client.end();
       this.client = new Client(this.databaseConfig);
-      logger.info("Connection to the database terminated");
     } catch (error) {
       logger.error(error);
     }
