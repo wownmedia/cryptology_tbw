@@ -1,8 +1,8 @@
+import BigNumber from "bignumber.js";
+import { ARKTOSHI } from "./constants";
 import { Payouts, Receiver } from "./interfaces";
 import { Config, logger } from "./services";
 import { TransactionEngine, TrueBlockWeightEngine } from "./utils";
-import BigNumber from "bignumber.js";
-import { ARKTOSHI } from "./constants";
 
 export class TrueBlockWeight {
   private readonly config: Config;
@@ -114,8 +114,8 @@ export class TrueBlockWeight {
     timestamp: number
   ) {
     let payoutAmount: BigNumber = new BigNumber(0);
-    let adminTransactions = [];
-    for (let admin of this.config.admins) {
+    const adminTransactions = [];
+    for (const admin of this.config.admins) {
       const amount: BigNumber = totalAmount.times(admin.percentage);
       const vendorField = `${this.config.delegate} - ${admin.vendorField}`;
       const receiver: Receiver = {
@@ -136,7 +136,7 @@ export class TrueBlockWeight {
       return [];
     }
 
-    for (let item in adminTransactions) {
+    for (const item in adminTransactions) {
       const admin = adminTransactions[item].recipientId;
       const amount = new BigNumber(adminTransactions[item].amount);
       logger.info(

@@ -1,8 +1,8 @@
+import { Identities } from "@arkecosystem/crypto";
 import BigNumber from "bignumber.js";
 import dotenv from "dotenv";
 import { ARKTOSHI } from "../constants";
 import { Node, Receiver, SmallWalletBonus } from "../interfaces";
-import { Identities } from "@arkecosystem/crypto";
 dotenv.config();
 
 export class Config {
@@ -220,7 +220,7 @@ export class Config {
   public processAdmins(admins): Receiver[] {
     const receivers: Receiver[] = [];
     let totalPercentage = new BigNumber(0);
-    for (let wallet in admins) {
+    for (const wallet in admins) {
       if (admins.hasOwnProperty(wallet)) {
         const receiver: Receiver = {
           percentage: admins[wallet].hasOwnProperty("percentage")

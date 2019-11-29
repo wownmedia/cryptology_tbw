@@ -1,8 +1,8 @@
-import { Transactions, Managers } from "@arkecosystem/crypto";
+import { Managers, Transactions } from "@arkecosystem/crypto";
 import BigNumber from "bignumber.js";
-import { Config, logger, Network } from "../services";
 import {ARKTOSHI} from "../constants";
 import {Receiver} from "../interfaces";
+import { Config, logger, Network } from "../services";
 
 export class TransactionEngine {
     private readonly config: Config;
@@ -21,17 +21,6 @@ export class TransactionEngine {
         } catch (e) {
             logger.error(e.message);
             process.exit(1);
-        }
-    }
-
-    private async setupNetwork() {
-        const networkConfig = await this.network.getNetworkConfig();
-        if(networkConfig !== null) {
-            Managers.configManager.setConfig(networkConfig);
-        }
-
-        if(this.nonce === null) {
-            this.nonce = await this.network.getNonceForDelegate(this.config.delegate);
         }
     }
 
@@ -66,5 +55,16 @@ export class TransactionEngine {
         }
 
         return transaction.getStruct();
+    }
+
+    private async setupNetwork() {
+        const networkConfig = await this.network.getNetworkConfig();
+        if(networkConfig !== null) {
+            Managers.configManager.setConfig(networkConfig);
+        }
+
+        if(this.nonce === null) {
+            this.nonce = await this.network.getNonceForDelegate(this.config.delegate);
+        }
     }
 }
