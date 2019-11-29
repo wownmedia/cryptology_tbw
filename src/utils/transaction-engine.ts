@@ -25,14 +25,14 @@ export class TransactionEngine {
   }
 
   public async createMultiPayment(receivers): Promise<any> {
-    this.setupNetwork();
+    await this.setupNetwork();
   }
 
   public async createTransaction(
     receiver: Receiver,
     timestamp: number
   ): Promise<any> {
-    this.setupNetwork();
+    await this.setupNetwork();
     this.nonce += 1;
 
     let transaction = Transactions.BuilderFactory.transfer()
@@ -40,6 +40,7 @@ export class TransactionEngine {
       .recipientId(receiver.wallet)
       .vendorField(receiver.vendorField)
       .fee(this.config.transferFee.toFixed(0))
+      .version(2)
       .nonce(this.nonce.toString());
 
     // todo somehow it doesn't take it as 255 from the setConfig with ARK mainnet
@@ -71,7 +72,9 @@ export class TransactionEngine {
 
     if (this.nonce === null) {
       this.nonce = await this.network.getNonceForDelegate(this.config.delegate);
-      logger.info(`Retrieved nonce: ${this.nonce} for ${this.config.delegate}.`);
+      logger.info(
+        `Retrieved nonce: ${this.nonce} for ${this.config.delegate}.`
+      );
     }
   }
 }
