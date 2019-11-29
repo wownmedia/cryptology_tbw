@@ -66,7 +66,6 @@ export class TransactionEngine {
   private async setupNetwork() {
     const networkConfig = await this.network.getNetworkConfig();
     if (networkConfig !== null) {
-      logger.info(`Network Config loaded: ${JSON.stringify(networkConfig)}`);
       Managers.configManager.setConfig(networkConfig);
     }
 
