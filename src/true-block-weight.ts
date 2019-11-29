@@ -111,12 +111,11 @@ export class TrueBlockWeight {
         wallet
       };
       totalAmount = totalAmount.plus(amount);
-      totalFees = totalFees.plus(this.config.transferFee);
       receivers.push(receiver);
     }
 
     const transactions = await this.transactionEngine.createMultiPayment(receivers, payouts.timestamp);
-
+    totalFees = totalFees.plus(this.config.multiTransferFee.times(transactions.length));
     return { totalAmount, totalFees, transactions };
   }
 
