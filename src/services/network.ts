@@ -25,7 +25,7 @@ export class Network {
     try {
       const delegateWallet = await this.getDelegateAddress(delegate);
       const walletInfo = await this.getFromAPI(
-        `/api/node/wallets/${delegateWallet}`
+        `/api/wallets/${delegateWallet}`
       );
       const nonce: number = walletInfo.hasOwnProperty("data") && walletInfo.data.hasOwnProperty("nonce") ?
           parseInt(walletInfo.data.nonce, 10) : null;
