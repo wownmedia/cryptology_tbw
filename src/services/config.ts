@@ -10,6 +10,7 @@ export class Config {
   public readonly networkVersion: number;
   public readonly blockReward: BigNumber;
   public readonly transferFee: BigNumber;
+  public readonly multiTransferFee: BigNumber;
   public readonly voterShare: BigNumber;
   public readonly voterFeeShare: BigNumber;
   public readonly minimalPayoutValue: BigNumber;
@@ -67,10 +68,17 @@ export class Config {
     }
 
     this.transferFee = process.env.FEE
-      ? new BigNumber(process.env.FEE).times(ARKTOSHI)
-      : new BigNumber(0.1).times(ARKTOSHI);
+        ? new BigNumber(process.env.FEE).times(ARKTOSHI)
+        : new BigNumber(0.1).times(ARKTOSHI);
     if (this.transferFee.isNaN()) {
       throw new TypeError("Invalid FEE configuration");
+    }
+
+    this.multiTransferFee = process.env.MULTI_TRANSFER_FEE
+        ? new BigNumber(process.env.MULTI_TRANSFER_FEE).times(ARKTOSHI)
+        : new BigNumber(0.5).times(ARKTOSHI);
+    if (this.multiTransferFee.isNaN()) {
+      throw new TypeError("Invalid MULTI_TRANSFER_FEE configuration");
     }
 
     this.voterShare = process.env.PAYOUT

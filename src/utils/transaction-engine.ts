@@ -41,7 +41,7 @@ export class TransactionEngine {
       this.nonce += 1;
       let transaction = Transactions.BuilderFactory.multiPayment()
           .vendorField(vendorField)
-          .fee(this.config.transferFee.toFixed(0))
+          .fee(this.config.multiTransferFee.toFixed(0))
           .nonce(this.nonce.toString());
       for(let receiver of chunk) {
         transaction.addPayment(receiver.wallet, receiver.amount.toFixed(0));
