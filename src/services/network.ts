@@ -27,7 +27,10 @@ export class Network {
       const walletInfo = await this.getFromAPI(
         `/api/node/wallets/${delegateWallet}`
       );
-      return parseInt(walletInfo.data.nonce, 10);
+      const nonce: number = walletInfo.hasOwnProperty("data") && walletInfo.data.hasOwnProperty("nonce") ?
+          parseInt(walletInfo.data.nonce, 10) : null;
+      logger.info(`Nonce loaded for ${delegateWallet}: ${nonce}`);
+      return nonce;
     } catch (e) {
       return null;
     }
