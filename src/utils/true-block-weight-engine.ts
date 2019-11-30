@@ -416,11 +416,12 @@ export class TrueBlockWeightEngine {
 
       if (item.multiPayment !== null) {
         for (let transaction of item.multiPayment) {
-          logger.warn(`MultiPayment TX: ${JSON.stringify(transaction)} :: ${typeof transaction.amount}`);
-          //amount = amount.plus(transaction.amount);
+          const transactionAmount: BigNumber = new BigNumber(transaction.amount.toFixed());
+          amount = amount.plus(transactionAmount);
           if (votersBalancePerForgedBlock.has(transaction.recipientId)) {
+            logger.warn(`MultiPayment TX Receiver: ${JSON.stringify(transaction)}`);
             let balance: BigNumber = votersBalancePerForgedBlock.get(transaction.recipientId);
-           // balance = balance.minus(transaction.amount);
+            balance = balance.minus(transactionAmount);
             if (balance.lt(0)) {
               balance = new BigNumber(0);
             }
@@ -439,11 +440,10 @@ export class TrueBlockWeightEngine {
       }
       if (votersBalancePerForgedBlock.has(senderId)) {
         let balance: BigNumber = votersBalancePerForgedBlock.get(senderId);
-        if(item.multiPayment === null) {
-          balance = balance.plus(amount);
-        } else {
-
+        if(item.multiPayment !== null) {
+          logger.warn(`MultiPayment TX Sender: ${amount}`)
         }
+        balance = balance.plus(amount);
         balance = balance.plus(fee);
         votersBalancePerForgedBlock.set(senderId, balance);
       }
