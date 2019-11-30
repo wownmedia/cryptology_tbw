@@ -63,9 +63,15 @@ export interface ForgedBlock {
   fees: BigNumber;
 }
 
+export interface MultiPayment {
+  amount: string;
+  recipientId: string;
+}
+
 export interface DelegateTransaction {
   height: number;
   recipientId: string;
+  multiPayment: MultiPayment[];
   vendorField: string;
   timestamp: number;
 }

@@ -3,7 +3,7 @@ import BigNumber from "bignumber.js";
 import {
   DatabaseConfig,
   DelegateTransaction,
-  ForgedBlock,
+  ForgedBlock, MultiPayment,
   Transaction,
   Voter,
   VoterBlock,
@@ -93,7 +93,7 @@ export class DatabaseAPI {
         return {
           height: parseInt(transaction.height, 10),
           recipientId: parseInt(transaction.type, 10) === 0 ? transaction.recipient_id : null,
-          multiPayment: parseInt(transaction.type, 10) === 6 ? transaction.asset.payments : null,
+          multiPayment: parseInt(transaction.type, 10) === 6 ? this.processMultiPayments(transaction.asset.payments) : null,
           vendorField:
             data && data.hasVendorField() ? data.data.vendorField : null,
           timestamp: parseInt(transaction.timestamp, 10)
@@ -111,6 +111,13 @@ export class DatabaseAPI {
     return delegatePayoutTransactions;
   }
 
+  private processMultiPayments(payments: string): MultiPayment[] {
+    const parsedPayments: MultiPayment[] = JSON.parse(payments);
+    for(let x of parsedPayments) {
+      logger.warn(`MultiPayment: ${JSON.stringify(x)}`);
+    }
+    return parsedPayments
+  }
   /**
    * @dev  Get all the votes/unvotes for this delegate that are within range.
    */
