@@ -538,18 +538,6 @@ export class TrueBlockWeightEngine {
     return { payouts, feesPayouts };
   }
 
-  public sumVoterBalancesForBlock(
-    blockVoterBalances: Map<string, BigNumber>
-  ): BigNumber {
-    let totalVoterBalancesThisBlock = new BigNumber(0);
-
-    for (const [address] of blockVoterBalances) {
-      const balance = new BigNumber(blockVoterBalances.get(address));
-      totalVoterBalancesThisBlock = totalVoterBalancesThisBlock.plus(balance);
-    }
-    return totalVoterBalancesThisBlock;
-  }
-
   private filterPoolHoppers(validVoters: string[], currentVoters: string[]) {
     validVoters = validVoters.filter(address => {
       return currentVoters.indexOf(address) >= 0;
