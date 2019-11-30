@@ -94,7 +94,7 @@ export class DatabaseAPI {
         logger.warn(`TX: ${data.data.type} --  ${JSON.stringify(transaction)}`);
         return {
           height: parseInt(transaction.height, 10),
-          recipientId: data.data.type === 0 ? transaction.recipient_id : null,
+          recipientId: data.data.type === 0 ? data.data.recipientId : null,
           multiPayment:  data.data.type  === 6 ? data.data.asset.payments : null,
           vendorField:
             data && data.hasVendorField() ? data.data.vendorField : null,
