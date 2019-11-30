@@ -1,5 +1,4 @@
 import BigNumber from "bignumber.js";
-import { ARKTOSHI } from "../constants";
 import {
   DatabaseConfig,
   DelegateTransaction,
