@@ -171,10 +171,10 @@ export class DatabaseAPI {
                 return {
                     height: new BigNumber(transaction.height).integerValue(),
                     address: transaction.recipientId,
-                    vote: data ? data.data.asset.votes[0] : "",
+                    vote: data.data.asset.votes[0],
                 };
             })
-            .filter(transaction => {
+            .filter((transaction: VoterMutation) => {
                 return transaction.vote.includes(`${delegatePublicKey}`);
             });
     }
