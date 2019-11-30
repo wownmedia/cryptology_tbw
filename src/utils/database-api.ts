@@ -3,7 +3,7 @@ import { Result } from "pg";
 import BigNumber from "bignumber.js";
 import {
     Block,
-    DatabaseConfig,
+    DatabaseConfig, DataBaseTransaction,
     DelegateTransaction,
     ForgedBlock,
     Transaction,
@@ -114,13 +114,11 @@ export class DatabaseAPI {
         }
 
         const delegatePayoutTransactions: DelegateTransaction[] = result.rows
-            .map(transaction => {
+            .map((transaction: DataBaseTransaction) => {
                 const data: Interfaces.ITransaction = DatabaseAPI.deserializeTransaction(
                     transaction.serialized,
                     startBlockHeight
                 );
-
-                logger.info(`DATA: ${JSON.stringify(data)} || DATA.DATA ${JSON.stringify(data.data)}`);
                 return {
                     height: new BigNumber(transaction.height).integerValue(),
                     recipientId:
@@ -130,11 +128,11 @@ export class DatabaseAPI {
                     vendorField:
                         data && data.hasVendorField()
                             ? data.data.vendorField
-                            : null,
-                    timestamp: parseInt(transaction.timestamp, 10),
+                            : "",
+                    timestamp: new BigNumber(transaction.timestamp).integerValue(),
                 };
             })
-            .filter(transaction => {
+            .filter((transaction: DelegateTransaction) => {
                 return (
                     transaction.vendorField &&
                     transaction.vendorField.includes(payoutSignature)
@@ -236,7 +234,7 @@ export class DatabaseAPI {
             return [];
         }
 
-        const transactions: Transaction[] = result.rows.map(transaction => {
+        const transactions: Transaction[] = result.rows.map((transaction: DataBaseTransaction) => {
             const data = DatabaseAPI.deserializeTransaction(
                 transaction.serialized,
                 startBlockHeight
@@ -254,8 +252,8 @@ export class DatabaseAPI {
                 senderId,
                 senderPublicKey: data.data.senderPublicKey,
                 fee: data.data.fee,
-                height: parseInt(transaction.height, 10),
-                timestamp: parseInt(transaction.timestamp, 10),
+                height: new BigNumber(transaction.height).integerValue(),
+                timestamp: new BigNumber(transaction.timestamp).integerValue(),
             };
         });
 

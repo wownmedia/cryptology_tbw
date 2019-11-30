@@ -70,6 +70,12 @@ export interface Block {
     timestamp: number;
 }
 
+export interface DataBaseTransaction {
+    height: number;
+    serialized: string;
+    timestamp: number;
+}
+
 export interface DelegateTransaction {
     height: number;
     recipientId: string;
