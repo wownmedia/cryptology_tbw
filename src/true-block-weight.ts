@@ -1,9 +1,9 @@
+import { Interfaces } from "@arkecosystem/crypto";
 import BigNumber from "bignumber.js";
 import { ARKTOSHI, SEPARATOR } from "./constants";
 import { BroadcastResult, Payouts, Receiver, Transfers } from "./interfaces";
 import { Config, logger, Network } from "./services";
 import { TransactionEngine, TrueBlockWeightEngine } from "./utils";
-import { Interfaces } from "@arkecosystem/crypto";
 
 export class TrueBlockWeight {
     private readonly config: Config;
@@ -117,7 +117,7 @@ export class TrueBlockWeight {
             receivers.push(receiver);
         }
 
-        const transactions:Interfaces.ITransactionData[] = await this.transactionEngine.createMultiPayment(
+        const transactions: Interfaces.ITransactionData[] = await this.transactionEngine.createMultiPayment(
             receivers,
             payouts.timestamp
         );
@@ -142,7 +142,7 @@ export class TrueBlockWeight {
         timestamp: number
     ): Promise<Interfaces.ITransactionData[]> {
         let payoutAmount: BigNumber = new BigNumber(0);
-        const adminTransactions:Interfaces.ITransactionData[] = [];
+        const adminTransactions: Interfaces.ITransactionData[] = [];
         for (const admin of this.config.admins) {
             const amount: BigNumber = totalAmount.times(admin.percentage);
             const vendorField = `${this.config.delegate} - ${admin.vendorField}`;

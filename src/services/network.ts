@@ -1,8 +1,14 @@
+import { Interfaces } from "@arkecosystem/crypto";
 import axios from "axios";
 import BigNumber from "bignumber.js";
-import { APIResults, BroadcastResult, Node, Voter, VoterMutation } from "../interfaces";
+import {
+    APIResults,
+    BroadcastResult,
+    Node,
+    Voter,
+    VoterMutation,
+} from "../interfaces";
 import { logger } from "./";
-import { Interfaces } from "@arkecosystem/crypto";
 
 export class Network {
     private readonly server: string;
@@ -33,7 +39,9 @@ export class Network {
      */
     public async getNonceForDelegate(delegate: string): Promise<number> {
         try {
-            const delegateWallet: string = await this.getDelegateAddress(delegate);
+            const delegateWallet: string = await this.getDelegateAddress(
+                delegate
+            );
             const walletInfo: APIResults = await this.getFromAPI(
                 `/api/wallets/${delegateWallet}`
             );
@@ -190,7 +198,9 @@ export class Network {
      *
      * @param transactions
      */
-    public async broadcastTransactions(transactions: Interfaces.ITransactionData[]):Promise<BroadcastResult[]> {
+    public async broadcastTransactions(
+        transactions: Interfaces.ITransactionData[]
+    ): Promise<BroadcastResult[]> {
         const results: BroadcastResult[] = [];
         for (const item in this.nodes) {
             if (

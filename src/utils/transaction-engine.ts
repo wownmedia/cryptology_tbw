@@ -1,9 +1,9 @@
 import { Interfaces, Managers, Transactions } from "@arkecosystem/crypto";
+import { MultiPaymentBuilder } from "@arkecosystem/crypto/dist/transactions/builders/transactions/multi-payment";
+import { TransferBuilder } from "@arkecosystem/crypto/dist/transactions/builders/transactions/transfer";
 import BigNumber from "bignumber.js";
 import { Receiver } from "../interfaces";
 import { Config, logger, Network } from "../services";
-import { MultiPaymentBuilder } from "@arkecosystem/crypto/dist/transactions/builders/transactions/multi-payment";
-import { TransferBuilder } from "@arkecosystem/crypto/dist/transactions/builders/transactions/transfer";
 
 export class TransactionEngine {
     private readonly config: Config;
