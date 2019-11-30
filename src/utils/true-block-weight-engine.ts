@@ -378,11 +378,6 @@ export class TrueBlockWeightEngine {
             ) &&
             smallWallets.get(address) === true
           ) {
-            logger.warn(
-              `${address} removed from small voters (${new BigNumber(balance)
-                .div(ARKTOSHI)
-                .toNumber()})`
-            );
             smallWallets.set(address, false);
           }
         });
