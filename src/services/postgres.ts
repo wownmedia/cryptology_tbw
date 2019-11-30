@@ -3,41 +3,41 @@ import { DatabaseConfig } from "../interfaces";
 import { logger } from "./";
 
 export class Postgres {
-  private client: Client;
-  private databaseConfig: DatabaseConfig;
+    private client: Client;
+    private databaseConfig: DatabaseConfig;
 
-  constructor(databaseConfig: DatabaseConfig) {
-    this.databaseConfig = databaseConfig;
-    this.client = new Client(this.databaseConfig);
-  }
-
-  public async connect(): Promise<void> {
-    try {
-      await this.client.connect();
-    } catch (error) {
-      logger.error(error);
+    constructor(databaseConfig: DatabaseConfig) {
+        this.databaseConfig = databaseConfig;
+        this.client = new Client(this.databaseConfig);
     }
-  }
 
-  public async close(): Promise<void> {
-    try {
-      await this.client.end();
-      this.client = new Client(this.databaseConfig);
-    } catch (error) {
-      logger.error(error);
+    public async connect(): Promise<void> {
+        try {
+            await this.client.connect();
+        } catch (error) {
+            logger.error(error);
+        }
     }
-  }
 
-  public async query(query): Promise<any> {
-    try {
-      const result = await this.client.query(query);
-      if (typeof result !== "undefined") {
-        return result;
-      }
-      logger.error("Query did not return results");
-    } catch (error) {
-      logger.error(error);
+    public async close(): Promise<void> {
+        try {
+            await this.client.end();
+            this.client = new Client(this.databaseConfig);
+        } catch (error) {
+            logger.error(error);
+        }
     }
-    return null;
-  }
+
+    public async query(query): Promise<any> {
+        try {
+            const result = await this.client.query(query);
+            if (typeof result !== "undefined") {
+                return result;
+            }
+            logger.error("Query did not return results");
+        } catch (error) {
+            logger.error(error);
+        }
+        return null;
+    }
 }

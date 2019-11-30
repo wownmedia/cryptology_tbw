@@ -1,234 +1,240 @@
 import { Interfaces } from "@arkecosystem/crypto";
 import BigNumber from "bignumber.js";
 import {
-  DatabaseConfig,
-  DelegateTransaction,
-  ForgedBlock,
-  Transaction,
-  Voter,
-  VoterBlock,
-  VoterMutation
+    DatabaseConfig,
+    DelegateTransaction,
+    ForgedBlock,
+    Transaction,
+    Voter,
+    VoterBlock,
+    VoterMutation,
 } from "../interfaces";
 import { logger, Postgres } from "../services";
 import { Crypto } from "./crypto";
 import {
-  getDelegateTransactions,
-  getForgedBlocks,
-  getTransactions,
-  getVoterSinceHeight,
-  getVotingDelegates
+    getDelegateTransactions,
+    getForgedBlocks,
+    getTransactions,
+    getVoterSinceHeight,
+    getVotingDelegates,
 } from "./queries";
 
 export class DatabaseAPI {
-  private static deserializeTransaction(
-    transaction,
-    blockHeight: number
-  ): Interfaces.ITransaction {
-    try {
-      const buffer = Buffer.from(transaction, "hex");
-      const serialized: string = Buffer.from(buffer).toString("hex");
-      return Crypto.deserializeTransaction(serialized, blockHeight);
-    } catch (error) {
-      logger.error(`Deserializing transaction: ${error.message}`);
-      return null;
+    private static deserializeTransaction(
+        transaction,
+        blockHeight: number
+    ): Interfaces.ITransaction {
+        try {
+            const buffer = Buffer.from(transaction, "hex");
+            const serialized: string = Buffer.from(buffer).toString("hex");
+            return Crypto.deserializeTransaction(serialized, blockHeight);
+        } catch (error) {
+            logger.error(`Deserializing transaction: ${error.message}`);
+            return null;
+        }
     }
-  }
-  private readonly psql: Postgres;
+    private readonly psql: Postgres;
 
-  constructor(databaseConfig: DatabaseConfig) {
-    this.psql = new Postgres(databaseConfig);
-  }
-
-  public async getForgedBlocks(
-    delegatePublicKey: string,
-    startBlockHeight: number,
-    historyAmountBlocks: number
-  ): Promise<ForgedBlock[]> {
-    await this.psql.connect();
-    const getForgedBlocksQuery: string = getForgedBlocks(
-      delegatePublicKey,
-      startBlockHeight,
-      historyAmountBlocks
-    );
-    const result = await this.psql.query(getForgedBlocksQuery);
-    await this.psql.close();
-
-    if (result.rows.length === 0) {
-      return [];
+    constructor(databaseConfig: DatabaseConfig) {
+        this.psql = new Postgres(databaseConfig);
     }
 
-    const forgedBlocks: ForgedBlock[] = result.rows.map(block => {
-      return {
-        height: parseInt(block.height, 10),
-        fees: new BigNumber(block.totalFee),
-        timestamp: parseInt(block.timestamp, 10)
-      };
-    });
-
-    logger.info(
-      `Forged blocks retrieved: ${JSON.stringify(forgedBlocks.length)} (${
-        forgedBlocks[0].height
-      } - ${forgedBlocks[forgedBlocks.length - 1].height})`
-    );
-    return forgedBlocks;
-  }
-
-  public async getDelegatePayoutTransactions(
-    delegatePublicKey: string,
-    startBlockHeight: number,
-    payoutSignature: string
-  ): Promise<DelegateTransaction[]> {
-    const getDelegateTransactionsQuery = getDelegateTransactions(
-      startBlockHeight,
-      delegatePublicKey
-    );
-    await this.psql.connect();
-    const result = await this.psql.query(getDelegateTransactionsQuery);
-    await this.psql.close();
-
-    if (result.rows.length === 0) {
-      return [];
-    }
-
-    const delegatePayoutTransactions = result.rows
-      .map(transaction => {
-        const data = DatabaseAPI.deserializeTransaction(
-          transaction.serialized,
-          startBlockHeight
+    public async getForgedBlocks(
+        delegatePublicKey: string,
+        startBlockHeight: number,
+        historyAmountBlocks: number
+    ): Promise<ForgedBlock[]> {
+        await this.psql.connect();
+        const getForgedBlocksQuery: string = getForgedBlocks(
+            delegatePublicKey,
+            startBlockHeight,
+            historyAmountBlocks
         );
-        return {
-          height: parseInt(transaction.height, 10),
-          recipientId: data.data.type === 0 ? data.data.recipientId : null,
-          multiPayment: data.data.type === 6 ? data.data.asset.payments : null,
-          vendorField:
-            data && data.hasVendorField() ? data.data.vendorField : null,
-          timestamp: parseInt(transaction.timestamp, 10)
-        };
-      })
-      .filter(transaction => {
-        return (
-          transaction.vendorField &&
-          transaction.vendorField.includes(payoutSignature)
+        const result = await this.psql.query(getForgedBlocksQuery);
+        await this.psql.close();
+
+        if (result.rows.length === 0) {
+            return [];
+        }
+
+        const forgedBlocks: ForgedBlock[] = result.rows.map(block => {
+            return {
+                height: parseInt(block.height, 10),
+                fees: new BigNumber(block.totalFee),
+                timestamp: parseInt(block.timestamp, 10),
+            };
+        });
+
+        logger.info(
+            `Forged blocks retrieved: ${JSON.stringify(forgedBlocks.length)} (${
+                forgedBlocks[0].height
+            } - ${forgedBlocks[forgedBlocks.length - 1].height})`
         );
-      });
-    logger.info(
-      `Delegate Payout Transactions retrieved: ${delegatePayoutTransactions.length}`
-    );
-    return delegatePayoutTransactions;
-  }
-
-  /**
-   * @dev  Get all the votes/unvotes for this delegate that are within range.
-   */
-  public async getVoterMutations(
-    delegatePublicKey: string,
-    startBlockHeight: number
-  ): Promise<VoterMutation[]> {
-    const getVoterSinceHeightQuery = getVoterSinceHeight(startBlockHeight);
-    await this.psql.connect();
-    const result = await this.psql.query(getVoterSinceHeightQuery);
-    await this.psql.close();
-
-    if (result.rows.length === 0) {
-      return [];
+        return forgedBlocks;
     }
 
-    return result.rows
-      .map(transaction => {
-        const data = DatabaseAPI.deserializeTransaction(
-          transaction.serialized,
-          startBlockHeight
+    public async getDelegatePayoutTransactions(
+        delegatePublicKey: string,
+        startBlockHeight: number,
+        payoutSignature: string
+    ): Promise<DelegateTransaction[]> {
+        const getDelegateTransactionsQuery = getDelegateTransactions(
+            startBlockHeight,
+            delegatePublicKey
         );
-        return {
-          height: parseInt(transaction.height, 10),
-          address: transaction.recipient_id,
-          vote: data ? data.data.asset.votes[0] : ""
-        };
-      })
-      .filter(transaction => {
-        return transaction.vote.includes(`${delegatePublicKey}`);
-      });
-  }
+        await this.psql.connect();
+        const result = await this.psql.query(getDelegateTransactionsQuery);
+        await this.psql.close();
 
-  public async getVotingDelegateBlocks(
-    voterWallets: Voter[],
-    startBlockHeight: number
-  ): Promise<VoterBlock[]> {
-    const wallets: Map<string, string> = new Map(
-      voterWallets.map(wallet => [wallet.publicKey, wallet.address])
-    );
-    const getVotingDelegatesQuery: string = getVotingDelegates(
-      startBlockHeight
-    );
-    await this.psql.connect();
-    const result = await this.psql.query(getVotingDelegatesQuery);
-    await this.psql.close();
+        if (result.rows.length === 0) {
+            return [];
+        }
 
-    if (result.rows.length === 0) {
-      return [];
+        const delegatePayoutTransactions = result.rows
+            .map(transaction => {
+                const data = DatabaseAPI.deserializeTransaction(
+                    transaction.serialized,
+                    startBlockHeight
+                );
+                return {
+                    height: parseInt(transaction.height, 10),
+                    recipientId:
+                        data.data.type === 0 ? data.data.recipientId : null,
+                    multiPayment:
+                        data.data.type === 6 ? data.data.asset.payments : null,
+                    vendorField:
+                        data && data.hasVendorField()
+                            ? data.data.vendorField
+                            : null,
+                    timestamp: parseInt(transaction.timestamp, 10),
+                };
+            })
+            .filter(transaction => {
+                return (
+                    transaction.vendorField &&
+                    transaction.vendorField.includes(payoutSignature)
+                );
+            });
+        logger.info(
+            `Delegate Payout Transactions retrieved: ${delegatePayoutTransactions.length}`
+        );
+        return delegatePayoutTransactions;
     }
 
-    const votingDelegateBlocks: VoterBlock[] = [];
-    for (const item of result.rows) {
-      if (
-        item.hasOwnProperty("generator_public_key") &&
-        wallets.has(item.generator_public_key)
-      ) {
-        const address: string = wallets.get(item.generator_public_key);
-        const block: VoterBlock = {
-          address,
-          height: parseInt(item.height, 10),
-          fees: new BigNumber(item.total_fee)
-        };
-        votingDelegateBlocks.push(block);
-      }
+    /**
+     * @dev  Get all the votes/unvotes for this delegate that are within range.
+     */
+    public async getVoterMutations(
+        delegatePublicKey: string,
+        startBlockHeight: number
+    ): Promise<VoterMutation[]> {
+        const getVoterSinceHeightQuery = getVoterSinceHeight(startBlockHeight);
+        await this.psql.connect();
+        const result = await this.psql.query(getVoterSinceHeightQuery);
+        await this.psql.close();
+
+        if (result.rows.length === 0) {
+            return [];
+        }
+
+        return result.rows
+            .map(transaction => {
+                const data = DatabaseAPI.deserializeTransaction(
+                    transaction.serialized,
+                    startBlockHeight
+                );
+                return {
+                    height: parseInt(transaction.height, 10),
+                    address: transaction.recipient_id,
+                    vote: data ? data.data.asset.votes[0] : "",
+                };
+            })
+            .filter(transaction => {
+                return transaction.vote.includes(`${delegatePublicKey}`);
+            });
     }
 
-    return votingDelegateBlocks;
-  }
+    public async getVotingDelegateBlocks(
+        voterWallets: Voter[],
+        startBlockHeight: number
+    ): Promise<VoterBlock[]> {
+        const wallets: Map<string, string> = new Map(
+            voterWallets.map(wallet => [wallet.publicKey, wallet.address])
+        );
+        const getVotingDelegatesQuery: string = getVotingDelegates(
+            startBlockHeight
+        );
+        await this.psql.connect();
+        const result = await this.psql.query(getVotingDelegatesQuery);
+        await this.psql.close();
 
-  public async getTransactions(
-    voters: string[],
-    votersPublicKeys: string[],
-    startBlockHeight: number,
-    networkVersion: number
-  ): Promise<Transaction[]> {
-    const getTransactionsQuery = getTransactions(
-      voters,
-      votersPublicKeys,
-      startBlockHeight
-    );
+        if (result.rows.length === 0) {
+            return [];
+        }
 
-    await this.psql.connect();
-    const result = await this.psql.query(getTransactionsQuery);
-    await this.psql.close();
+        const votingDelegateBlocks: VoterBlock[] = [];
+        for (const item of result.rows) {
+            if (
+                item.hasOwnProperty("generator_public_key") &&
+                wallets.has(item.generator_public_key)
+            ) {
+                const address: string = wallets.get(item.generator_public_key);
+                const block: VoterBlock = {
+                    address,
+                    height: parseInt(item.height, 10),
+                    fees: new BigNumber(item.total_fee),
+                };
+                votingDelegateBlocks.push(block);
+            }
+        }
 
-    if (result.rows.length === 0) {
-      return [];
+        return votingDelegateBlocks;
     }
 
-    const transactions: Transaction[] = result.rows.map(transaction => {
-      const data = DatabaseAPI.deserializeTransaction(
-        transaction.serialized,
-        startBlockHeight
-      );
-      const senderId: string = Crypto.getAddressFromPublicKey(
-        data.data.senderPublicKey,
-        networkVersion
-      );
-      return {
-        amount: data.data.amount,
-        recipientId: data.data.type === 0 ? data.data.recipientId : null,
-        multiPayment: data.data.type === 6 ? data.data.asset.payments : null,
-        senderId,
-        senderPublicKey: data.data.senderPublicKey,
-        fee: data.data.fee,
-        height: parseInt(transaction.height, 10),
-        timestamp: parseInt(transaction.timestamp, 10)
-      };
-    });
+    public async getTransactions(
+        voters: string[],
+        votersPublicKeys: string[],
+        startBlockHeight: number,
+        networkVersion: number
+    ): Promise<Transaction[]> {
+        const getTransactionsQuery = getTransactions(
+            voters,
+            votersPublicKeys,
+            startBlockHeight
+        );
 
-    logger.info(`Transactions retrieved: ${transactions.length}`);
-    return transactions;
-  }
+        await this.psql.connect();
+        const result = await this.psql.query(getTransactionsQuery);
+        await this.psql.close();
+
+        if (result.rows.length === 0) {
+            return [];
+        }
+
+        const transactions: Transaction[] = result.rows.map(transaction => {
+            const data = DatabaseAPI.deserializeTransaction(
+                transaction.serialized,
+                startBlockHeight
+            );
+            const senderId: string = Crypto.getAddressFromPublicKey(
+                data.data.senderPublicKey,
+                networkVersion
+            );
+            return {
+                amount: data.data.amount,
+                recipientId:
+                    data.data.type === 0 ? data.data.recipientId : null,
+                multiPayment:
+                    data.data.type === 6 ? data.data.asset.payments : null,
+                senderId,
+                senderPublicKey: data.data.senderPublicKey,
+                fee: data.data.fee,
+                height: parseInt(transaction.height, 10),
+                timestamp: parseInt(transaction.timestamp, 10),
+            };
+        });
+
+        logger.info(`Transactions retrieved: ${transactions.length}`);
+        return transactions;
+    }
 }
