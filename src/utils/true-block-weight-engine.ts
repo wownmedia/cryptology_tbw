@@ -41,7 +41,6 @@ export class TrueBlockWeightEngine {
 
   constructor() {
     BigNumber.config({
-      DECIMAL_PLACES: 8,
       ROUNDING_MODE: BigNumber.ROUND_DOWN
     });
 
