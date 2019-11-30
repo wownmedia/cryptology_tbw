@@ -24,6 +24,11 @@ export interface APIResults {
     data?: any;
 }
 
+export interface BroadcastResult {
+    node: string;
+    response: any;
+}
+
 export interface Voter {
     address: string;
     publicKey: string;

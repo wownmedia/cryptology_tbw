@@ -1,6 +1,6 @@
 import axios from "axios";
 import BigNumber from "bignumber.js";
-import { APIResults, Node, Voter, VoterMutation } from "../interfaces";
+import { APIResults, BroadcastResult, Node, Voter, VoterMutation } from "../interfaces";
 import { logger } from "./";
 import { Interfaces } from "@arkecosystem/crypto";
 
@@ -18,7 +18,7 @@ export class Network {
      */
     public async getNetworkConfig(): Promise<Interfaces.INetworkConfig> {
         try {
-            const config = await this.getFromAPI(
+            const config: APIResults = await this.getFromAPI(
                 "/api/node/configuration/crypto"
             );
             return config.data;
@@ -27,10 +27,14 @@ export class Network {
         }
     }
 
+    /**
+     *
+     * @param delegate
+     */
     public async getNonceForDelegate(delegate: string): Promise<number> {
         try {
-            const delegateWallet = await this.getDelegateAddress(delegate);
-            const walletInfo = await this.getFromAPI(
+            const delegateWallet: string = await this.getDelegateAddress(delegate);
+            const walletInfo: APIResults = await this.getFromAPI(
                 `/api/wallets/${delegateWallet}`
             );
             const nonce: number =
@@ -45,6 +49,11 @@ export class Network {
         }
     }
 
+    /**
+     *
+     * @param endPoint
+     * @param params
+     */
     public async getFromAPI(
         endPoint: string,
         params = {}
@@ -77,7 +86,7 @@ export class Network {
      * @dev Retrieve the delegate public key from the API
      */
     public async getDelegatePublicKey(delegate: string): Promise<string> {
-        const getDelegateEndpoint = `/api/delegates/${delegate}/`;
+        const getDelegateEndpoint: string = `/api/delegates/${delegate}/`;
         const delegateAPIResults: APIResults = await this.getFromAPI(
             getDelegateEndpoint
         );
@@ -86,9 +95,6 @@ export class Network {
             delegateAPIResults.hasOwnProperty("data") &&
             delegateAPIResults.data.hasOwnProperty("publicKey")
         ) {
-            logger.info(
-                `${delegate}'s Public Key: ${delegateAPIResults.data.publicKey}`
-            );
             return delegateAPIResults.data.publicKey;
         }
 
@@ -96,7 +102,7 @@ export class Network {
     }
 
     public async getDelegateAddress(delegate: string): Promise<string> {
-        const getDelegateEndpoint = `/api/delegates/${delegate}/`;
+        const getDelegateEndpoint: string = `/api/delegates/${delegate}/`;
         const delegateAPIResults: APIResults = await this.getFromAPI(
             getDelegateEndpoint
         );
@@ -111,6 +117,10 @@ export class Network {
         throw new Error("Could not retrieve delegate data.");
     }
 
+    /**
+     *
+     * @param delegate
+     */
     public async getVoters(delegate: string): Promise<Voter[]> {
         const getVotersEndpoint: string = `/api/delegates/${delegate}/voters`;
         const params = {
@@ -151,9 +161,9 @@ export class Network {
                 item.hasOwnProperty("address") &&
                 currentVoters.indexOf(item.address) < 0
             ) {
-                const address = item.address;
-                const getWalletEndpoint = `/api/wallets/${address}/`;
-                const walletAPIResult = await this.getFromAPI(
+                const address: string = item.address;
+                const getWalletEndpoint: string = `/api/wallets/${address}/`;
+                const walletAPIResult: APIResults = await this.getFromAPI(
                     getWalletEndpoint
                 );
                 if (
@@ -176,32 +186,19 @@ export class Network {
         return allVotersFromAPI;
     }
 
-    // TODO transactions interface
-    public async postTransaction(transactions): Promise<void> {
-        logger.info(
-            `Sending ${transactions.length} transactions to ${this.server}.`
-        );
-        return axios.post(
-            `${this.server}/api/v2/transactions`,
-            {
-                transactions,
-            },
-            {
-                headers: { "Content-Type": "application/json" },
-            }
-        );
-    }
-
-    // TODO transactions interface
-    public async broadcastTransactions(transactions) {
-        const results = [];
+    /**
+     *
+     * @param transactions
+     */
+    public async broadcastTransactions(transactions: Interfaces.ITransactionData[]):Promise<BroadcastResult[]> {
+        const results: BroadcastResult[] = [];
         for (const item in this.nodes) {
             if (
                 typeof this.nodes[item] !== "undefined" &&
                 this.nodes[item].hasOwnProperty("host") &&
                 this.nodes[item].hasOwnProperty("port")
             ) {
-                const node = `http://${this.nodes[item].host}:${this.nodes[item].port}`;
+                const node: string = `http://${this.nodes[item].host}:${this.nodes[item].port}`;
                 logger.info(
                     `Sending ${transactions.length} transactions to ${node}.`
                 );

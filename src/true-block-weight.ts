@@ -1,6 +1,6 @@
 import BigNumber from "bignumber.js";
 import { ARKTOSHI, SEPARATOR } from "./constants";
-import { Payouts, Receiver, Transfers } from "./interfaces";
+import { BroadcastResult, Payouts, Receiver, Transfers } from "./interfaces";
 import { Config, logger, Network } from "./services";
 import { TransactionEngine, TrueBlockWeightEngine } from "./utils";
 import { Interfaces } from "@arkecosystem/crypto";
@@ -76,7 +76,7 @@ export class TrueBlockWeight {
             );
 
             try {
-                const response = await this.network.broadcastTransactions(
+                const response: BroadcastResult[] = await this.network.broadcastTransactions(
                     transactionsChunk
                 );
                 logger.info(JSON.stringify(response));
