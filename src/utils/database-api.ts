@@ -75,9 +75,9 @@ export class DatabaseAPI {
 
         const forgedBlocks: ForgedBlock[] = result.rows.map((block: Block) => {
             return {
-                height: block.height,
+                height: new BigNumber(block.height).integerValue(),
                 fees: new BigNumber(block.totalFee),
-                timestamp: block.timestamp,
+                timestamp: new BigNumber(block.timestamp).integerValue(),
             };
         });
 
