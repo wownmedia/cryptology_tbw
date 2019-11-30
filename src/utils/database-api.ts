@@ -91,11 +91,11 @@ export class DatabaseAPI {
     const delegatePayoutTransactions = result.rows
       .map(transaction => {
         const data = DatabaseAPI.deserializeTransaction(transaction.serialized, startBlockHeight);
-        logger.warn(`TX: ${data.data.type} --  ${JSON.stringify(data)}`);
+        logger.warn(`TX: ${data.data.type} --  ${JSON.stringify(transaction)}`);
         return {
           height: parseInt(transaction.height, 10),
           recipientId: data.data.type === 0 ? transaction.recipient_id : null,
-          multiPayment:  data.data.type  === 6 ? this.processMultiPayments(data.data.asset.payments) : null,
+          multiPayment:  data.data.type  === 6 ? data.data.asset.payments : null,
           vendorField:
             data && data.hasVendorField() ? data.data.vendorField : null,
           timestamp: parseInt(transaction.timestamp, 10)
@@ -113,12 +113,6 @@ export class DatabaseAPI {
     return delegatePayoutTransactions;
   }
 
-  private processMultiPayments(payments: IMultiPaymentItem[]): IMultiPaymentItem[] {
-    for(let x of payments) {
-      logger.warn(`MultiPayment: ${JSON.stringify(x)}`);
-    }
-    return payments
-  }
   /**
    * @dev  Get all the votes/unvotes for this delegate that are within range.
    */
