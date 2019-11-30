@@ -3,7 +3,7 @@ import BigNumber from "bignumber.js";
 import {
   DatabaseConfig,
   DelegateTransaction,
-  ForgedBlock, MultiPayment,
+  ForgedBlock,
   Transaction,
   Voter,
   VoterBlock,
