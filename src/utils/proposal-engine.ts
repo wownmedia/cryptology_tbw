@@ -115,7 +115,7 @@ export class ProposalEngine {
         .toFixed(8)} including fees ${totalFees.div(ARKTOSHI).toFixed(8)}`
     );
     logger.info(`Delegate Profits: ${delegateProfit.div(ARKTOSHI).toFixed(8)}`);
-    logger.info(`ACF Donation: ${acfDonation.div(ARKTOSHI).toFixed(8)}`);
+    logger.info(`License Fee: ${acfDonation.div(ARKTOSHI).toFixed(8)}`);
     logger.info(
       "=================================================================================="
     );
