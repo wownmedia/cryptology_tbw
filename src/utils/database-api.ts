@@ -97,7 +97,8 @@ export class DatabaseAPI {
         const data = DatabaseAPI.deserializeTransaction(transaction.serialized, startBlockHeight);
         return {
           height: parseInt(transaction.height, 10),
-          recipientId: transaction.recipient_id,
+          recipientId: parseInt(transaction.type, 10) === 0 ? transaction.recipient_id : null,
+          multiPayment: parseInt(transaction.type, 10) === 6 ? transaction.asset.payments : null,
           vendorField:
             data && data.hasVendorField() ? data.data.vendorField : null,
           timestamp: parseInt(transaction.timestamp, 10)
