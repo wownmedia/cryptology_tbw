@@ -1,5 +1,5 @@
+import { Interfaces } from "@arkecosystem/crypto";
 import BigNumber from "bignumber.js";
-import {Interfaces} from "@arkecosystem/crypto";
 
 export interface SmallWalletBonus {
   walletLimit: BigNumber;

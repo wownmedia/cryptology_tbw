@@ -1,4 +1,4 @@
-import {Managers, Transactions} from "@arkecosystem/crypto";
+import { Managers, Transactions } from "@arkecosystem/crypto";
 import BigNumber from "bignumber.js";
 import { ARKTOSHI } from "../constants";
 import { Receiver } from "../interfaces";
@@ -24,26 +24,29 @@ export class TransactionEngine {
     }
   }
 
-  public async createMultiPayment(receivers: Receiver[], timestamp: number): Promise<any> {
+  public async createMultiPayment(
+    receivers: Receiver[],
+    timestamp: number
+  ): Promise<any> {
     await this.setupNetwork();
     const transactions = [];
     const vendorField: string = `${this.config.delegate} - ${this.config.vendorField}`;
 
     for (
-        let i = 0;
-        i < receivers.length;
-        i += this.config.transactionsPerMultitransfer
+      let i = 0;
+      i < receivers.length;
+      i += this.config.transactionsPerMultitransfer
     ) {
       const chunk = receivers.slice(
-          i,
-          i + this.config.transactionsPerMultitransfer
+        i,
+        i + this.config.transactionsPerMultitransfer
       );
       this.nonce += 1;
       let transaction = Transactions.BuilderFactory.multiPayment()
-          .vendorField(vendorField)
-          .fee(this.config.multiTransferFee.toFixed(0))
-          .nonce(this.nonce.toString());
-      for(let receiver of chunk) {
+        .vendorField(vendorField)
+        .fee(this.config.multiTransferFee.toFixed(0))
+        .nonce(this.nonce.toString());
+      for (const receiver of chunk) {
         transaction.addPayment(receiver.wallet, receiver.amount.toFixed(0));
       }
       if (timestamp) {

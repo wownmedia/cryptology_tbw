@@ -20,7 +20,10 @@ import {
 } from "./queries";
 
 export class DatabaseAPI {
-  private static deserializeTransaction(transaction, blockHeight: number): Interfaces.ITransaction {
+  private static deserializeTransaction(
+    transaction,
+    blockHeight: number
+  ): Interfaces.ITransaction {
     try {
       const buffer = Buffer.from(transaction, "hex");
       const serialized: string = Buffer.from(buffer).toString("hex");
@@ -89,11 +92,14 @@ export class DatabaseAPI {
 
     const delegatePayoutTransactions = result.rows
       .map(transaction => {
-        const data = DatabaseAPI.deserializeTransaction(transaction.serialized, startBlockHeight);
+        const data = DatabaseAPI.deserializeTransaction(
+          transaction.serialized,
+          startBlockHeight
+        );
         return {
           height: parseInt(transaction.height, 10),
           recipientId: data.data.type === 0 ? data.data.recipientId : null,
-          multiPayment:  data.data.type  === 6 ? data.data.asset.payments : null,
+          multiPayment: data.data.type === 6 ? data.data.asset.payments : null,
           vendorField:
             data && data.hasVendorField() ? data.data.vendorField : null,
           timestamp: parseInt(transaction.timestamp, 10)
@@ -129,7 +135,10 @@ export class DatabaseAPI {
 
     return result.rows
       .map(transaction => {
-        const data = DatabaseAPI.deserializeTransaction(transaction.serialized, startBlockHeight);
+        const data = DatabaseAPI.deserializeTransaction(
+          transaction.serialized,
+          startBlockHeight
+        );
         return {
           height: parseInt(transaction.height, 10),
           address: transaction.recipient_id,
@@ -199,15 +208,18 @@ export class DatabaseAPI {
     }
 
     const transactions: Transaction[] = result.rows.map(transaction => {
-      const data = DatabaseAPI.deserializeTransaction(transaction.serialized, startBlockHeight);
+      const data = DatabaseAPI.deserializeTransaction(
+        transaction.serialized,
+        startBlockHeight
+      );
       const senderId: string = Crypto.getAddressFromPublicKey(
-          data.data.senderPublicKey,
-          networkVersion
+        data.data.senderPublicKey,
+        networkVersion
       );
       return {
         amount: data.data.amount,
         recipientId: data.data.type === 0 ? data.data.recipientId : null,
-        multiPayment:  data.data.type  === 6 ? data.data.asset.payments : null,
+        multiPayment: data.data.type === 6 ? data.data.asset.payments : null,
         senderId,
         senderPublicKey: data.data.senderPublicKey,
         fee: data.data.fee,

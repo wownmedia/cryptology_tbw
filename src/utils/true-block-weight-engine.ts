@@ -306,7 +306,7 @@ export class TrueBlockWeightEngine {
     const latestPayouts: Map<string, number> = new Map();
     const latestPayoutsTimeStamp: Map<string, number> = new Map();
 
-    for (let transaction of delegatePayoutTransactions) {
+    for (const transaction of delegatePayoutTransactions) {
       if (transaction.recipientId !== null) {
         const height: BigNumber = new BigNumber(
           latestPayouts.get(transaction.recipientId)
@@ -319,7 +319,7 @@ export class TrueBlockWeightEngine {
           );
         }
       } else {
-        for (let receiver of transaction.multiPayment) {
+        for (const receiver of transaction.multiPayment) {
           const height: BigNumber = new BigNumber(
             latestPayouts.get(receiver.recipientId)
           );
@@ -415,11 +415,15 @@ export class TrueBlockWeightEngine {
       const fee: BigNumber = item.fee;
 
       if (item.multiPayment !== null) {
-        for (let transaction of item.multiPayment) {
-          const transactionAmount: BigNumber = new BigNumber(transaction.amount.toFixed());
+        for (const transaction of item.multiPayment) {
+          const transactionAmount: BigNumber = new BigNumber(
+            transaction.amount.toFixed()
+          );
           amount = amount.plus(transactionAmount);
           if (votersBalancePerForgedBlock.has(transaction.recipientId)) {
-            let balance: BigNumber = votersBalancePerForgedBlock.get(transaction.recipientId);
+            let balance: BigNumber = votersBalancePerForgedBlock.get(
+              transaction.recipientId
+            );
             balance = balance.minus(transactionAmount);
             if (balance.lt(0)) {
               balance = new BigNumber(0);
