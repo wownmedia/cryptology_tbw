@@ -96,9 +96,12 @@ export class ProposalEngine {
     }
 
     // FairFees
-    const totalFees: BigNumber = this.config.transferFee.times(
-      payouts.size + this.getAdminFeeCount() + this.getACFFeeCount()
-    );
+    const multiPaymentFees: BigNumber = new BigNumber(payouts.size)
+      .div(this.config.transactionsPerMultitransfer)
+      .times(this.config.multiTransferFee);
+    const totalFees: BigNumber = this.config.transferFee
+      .times(this.getAdminFeeCount() + this.getACFFeeCount())
+      .plus(multiPaymentFees);
     for (const [address, balance] of payouts) {
       const fairFees: BigNumber = balance.div(totalPayout).times(totalFees);
       payouts.set(address, balance.minus(fairFees));
