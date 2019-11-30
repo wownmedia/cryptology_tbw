@@ -98,6 +98,7 @@ export class ProposalEngine {
     // FairFees
     const multiPaymentFees: BigNumber = new BigNumber(payouts.size)
       .div(this.config.transactionsPerMultitransfer)
+      .integerValue(BigNumber.ROUND_CEIL)
       .times(this.config.multiTransferFee);
     const totalFees: BigNumber = this.config.transferFee
       .times(this.getAdminFeeCount() + this.getACFFeeCount())
@@ -113,7 +114,7 @@ export class ProposalEngine {
     logger.info(
       `Next payout run: ${
         payouts.size
-      } payouts with total amount: ${totalPayout
+      } share payouts with total amount: ${totalPayout
         .div(ARKTOSHI)
         .toFixed(8)} including fees ${totalFees.div(ARKTOSHI).toFixed(8)}`
     );
