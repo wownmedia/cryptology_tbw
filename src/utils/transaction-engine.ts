@@ -1,7 +1,8 @@
-import { Managers, Transactions } from "@arkecosystem/crypto";
+import { Interfaces, Managers, Transactions } from "@arkecosystem/crypto";
 import BigNumber from "bignumber.js";
 import { Receiver } from "../interfaces";
 import { Config, logger, Network } from "../services";
+import { MultiPaymentBuilder } from "@arkecosystem/crypto/dist/transactions/builders/transactions/multi-payment";
 
 export class TransactionEngine {
     private readonly config: Config;
@@ -23,12 +24,17 @@ export class TransactionEngine {
         }
     }
 
+    /**
+     *
+     * @param receivers
+     * @param timestamp
+     */
     public async createMultiPayment(
         receivers: Receiver[],
         timestamp: number
-    ): Promise<any> {
+    ): Promise<Interfaces.ITransactionData[]> {
         await this.setupNetwork();
-        const transactions = [];
+        const transactions: Interfaces.ITransactionData[] = [];
         const vendorField: string = `${this.config.delegate} - ${this.config.vendorField}`;
 
         for (
@@ -36,12 +42,12 @@ export class TransactionEngine {
             i < receivers.length;
             i += this.config.transactionsPerMultitransfer
         ) {
-            const chunk = receivers.slice(
+            const chunk: Receiver[] = receivers.slice(
                 i,
                 i + this.config.transactionsPerMultitransfer
             );
             this.nonce += 1;
-            let transaction = Transactions.BuilderFactory.multiPayment()
+            let transaction: MultiPaymentBuilder = Transactions.BuilderFactory.multiPayment()
                 .vendorField(vendorField)
                 .fee(this.config.multiTransferFee.toFixed(0))
                 .nonce(this.nonce.toString());
@@ -102,8 +108,11 @@ export class TransactionEngine {
         return transaction.getStruct();
     }
 
+    /**
+     *
+     */
     private async setupNetwork() {
-        const networkConfig = await this.network.getNetworkConfig();
+        const networkConfig: Interfaces.INetworkConfig = await this.network.getNetworkConfig();
         if (networkConfig !== null) {
             Managers.configManager.setConfig(networkConfig);
         }

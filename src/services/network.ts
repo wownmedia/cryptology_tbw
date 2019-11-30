@@ -2,6 +2,7 @@ import axios from "axios";
 import BigNumber from "bignumber.js";
 import { APIResults, Node, Voter, VoterMutation } from "../interfaces";
 import { logger } from "./";
+import { Interfaces } from "@arkecosystem/crypto";
 
 export class Network {
     private readonly server: string;
@@ -12,7 +13,10 @@ export class Network {
         this.nodes = nodes;
     }
 
-    public async getNetworkConfig(): Promise<any> {
+    /**
+     *
+     */
+    public async getNetworkConfig(): Promise<Interfaces.INetworkConfig> {
         try {
             const config = await this.getFromAPI(
                 "/api/node/configuration/crypto"
