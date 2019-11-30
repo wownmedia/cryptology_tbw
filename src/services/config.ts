@@ -70,14 +70,14 @@ export class Config {
     this.transferFee = process.env.FEE
         ? new BigNumber(process.env.FEE).times(ARKTOSHI)
         : new BigNumber(0.1).times(ARKTOSHI);
-    if (this.transferFee.isNaN()) {
+    if (this.transferFee.isNaN() || this.transferFee.lte(0)) {
       throw new TypeError("Invalid FEE configuration");
     }
 
     this.multiTransferFee = process.env.MULTI_TRANSFER_FEE
         ? new BigNumber(process.env.MULTI_TRANSFER_FEE).times(ARKTOSHI)
         : new BigNumber(0.5).times(ARKTOSHI);
-    if (this.multiTransferFee.isNaN()) {
+    if (this.multiTransferFee.isNaN() || this.multiTransferFee.lte(0) ) {
       throw new TypeError("Invalid MULTI_TRANSFER_FEE configuration");
     }
 
