@@ -90,7 +90,7 @@ export class DatabaseAPI {
     const delegatePayoutTransactions = result.rows
       .map(transaction => {
         const data = DatabaseAPI.deserializeTransaction(transaction.serialized, startBlockHeight);
-        logger.warn(`TX: ${transaction.type} -- ${parseInt(transaction.type, 10)}`);
+        logger.warn(`TX: ${transaction.type} -- ${parseInt(transaction.type, 10)} -- ${JSON.stringify(data)}`);
         return {
           height: parseInt(transaction.height, 10),
           recipientId: parseInt(transaction.type, 10) === 0 ? transaction.recipient_id : null,
