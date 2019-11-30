@@ -41,7 +41,7 @@ export const getTransactions = (
                FROM transactions INNER JOIN blocks ON blocks."id" = transactions."block_id"  
                WHERE blocks."height" >= ${startBlockHeight} \
                AND ( transactions."sender_public_key" in (${votersPublicKeys}) \
-               OR transactions."recipient_id" in (${votersAddresses}))
+               OR transactions."recipient_id" in (${votersAddresses}) OR transactions."type" = 6) \
                ORDER BY blocks."height" DESC;`;
 };
 
