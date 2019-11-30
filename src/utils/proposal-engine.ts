@@ -9,7 +9,6 @@ export class ProposalEngine {
 
   constructor() {
     BigNumber.config({
-      DECIMAL_PLACES: 0,
       ROUNDING_MODE: BigNumber.ROUND_DOWN
     });
 
