@@ -112,6 +112,7 @@ export class DatabaseAPI {
   }
 
   private processMultiPayments(payments: string): MultiPayment[] {
+    logger.warn(`In procees: ${payments}`);
     const parsedPayments: MultiPayment[] = JSON.parse(payments);
     for(let x of parsedPayments) {
       logger.warn(`MultiPayment: ${JSON.stringify(x)}`);
