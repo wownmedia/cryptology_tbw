@@ -41,32 +41,27 @@ export class ProposalEngine {
           address,
           smallWallets
         );
-        const acfPayout: BigNumber = new BigNumber(balance).times(
+        const acfPayout: BigNumber = new BigNumber(balance.times(
           this.config.donationShare
-        );
-        const voterPayout: BigNumber = new BigNumber(balance).times(percentage);
+        ).integerValue(BigNumber.ROUND_CEIL));
+        const voterPayout: BigNumber = new BigNumber(balance.times(percentage).integerValue(BigNumber.ROUND_DOWN));
         const delegatePayout: BigNumber = new BigNumber(balance)
           .minus(acfPayout)
           .minus(voterPayout);
 
         delegateProfit = delegateProfit.plus(delegatePayout);
-        payouts.set(address, new BigNumber(voterPayout));
         acfDonation = acfDonation.plus(acfPayout);
 
-        const feePayout: BigNumber = feesPayouts.get(address)
-          ? new BigNumber(feesPayouts.get(address)).times(
-              this.config.voterFeeShare
-            )
-          : new BigNumber(0);
-        feesPayouts.set(address, feePayout);
-        delegateProfit = delegateProfit.plus(
-          feePayout.times(new BigNumber(1).minus(this.config.voterFeeShare))
-        );
+        let voterFeePayout: BigNumber = new BigNumber(0);
+        const feePayout: BigNumber = feesPayouts.get(address);
+        if(!feePayout.isNaN() && feePayout.gt(0)) {
+          voterFeePayout = new BigNumber(feePayout.times(
+              this.config.voterFeeShare).integerValue(BigNumber.ROUND_DOWN));
+          feesPayouts.set(address, voterFeePayout);
+          delegateProfit = delegateProfit.plus(feePayout.minus(voterFeePayout));
+        }
+        payouts.set(address, voterPayout.plus(voterFeePayout));
 
-        const payout: BigNumber = new BigNumber(
-          payouts.get(address).plus(feesPayouts.get(address))
-        );
-        payouts.set(address, payout);
         if (
           payouts.get(address).lt(this.config.minimalPayoutValue) ||
           payouts.get(address).eq(0)
