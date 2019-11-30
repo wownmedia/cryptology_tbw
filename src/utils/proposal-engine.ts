@@ -115,15 +115,15 @@ export class ProposalEngine {
       `Next payout run: ${
         payouts.size
       } share payouts with total amount: ${totalPayout
-        .plus(totalFees)
         .plus(delegateProfit)
         .plus(acfDonation)
         .div(ARKTOSHI)
-        .toFixed(8)} including fees ${totalFees.div(ARKTOSHI).toFixed(8)}`
+        .toFixed(8)}:`
     );
     logger.info(`Voter Share: ${totalPayout.div(ARKTOSHI).toFixed(8)}`);
     logger.info(`Delegate Profits: ${delegateProfit.div(ARKTOSHI).toFixed(8)}`);
     logger.info(`License Fee: ${acfDonation.div(ARKTOSHI).toFixed(8)}`);
+    logger.info(`Transaction Fees: ${totalFees.div(ARKTOSHI).toFixed(8)}`);
     logger.info(
       "=================================================================================="
     );
