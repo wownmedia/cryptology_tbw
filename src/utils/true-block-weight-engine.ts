@@ -310,7 +310,6 @@ export class TrueBlockWeightEngine {
       if(transaction.recipientId !== null) {
         const height: BigNumber = new BigNumber(latestPayouts.get(transaction.recipientId));
         if(height.isNaN() || height.lt(new BigNumber(transaction.height))) {
-          logger.warn(`New height for ${transaction.recipientId}: from ${height} to ${transaction.height}`);
           latestPayouts.set(transaction.recipientId, transaction.height);
           latestPayoutsTimeStamp.set(transaction.recipientId, transaction.timestamp);
         }
@@ -318,7 +317,6 @@ export class TrueBlockWeightEngine {
         for(let receiver of transaction.multiPayment) {
           const height: BigNumber = new BigNumber(latestPayouts.get(receiver.recipientId));
           if(height.isNaN() || height.lt(new BigNumber(transaction.height))) {
-            logger.warn(`New height for ${receiver.recipientId}: from ${height} to ${transaction.height}`);
             latestPayouts.set(receiver.recipientId, transaction.height);
             latestPayoutsTimeStamp.set(receiver.recipientId, transaction.timestamp);
           }
