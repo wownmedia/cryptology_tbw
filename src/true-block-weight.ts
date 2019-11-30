@@ -16,6 +16,9 @@ export class TrueBlockWeight {
         this.transactionEngine = new TransactionEngine();
     }
 
+    /**
+     *
+     */
     public async calculate(): Promise<Transfers> {
         const trueBlockWeightEngine: TrueBlockWeightEngine = new TrueBlockWeightEngine();
         const payouts: Payouts = await trueBlockWeightEngine.generatePayouts();
@@ -36,7 +39,7 @@ export class TrueBlockWeight {
             );
         }
 
-        const acfDonationTransaction = await this.generateDonationPayout(
+        const acfDonationTransaction: Interfaces.ITransactionData = await this.generateDonationPayout(
             payouts.acfDonation,
             payouts.timestamp
         );
@@ -62,15 +65,18 @@ export class TrueBlockWeight {
         return transfers;
     }
 
+    /**
+     *
+     */
     public async payout() {
         const transfers: Transfers = await this.calculate();
-        logger.info("Payouts initiated");
+        logger.info(`${transfers.transactions.length} Payouts initiated`);
         for (
             let i = 0;
             i < transfers.transactions.length;
             i += this.config.transactionsPerRequest
         ) {
-            const transactionsChunk = transfers.transactions.slice(
+            const transactionsChunk: Interfaces.ITransactionData[] = transfers.transactions.slice(
                 i,
                 i + this.config.transactionsPerRequest
             );
@@ -86,6 +92,9 @@ export class TrueBlockWeight {
         }
     }
 
+    /**
+     *
+     */
     public async check() {
         const transfers: Transfers = await this.calculate();
         logger.info("Transactions Generated");
@@ -94,6 +103,10 @@ export class TrueBlockWeight {
         }
     }
 
+    /**
+     *
+     * @param payouts
+     */
     private async generateTransactions(payouts: Payouts): Promise<Transfers> {
         let totalAmount: BigNumber = new BigNumber(0);
         let totalFees: BigNumber = new BigNumber(0);
@@ -127,6 +140,10 @@ export class TrueBlockWeight {
         return { totalAmount, totalFees, transactions };
     }
 
+    /**
+     *
+     * @param address
+     */
     private getRedirectAddress(address: string): string {
         if (this.config.walletRedirections.hasOwnProperty(address) === true) {
             logger.info(
@@ -137,6 +154,11 @@ export class TrueBlockWeight {
         return address;
     }
 
+    /**
+     *
+     * @param totalAmount
+     * @param timestamp
+     */
     private async generateAdminPayouts(
         totalAmount: BigNumber,
         timestamp: number
@@ -145,7 +167,7 @@ export class TrueBlockWeight {
         const adminTransactions: Interfaces.ITransactionData[] = [];
         for (const admin of this.config.admins) {
             const amount: BigNumber = totalAmount.times(admin.percentage);
-            const vendorField = `${this.config.delegate} - ${admin.vendorField}`;
+            const vendorField: string = `${this.config.delegate} - ${admin.vendorField}`;
             const receiver: Receiver = {
                 amount,
                 vendorField,
@@ -176,6 +198,11 @@ export class TrueBlockWeight {
         return adminTransactions;
     }
 
+    /**
+     *
+     * @param amount
+     * @param timestamp
+     */
     private async generateDonationPayout(
         amount: BigNumber,
         timestamp: number
@@ -186,7 +213,7 @@ export class TrueBlockWeight {
         logger.info(
             `License fee payout prepared: ${amount.div(ARKTOSHI).toFixed(8)}`
         );
-        const vendorField = `${this.config.delegate} - ${this.config.vendorFieldDonation}`;
+        const vendorField: string = `${this.config.delegate} - ${this.config.vendorFieldDonation}`;
         const receiver: Receiver = {
             amount,
             vendorField,
