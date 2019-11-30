@@ -1,4 +1,5 @@
 import BigNumber from "bignumber.js";
+import {IMultiPaymentItem} from "@arkecosystem/crypto/dist/interfaces";
 
 export interface SmallWalletBonus {
   walletLimit: BigNumber;
@@ -63,15 +64,10 @@ export interface ForgedBlock {
   fees: BigNumber;
 }
 
-export interface MultiPayment {
-  amount: string;
-  recipientId: string;
-}
-
 export interface DelegateTransaction {
   height: number;
   recipientId: string;
-  multiPayment: MultiPayment[];
+  multiPayment: IMultiPaymentItem[];
   vendorField: string;
   timestamp: number;
 }

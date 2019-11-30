@@ -18,6 +18,7 @@ import {
   getVoterSinceHeight,
   getVotingDelegates
 } from "./queries";
+import {IMultiPaymentItem} from "@arkecosystem/crypto/dist/interfaces";
 
 export class DatabaseAPI {
   private static deserializeTransaction(transaction, blockHeight: number): Interfaces.ITransaction {
@@ -90,11 +91,11 @@ export class DatabaseAPI {
     const delegatePayoutTransactions = result.rows
       .map(transaction => {
         const data = DatabaseAPI.deserializeTransaction(transaction.serialized, startBlockHeight);
-        logger.warn(`TX: ${transaction.type} -- ${parseInt(transaction.type, 10)} -- ${JSON.stringify(data)}`);
+        logger.warn(`TX: ${data.data.type} --  ${JSON.stringify(data)}`);
         return {
           height: parseInt(transaction.height, 10),
-          recipientId: parseInt(transaction.type, 10) === 0 ? transaction.recipient_id : null,
-          multiPayment: parseInt(transaction.type, 10) === 6 ? this.processMultiPayments(transaction.asset.payments) : null,
+          recipientId: data.data.type === 0 ? transaction.recipient_id : null,
+          multiPayment:  data.data.type  === 6 ? this.processMultiPayments(data.data.asset.payments) : null,
           vendorField:
             data && data.hasVendorField() ? data.data.vendorField : null,
           timestamp: parseInt(transaction.timestamp, 10)
@@ -112,13 +113,11 @@ export class DatabaseAPI {
     return delegatePayoutTransactions;
   }
 
-  private processMultiPayments(payments: string): MultiPayment[] {
-    logger.warn(`In procees: ${payments}`);
-    const parsedPayments: MultiPayment[] = JSON.parse(payments);
-    for(let x of parsedPayments) {
+  private processMultiPayments(payments: IMultiPaymentItem[]): IMultiPaymentItem[] {
+    for(let x of payments) {
       logger.warn(`MultiPayment: ${JSON.stringify(x)}`);
     }
-    return parsedPayments
+    return payments
   }
   /**
    * @dev  Get all the votes/unvotes for this delegate that are within range.
