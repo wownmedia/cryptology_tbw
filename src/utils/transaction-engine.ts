@@ -3,6 +3,7 @@ import BigNumber from "bignumber.js";
 import { Receiver } from "../interfaces";
 import { Config, logger, Network } from "../services";
 import { MultiPaymentBuilder } from "@arkecosystem/crypto/dist/transactions/builders/transactions/multi-payment";
+import { TransferBuilder } from "@arkecosystem/crypto/dist/transactions/builders/transactions/transfer";
 
 export class TransactionEngine {
     private readonly config: Config;
@@ -73,6 +74,11 @@ export class TransactionEngine {
         return transactions;
     }
 
+    /**
+     *
+     * @param receiver
+     * @param timestamp
+     */
     public async createTransaction(
         receiver: Receiver,
         timestamp: number
@@ -80,7 +86,7 @@ export class TransactionEngine {
         await this.setupNetwork();
         this.nonce += 1;
 
-        let transaction = Transactions.BuilderFactory.transfer()
+        let transaction: TransferBuilder = Transactions.BuilderFactory.transfer()
             .amount(receiver.amount.toFixed(0))
             .recipientId(receiver.wallet)
             .vendorField(receiver.vendorField)
