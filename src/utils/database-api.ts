@@ -162,7 +162,7 @@ export class DatabaseAPI {
             return [];
         }
 
-        return result.rows
+        const voterMutations: VoterMutation[] = result.rows
             .map((transaction: VoteTransaction) => {
                 const data: Interfaces.ITransaction = DatabaseAPI.deserializeTransaction(
                     transaction.serialized,
@@ -177,6 +177,11 @@ export class DatabaseAPI {
             .filter((transaction: VoterMutation) => {
                 return transaction.vote.includes(`${delegatePublicKey}`);
             });
+
+        logger.info(
+            `${voterMutations.length} Voter mutations retrieved.`
+        );
+        return voterMutations;
     }
 
     public async getVotingDelegateBlocks(
