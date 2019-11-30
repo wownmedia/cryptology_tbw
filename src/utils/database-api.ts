@@ -188,6 +188,11 @@ export class DatabaseAPI {
         return voterMutations;
     }
 
+    /**
+     *
+     * @param voterWallets
+     * @param startBlockHeight
+     */
     public async getVotingDelegateBlocks(
         voterWallets: Voter[],
         startBlockHeight: number
@@ -225,6 +230,13 @@ export class DatabaseAPI {
         return votingDelegateBlocks;
     }
 
+    /**
+     *
+     * @param voters
+     * @param votersPublicKeys
+     * @param startBlockHeight
+     * @param networkVersion
+     */
     public async getTransactions(
         voters: string[],
         votersPublicKeys: string[],
@@ -247,7 +259,7 @@ export class DatabaseAPI {
 
         const transactions: Transaction[] = result.rows.map(
             (transaction: DataBaseTransaction) => {
-                const data = DatabaseAPI.deserializeTransaction(
+                const data: Interfaces.ITransaction = DatabaseAPI.deserializeTransaction(
                     transaction.serialized,
                     startBlockHeight
                 );
@@ -272,7 +284,7 @@ export class DatabaseAPI {
             }
         );
 
-        logger.info(`Transactions retrieved: ${transactions.length}`);
+        logger.info(`${transactions.length} Transactions retrieved.`);
         return transactions;
     }
 }
