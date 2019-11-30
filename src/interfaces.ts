@@ -70,6 +70,12 @@ export interface Block {
     timestamp: number;
 }
 
+export interface VoteTransaction {
+    height: number;
+    serialized: string;
+    recipientId: string;
+}
+
 export interface DataBaseTransaction {
     height: number;
     serialized: string;

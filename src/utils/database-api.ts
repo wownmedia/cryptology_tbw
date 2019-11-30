@@ -9,7 +9,7 @@ import {
     Transaction,
     Voter,
     VoterBlock,
-    VoterMutation,
+    VoterMutation, VoteTransaction,
 } from "../interfaces";
 import { logger, Postgres } from "../services";
 import { Crypto } from "./crypto";
@@ -145,13 +145,15 @@ export class DatabaseAPI {
     }
 
     /**
-     * @dev  Get all the votes/unvotes for this delegate that are within range.
+     * Get all the votes/unvotes for this delegate that are within range.
+     * @param delegatePublicKey
+     * @param startBlockHeight
      */
     public async getVoterMutations(
         delegatePublicKey: string,
         startBlockHeight: number
     ): Promise<VoterMutation[]> {
-        const getVoterSinceHeightQuery = getVoterSinceHeight(startBlockHeight);
+        const getVoterSinceHeightQuery: string = getVoterSinceHeight(startBlockHeight);
         await this.psql.connect();
         const result: Result = await this.psql.query(getVoterSinceHeightQuery);
         await this.psql.close();
@@ -161,14 +163,14 @@ export class DatabaseAPI {
         }
 
         return result.rows
-            .map(transaction => {
-                const data = DatabaseAPI.deserializeTransaction(
+            .map((transaction: VoteTransaction) => {
+                const data: Interfaces.ITransaction = DatabaseAPI.deserializeTransaction(
                     transaction.serialized,
                     startBlockHeight
                 );
                 return {
-                    height: parseInt(transaction.height, 10),
-                    address: transaction.recipient_id,
+                    height: new BigNumber(transaction.height).integerValue(),
+                    address: transaction.recipientId,
                     vote: data ? data.data.asset.votes[0] : "",
                 };
             })
