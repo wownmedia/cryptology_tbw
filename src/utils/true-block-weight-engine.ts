@@ -416,7 +416,7 @@ export class TrueBlockWeightEngine {
 
       if (item.multiPayment !== null) {
         for (let transaction of item.multiPayment) {
-          logger.warn(`MultiPayment TX: ${JSON.stringify(transaction)}`);
+          logger.warn(`MultiPayment TX: ${JSON.stringify(transaction)} :: ${typeof transaction.amount}`);
           //amount = amount.plus(transaction.amount);
           if (votersBalancePerForgedBlock.has(transaction.recipientId)) {
             let balance: BigNumber = votersBalancePerForgedBlock.get(transaction.recipientId);
