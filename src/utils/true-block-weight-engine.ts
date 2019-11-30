@@ -306,19 +306,29 @@ export class TrueBlockWeightEngine {
     const latestPayouts: Map<string, number> = new Map();
     const latestPayoutsTimeStamp: Map<string, number> = new Map();
 
-    for ( let transaction of delegatePayoutTransactions ) {
-      if(transaction.recipientId !== null) {
-        const height: BigNumber = new BigNumber(latestPayouts.get(transaction.recipientId));
-        if(height.isNaN() || height.lt(new BigNumber(transaction.height))) {
+    for (let transaction of delegatePayoutTransactions) {
+      if (transaction.recipientId !== null) {
+        const height: BigNumber = new BigNumber(
+          latestPayouts.get(transaction.recipientId)
+        );
+        if (height.isNaN() || height.lt(new BigNumber(transaction.height))) {
           latestPayouts.set(transaction.recipientId, transaction.height);
-          latestPayoutsTimeStamp.set(transaction.recipientId, transaction.timestamp);
+          latestPayoutsTimeStamp.set(
+            transaction.recipientId,
+            transaction.timestamp
+          );
         }
       } else {
-        for(let receiver of transaction.multiPayment) {
-          const height: BigNumber = new BigNumber(latestPayouts.get(receiver.recipientId));
-          if(height.isNaN() || height.lt(new BigNumber(transaction.height))) {
+        for (let receiver of transaction.multiPayment) {
+          const height: BigNumber = new BigNumber(
+            latestPayouts.get(receiver.recipientId)
+          );
+          if (height.isNaN() || height.lt(new BigNumber(transaction.height))) {
             latestPayouts.set(receiver.recipientId, transaction.height);
-            latestPayoutsTimeStamp.set(receiver.recipientId, transaction.timestamp);
+            latestPayoutsTimeStamp.set(
+              receiver.recipientId,
+              transaction.timestamp
+            );
           }
         }
       }
@@ -401,21 +411,39 @@ export class TrueBlockWeightEngine {
     for (const item of calculatedTransactions) {
       const recipientId: string = item.recipientId;
       const senderId: string = item.senderId;
-      const amount: BigNumber = item.amount;
+      let amount: BigNumber = item.amount;
       const fee: BigNumber = item.fee;
 
-      if (votersBalancePerForgedBlock.has(recipientId)) {
-        let balance: BigNumber = votersBalancePerForgedBlock.get(recipientId);
-        balance = balance.minus(amount);
-        if (balance.lt(0)) {
-          balance = new BigNumber(0);
+      if (item.multiPayment !== null) {
+        for (let transaction of item.multiPayment) {
+          logger.warn(`MultiPayment TX: ${JSON.stringify(transaction)}`);
+          //amount = amount.plus(transaction.amount);
+          if (votersBalancePerForgedBlock.has(transaction.recipientId)) {
+            let balance: BigNumber = votersBalancePerForgedBlock.get(transaction.recipientId);
+           // balance = balance.minus(transaction.amount);
+            if (balance.lt(0)) {
+              balance = new BigNumber(0);
+            }
+            votersBalancePerForgedBlock.set(transaction.recipientId, balance);
+          }
         }
-        votersBalancePerForgedBlock.set(recipientId, balance);
+      } else {
+        if (votersBalancePerForgedBlock.has(recipientId)) {
+          let balance: BigNumber = votersBalancePerForgedBlock.get(recipientId);
+          balance = balance.minus(amount);
+          if (balance.lt(0)) {
+            balance = new BigNumber(0);
+          }
+          votersBalancePerForgedBlock.set(recipientId, balance);
+        }
       }
-
       if (votersBalancePerForgedBlock.has(senderId)) {
         let balance: BigNumber = votersBalancePerForgedBlock.get(senderId);
-        balance = balance.plus(amount);
+        if(item.multiPayment === null) {
+          balance = balance.plus(amount);
+        } else {
+
+        }
         balance = balance.plus(fee);
         votersBalancePerForgedBlock.set(senderId, balance);
       }

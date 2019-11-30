@@ -18,7 +18,6 @@ import {
   getVoterSinceHeight,
   getVotingDelegates
 } from "./queries";
-import {IMultiPaymentItem} from "@arkecosystem/crypto/dist/interfaces";
 
 export class DatabaseAPI {
   private static deserializeTransaction(transaction, blockHeight: number): Interfaces.ITransaction {
