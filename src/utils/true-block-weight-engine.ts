@@ -22,7 +22,7 @@ import { ProposalEngine } from "./proposal-engine";
 
 export class TrueBlockWeightEngine {
     /**
-     * @dev   Retrieve the CURRENT voters of the delegate
+     * @dev Retrieve the CURRENT voters of the delegate
      */
     private static async getCurrentVoters(
         currentVotersFromAPI: Voter[]

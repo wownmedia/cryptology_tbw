@@ -6,6 +6,11 @@ import {
 } from "@arkecosystem/crypto";
 
 export class Crypto {
+    /**
+     *
+     * @param publicKey
+     * @param networkVersion
+     */
     public static getAddressFromPublicKey(
         publicKey: string,
         networkVersion: number
@@ -13,6 +18,11 @@ export class Crypto {
         return Identities.Address.fromPublicKey(publicKey, networkVersion);
     }
 
+    /**
+     *
+     * @param serialized
+     * @param blockHeight
+     */
     public static deserializeTransaction(
         serialized: string,
         blockHeight: number
