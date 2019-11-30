@@ -37,8 +37,7 @@ export const getTransactions = (
     .map(publicKey => `'${publicKey}'`)
     .join(",");
 
-  return `SELECT transactions."serialized", transactions."amount", transactions."recipient_id", transactions."sender_public_key", \
-               transactions."fee", transactions."vendor_field", transactions."timestamp", blocks."height" \
+  return `SELECT transactions."serialized", transactions."timestamp", blocks."height" \
                FROM transactions INNER JOIN blocks ON blocks."id" = transactions."block_id"  
                WHERE blocks."height" >= ${startBlockHeight} \
                AND ( transactions."sender_public_key" in (${votersPublicKeys}) \
@@ -50,10 +49,9 @@ export const getDelegateTransactions = (
   startBlockHeight: number,
   delegatePublicKey: string
 ): string => {
-  return `SELECT DISTINCT ON (transactions."recipient_id") transactions."serialized", transactions."recipient_id", \
-               transactions."vendor_field", transactions."timestamp", blocks."height" \
+  return `SELECT transactions."serialized", transactions."timestamp", blocks."height" \
                FROM transactions INNER JOIN blocks ON blocks."id" = transactions."block_id"  
                WHERE blocks."height" >= ${startBlockHeight} \
                AND transactions."sender_public_key" = '${delegatePublicKey}' \
-               ORDER BY transactions."recipient_id", blocks."height" DESC;`;
+               ORDER BY blocks."height" DESC;`;
 };

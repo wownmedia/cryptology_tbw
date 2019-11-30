@@ -200,17 +200,19 @@ export class DatabaseAPI {
     }
 
     const transactions: Transaction[] = result.rows.map(transaction => {
+      const data = DatabaseAPI.deserializeTransaction(transaction.serialized, startBlockHeight);
       const senderId: string = Crypto.getAddressFromPublicKey(
-        transaction.sender_public_key,
-        networkVersion
+          data.data.senderPublicKey,
+          networkVersion
       );
       return {
-        amount: new BigNumber(transaction.amount),
-        height: parseInt(transaction.height, 10),
-        recipientId: transaction.recipient_id,
+        amount: data.data.amount,
+        recipientId: data.data.type === 0 ? data.data.recipientId : null,
+        multiPayment:  data.data.type  === 6 ? data.data.asset.payments : null,
         senderId,
-        sender_public_key: transaction.sender_public_key,
-        fee: new BigNumber(transaction.fee),
+        senderPublicKey: data.data.senderPublicKey,
+        fee: data.data.fee,
+        height: parseInt(transaction.height, 10),
         timestamp: parseInt(transaction.timestamp, 10)
       };
     });

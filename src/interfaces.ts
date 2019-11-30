@@ -77,7 +77,8 @@ export interface Transaction {
   height: number;
   recipientId: string;
   senderId: string;
-  sender_public_key: string;
+  senderPublicKey: string;
+  multiPayment: IMultiPaymentItem[];
   fee: BigNumber;
   timestamp: number;
 }
