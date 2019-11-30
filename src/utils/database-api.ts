@@ -22,7 +22,6 @@ import {
 } from "./queries";
 
 export class DatabaseAPI {
-
     /**
      * Convert to a Buffer and then deserialize a transaction
      * @param {string} transaction
@@ -82,13 +81,19 @@ export class DatabaseAPI {
         });
 
         logger.info(
-            `Forged blocks retrieved: ${JSON.stringify(forgedBlocks.length)} (${
-                forgedBlocks[0].height
-            } - ${forgedBlocks[forgedBlocks.length - 1].height})`
+            `${JSON.stringify(forgedBlocks.length)} Forged blocks retrieved: (${
+                forgedBlocks[forgedBlocks.length - 1].height
+            } - ${forgedBlocks[0].height})`
         );
         return forgedBlocks;
     }
 
+    /**
+     *
+     * @param delegatePublicKey
+     * @param startBlockHeight
+     * @param payoutSignature
+     */
     public async getDelegatePayoutTransactions(
         delegatePublicKey: string,
         startBlockHeight: number,
@@ -108,16 +113,18 @@ export class DatabaseAPI {
             return [];
         }
 
-        const delegatePayoutTransactions = result.rows
+        const delegatePayoutTransactions: DelegateTransaction[] = result.rows
             .map(transaction => {
-                const data = DatabaseAPI.deserializeTransaction(
+                const data: Interfaces.ITransaction = DatabaseAPI.deserializeTransaction(
                     transaction.serialized,
                     startBlockHeight
                 );
+
+                logger.info(`DATA: ${JSON.stringify(data)} || DATA.DATA ${JSON.stringify(data.data)}`);
                 return {
-                    height: parseInt(transaction.height, 10),
+                    height: new BigNumber(transaction.height).integerValue(),
                     recipientId:
-                        data.data.type === 0 ? data.data.recipientId : null,
+                         data.data.type === 0 ? data.data.recipientId : null,
                     multiPayment:
                         data.data.type === 6 ? data.data.asset.payments : null,
                     vendorField:
@@ -134,7 +141,7 @@ export class DatabaseAPI {
                 );
             });
         logger.info(
-            `Delegate Payout Transactions retrieved: ${delegatePayoutTransactions.length}`
+            `${delegatePayoutTransactions.length} Delegate Payout Transactions retrieved.`
         );
         return delegatePayoutTransactions;
     }
