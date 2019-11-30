@@ -1,6 +1,5 @@
 import { Managers, Transactions } from "@arkecosystem/crypto";
 import BigNumber from "bignumber.js";
-import { ARKTOSHI } from "../constants";
 import { Receiver } from "../interfaces";
 import { Config, logger, Network } from "../services";
 
@@ -108,9 +107,6 @@ export class TransactionEngine {
 
     if (this.nonce === null) {
       this.nonce = await this.network.getNonceForDelegate(this.config.delegate);
-      logger.info(
-        `Retrieved nonce: ${this.nonce} for ${this.config.delegate}.`
-      );
     }
   }
 }
