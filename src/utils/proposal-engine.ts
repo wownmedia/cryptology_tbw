@@ -1,5 +1,5 @@
 import BigNumber from "bignumber.js";
-import { ARKTOSHI } from "../constants";
+import { ARKTOSHI, SEPARATOR } from "../constants";
 import { Payouts } from "../interfaces";
 import { Config, logger } from "../services";
 
@@ -113,9 +113,7 @@ export class ProposalEngine {
             payouts.set(address, balance.minus(fairFees));
         }
 
-        logger.info(
-            "=================================================================================="
-        );
+        logger.info(SEPARATOR);
         logger.info(
             `Next payout run: ${
                 payouts.size
@@ -131,9 +129,7 @@ export class ProposalEngine {
         );
         logger.info(`License Fee: ${acfDonation.div(ARKTOSHI).toFixed(8)}`);
         logger.info(`Transaction Fees: ${totalFees.div(ARKTOSHI).toFixed(8)}`);
-        logger.info(
-            "=================================================================================="
-        );
+        logger.info(SEPARATOR);
 
         return { payouts, acfDonation, delegateProfit, timestamp: 0 };
     }

@@ -1,5 +1,5 @@
 import BigNumber from "bignumber.js";
-import { ARKTOSHI } from "./constants";
+import { ARKTOSHI, SEPARATOR } from "./constants";
 import { Payouts, Receiver } from "./interfaces";
 import { Config, logger, Network } from "./services";
 import { TransactionEngine, TrueBlockWeightEngine } from "./utils";
@@ -49,9 +49,7 @@ export class TrueBlockWeight {
             );
         }
 
-        logger.info(
-            "=================================================================================="
-        );
+        logger.info(SEPARATOR);
         logger.info(
             `Ready to Payout: ${transfers.totalAmount
                 .div(ARKTOSHI)
@@ -59,9 +57,7 @@ export class TrueBlockWeight {
                 .div(ARKTOSHI)
                 .toFixed(8)} fees.`
         );
-        logger.info(
-            "=================================================================================="
-        );
+        logger.info(SEPARATOR);
         return transfers;
     }
 
