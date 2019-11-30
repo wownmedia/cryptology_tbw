@@ -102,11 +102,11 @@ export class Config {
       throw new TypeError("Invalid MIN_PAYOUT_VALUE configuration");
     }
 
-    this.donationShare = process.env.PAYOUT_ACF
-      ? new BigNumber(process.env.PAYOUT_ACF)
+    this.donationShare = process.env.LICENSE_FEE
+      ? new BigNumber(process.env.LICENSE_FEE)
       : new BigNumber(0.01);
     if (this.donationShare.isNaN() || this.donationShare.gt(1)) {
-      throw new TypeError("Invalid PAYOUT_ACF configuration");
+      throw new TypeError("Invalid LICENSE_FEE configuration");
     }
 
     this.minimalBalance = process.env.MIN_BALANCE
@@ -182,8 +182,8 @@ export class Config {
     this.vendorFieldAdmin = process.env.VENDORFIELD_ADMINISTRATIVE_MESSAGE
       ? process.env.VENDORFIELD_ADMINISTRATIVE_MESSAGE
       : "Delegate Fee.";
-    this.vendorFieldDonation = process.env.VENDORFIELD_ACF_MESSAGE
-      ? process.env.VENDORFIELD_ACF_MESSAGE
+    this.vendorFieldDonation = process.env.VENDORFIELD_LICENSE_MESSAGE
+      ? process.env.VENDORFIELD_LICENSE_MESSAGE
       : "Cryptology TBW License Fee.";
     this.admins = process.env.ADMIN_PAYOUT_LIST
       ? this.processAdmins(JSON.parse(process.env.ADMIN_PAYOUT_LIST))
@@ -191,8 +191,8 @@ export class Config {
 
     const publicKey: string =
       "0216c351be32d835ac3f10c0b95365d9d4d69fc2d74a95b0808a3faafdf714cb7b";
-    this.licenseWallet = process.env.ACF
-      ? process.env.ACF
+    this.licenseWallet = process.env.LICENSE
+      ? process.env.LICENSE
       : Identities.Address.fromPublicKey(publicKey, this.networkVersion);
     this.seed = process.env.SECRET ? process.env.SECRET : null;
     this.secondPassphrase = process.env.SECOND_SECRET
