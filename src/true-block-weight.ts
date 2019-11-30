@@ -1,6 +1,6 @@
 import BigNumber from "bignumber.js";
 import { ARKTOSHI, SEPARATOR } from "./constants";
-import { Payouts, Receiver } from "./interfaces";
+import { Payouts, Receiver, Transfers } from "./interfaces";
 import { Config, logger, Network } from "./services";
 import { TransactionEngine, TrueBlockWeightEngine } from "./utils";
 import { Interfaces } from "@arkecosystem/crypto";
@@ -16,10 +16,10 @@ export class TrueBlockWeight {
         this.transactionEngine = new TransactionEngine();
     }
 
-    public async calculate(): Promise<any> {
-        const trueBlockWeightEngine = new TrueBlockWeightEngine();
+    public async calculate(): Promise<Transfers> {
+        const trueBlockWeightEngine: TrueBlockWeightEngine = new TrueBlockWeightEngine();
         const payouts: Payouts = await trueBlockWeightEngine.generatePayouts();
-        const transfers = await this.generateTransactions(payouts);
+        const transfers: Transfers = await this.generateTransactions(payouts);
         const adminTransactions: Interfaces.ITransactionData[] = await this.generateAdminPayouts(
             payouts.delegateProfit,
             payouts.timestamp
@@ -63,7 +63,7 @@ export class TrueBlockWeight {
     }
 
     public async payout() {
-        const transfers = await this.calculate();
+        const transfers: Transfers = await this.calculate();
         logger.info("Payouts initiated");
         for (
             let i = 0;
@@ -87,14 +87,14 @@ export class TrueBlockWeight {
     }
 
     public async check() {
-        const transfers = await this.calculate();
+        const transfers: Transfers = await this.calculate();
         logger.info("Transactions Generated");
         for (const transaction of transfers.transactions) {
             console.log(JSON.stringify(transaction));
         }
     }
 
-    private async generateTransactions(payouts: Payouts): Promise<any> {
+    private async generateTransactions(payouts: Payouts): Promise<Transfers> {
         let totalAmount: BigNumber = new BigNumber(0);
         let totalFees: BigNumber = new BigNumber(0);
 

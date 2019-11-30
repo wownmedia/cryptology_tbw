@@ -139,3 +139,9 @@ export interface Receiver {
     amount?: BigNumber;
     vendorField?: string;
 }
+
+export interface Transfers {
+    totalAmount: BigNumber;
+    totalFees: BigNumber;
+    transactions: Interfaces.ITransactionData[];
+}
