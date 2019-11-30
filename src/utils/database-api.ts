@@ -1,6 +1,6 @@
 import { Interfaces } from "@arkecosystem/crypto";
-import { Result } from "pg";
 import BigNumber from "bignumber.js";
+import { Result } from "pg";
 import {
     Block,
     DatabaseConfig,
