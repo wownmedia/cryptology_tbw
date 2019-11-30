@@ -3,13 +3,15 @@ import { Result } from "pg";
 import BigNumber from "bignumber.js";
 import {
     Block,
-    DatabaseConfig, DataBaseTransaction,
+    DatabaseConfig,
+    DataBaseTransaction,
     DelegateTransaction,
     ForgedBlock,
     Transaction,
     Voter,
     VoterBlock,
-    VoterMutation, VoteTransaction,
+    VoterMutation,
+    VoteTransaction,
 } from "../interfaces";
 import { logger, Postgres } from "../services";
 import { Crypto } from "./crypto";
@@ -122,14 +124,16 @@ export class DatabaseAPI {
                 return {
                     height: new BigNumber(transaction.height).integerValue(),
                     recipientId:
-                         data.data.type === 0 ? data.data.recipientId : null,
+                        data.data.type === 0 ? data.data.recipientId : null,
                     multiPayment:
                         data.data.type === 6 ? data.data.asset.payments : null,
                     vendorField:
                         data && data.hasVendorField()
                             ? data.data.vendorField
                             : "",
-                    timestamp: new BigNumber(transaction.timestamp).integerValue(),
+                    timestamp: new BigNumber(
+                        transaction.timestamp
+                    ).integerValue(),
                 };
             })
             .filter((transaction: DelegateTransaction) => {
@@ -153,7 +157,9 @@ export class DatabaseAPI {
         delegatePublicKey: string,
         startBlockHeight: number
     ): Promise<VoterMutation[]> {
-        const getVoterSinceHeightQuery: string = getVoterSinceHeight(startBlockHeight);
+        const getVoterSinceHeightQuery: string = getVoterSinceHeight(
+            startBlockHeight
+        );
         await this.psql.connect();
         const result: Result = await this.psql.query(getVoterSinceHeightQuery);
         await this.psql.close();
@@ -178,9 +184,7 @@ export class DatabaseAPI {
                 return transaction.vote.includes(`${delegatePublicKey}`);
             });
 
-        logger.info(
-            `${voterMutations.length} Voter mutations retrieved.`
-        );
+        logger.info(`${voterMutations.length} Voter mutations retrieved.`);
         return voterMutations;
     }
 
@@ -241,28 +245,32 @@ export class DatabaseAPI {
             return [];
         }
 
-        const transactions: Transaction[] = result.rows.map((transaction: DataBaseTransaction) => {
-            const data = DatabaseAPI.deserializeTransaction(
-                transaction.serialized,
-                startBlockHeight
-            );
-            const senderId: string = Crypto.getAddressFromPublicKey(
-                data.data.senderPublicKey,
-                networkVersion
-            );
-            return {
-                amount: data.data.amount,
-                recipientId:
-                    data.data.type === 0 ? data.data.recipientId : null,
-                multiPayment:
-                    data.data.type === 6 ? data.data.asset.payments : null,
-                senderId,
-                senderPublicKey: data.data.senderPublicKey,
-                fee: data.data.fee,
-                height: new BigNumber(transaction.height).integerValue(),
-                timestamp: new BigNumber(transaction.timestamp).integerValue(),
-            };
-        });
+        const transactions: Transaction[] = result.rows.map(
+            (transaction: DataBaseTransaction) => {
+                const data = DatabaseAPI.deserializeTransaction(
+                    transaction.serialized,
+                    startBlockHeight
+                );
+                const senderId: string = Crypto.getAddressFromPublicKey(
+                    data.data.senderPublicKey,
+                    networkVersion
+                );
+                return {
+                    amount: data.data.amount,
+                    recipientId:
+                        data.data.type === 0 ? data.data.recipientId : null,
+                    multiPayment:
+                        data.data.type === 6 ? data.data.asset.payments : null,
+                    senderId,
+                    senderPublicKey: data.data.senderPublicKey,
+                    fee: data.data.fee,
+                    height: new BigNumber(transaction.height).integerValue(),
+                    timestamp: new BigNumber(
+                        transaction.timestamp
+                    ).integerValue(),
+                };
+            }
+        );
 
         logger.info(`Transactions retrieved: ${transactions.length}`);
         return transactions;
