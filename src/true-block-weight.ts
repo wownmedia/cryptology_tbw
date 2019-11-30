@@ -176,7 +176,7 @@ export class TrueBlockWeight {
       return null;
     }
     logger.info(
-      `License fee Payout to prepared: ${amount.div(ARKTOSHI).toFixed(8)}`
+      `License fee payout prepared: ${amount.div(ARKTOSHI).toFixed(8)}`
     );
     const vendorField = `${this.config.delegate} - ${this.config.vendorFieldDonation}`;
     const receiver: Receiver = {
