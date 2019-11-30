@@ -303,18 +303,28 @@ export class TrueBlockWeightEngine {
   public findLatestPayouts(
     delegatePayoutTransactions: DelegateTransaction[]
   ): LatestPayouts {
-    const latestPayouts: Map<string, number> = new Map(
-      delegatePayoutTransactions.map(payoutTransaction => [
-        payoutTransaction.recipientId,
-        payoutTransaction.height
-      ])
-    );
-    const latestPayoutsTimeStamp: Map<string, number> = new Map(
-      delegatePayoutTransactions.map(payoutTransaction => [
-        payoutTransaction.recipientId,
-        payoutTransaction.timestamp
-      ])
-    );
+    const latestPayouts: Map<string, number> = new Map();
+    const latestPayoutsTimeStamp: Map<string, number> = new Map();
+
+    for ( let transaction of delegatePayoutTransactions ) {
+      if(transaction.recipientId !== null) {
+        const height: number = latestPayouts.get(transaction.recipientId);
+        if(!height || height < transaction.height) {
+          logger.warn(`New height for ${transaction.recipientId}: from ${height} to ${transaction.height}`);
+          latestPayouts.set(transaction.recipientId, transaction.height);
+          latestPayoutsTimeStamp.set(transaction.recipientId, transaction.timestamp);
+        }
+      } else {
+        for(let receiver of transaction.multiPayment) {
+          const height: number = latestPayouts.get(receiver.recipientId);
+          if(!height || height < transaction.height) {
+            logger.warn(`New height for ${receiver.recipientId}: from ${height} to ${transaction.height}`);
+            latestPayouts.set(receiver.recipientId, transaction.height);
+            latestPayoutsTimeStamp.set(receiver.recipientId, transaction.timestamp);
+          }
+        }
+      }
+    }
     return { latestPayouts, latestPayoutsTimeStamp };
   }
 
