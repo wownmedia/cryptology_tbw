@@ -87,11 +87,6 @@ export class DatabaseAPI {
       return [];
     }
 
-    for (let tx of result.rows) {
-      const data = DatabaseAPI.deserializeTransaction(tx.serialized, startBlockHeight);
-      logger.warn(`DELEGATE TRANSACTION: ${JSON.stringify(data)}`);
-    }
-
     const delegatePayoutTransactions = result.rows
       .map(transaction => {
         const data = DatabaseAPI.deserializeTransaction(transaction.serialized, startBlockHeight);
