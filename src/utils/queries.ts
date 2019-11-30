@@ -1,3 +1,9 @@
+/**
+ *
+ * @param publicKey
+ * @param startBlockHeight
+ * @param limit
+ */
 export const getForgedBlocks = (
     publicKey: string,
     startBlockHeight: number,
@@ -11,6 +17,10 @@ export const getForgedBlocks = (
           LIMIT ${limit};`;
 };
 
+/**
+ *
+ * @param startBlockHeight
+ */
 export const getVotingDelegates = (startBlockHeight: number): string => {
     return `SELECT blocks."generator_public_key", blocks."height", blocks."total_fee" \
           FROM blocks \
@@ -18,6 +28,10 @@ export const getVotingDelegates = (startBlockHeight: number): string => {
           ORDER BY blocks."height" ASC;`;
 };
 
+/**
+ *
+ * @param startBlockHeight
+ */
 export const getVoterSinceHeight = (startBlockHeight: number): string => {
     return `SELECT transactions."serialized", transactions."recipient_id", blocks."height" \
                FROM transactions INNER JOIN blocks ON blocks."id" = transactions."block_id"  
@@ -26,10 +40,15 @@ export const getVoterSinceHeight = (startBlockHeight: number): string => {
                ORDER BY blocks."height" ASC;`;
 };
 
-// TODO interfaces
+/**
+ *
+ * @param voters
+ * @param votersKeys
+ * @param startBlockHeight
+ */
 export const getTransactions = (
-    voters,
-    votersKeys,
+    voters: string[],
+    votersKeys: string[],
     startBlockHeight: number
 ): string => {
     const votersAddresses = voters.map(address => `'${address}'`).join(",");
@@ -45,6 +64,11 @@ export const getTransactions = (
                ORDER BY blocks."height" DESC;`;
 };
 
+/**
+ *
+ * @param startBlockHeight
+ * @param delegatePublicKey
+ */
 export const getDelegateTransactions = (
     startBlockHeight: number,
     delegatePublicKey: string

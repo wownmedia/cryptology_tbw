@@ -1,4 +1,4 @@
-import { Client } from "pg";
+import { Client, Result } from "pg";
 import { DatabaseConfig } from "../interfaces";
 import { logger } from "./";
 
@@ -28,13 +28,13 @@ export class Postgres {
         }
     }
 
-    public async query(query): Promise<any> {
+    public async query(query: string): Promise<Result> {
         try {
-            const result = await this.client.query(query);
+            const result: Result = await this.client.query(query);
             if (typeof result !== "undefined") {
                 return result;
             }
-            logger.error("Query did not return results");
+            logger.warn("Query did not return results");
         } catch (error) {
             logger.error(error);
         }

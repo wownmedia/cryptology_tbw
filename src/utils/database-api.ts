@@ -1,6 +1,8 @@
 import { Interfaces } from "@arkecosystem/crypto";
+import { Result } from "pg";
 import BigNumber from "bignumber.js";
 import {
+    Block,
     DatabaseConfig,
     DelegateTransaction,
     ForgedBlock,
@@ -20,25 +22,39 @@ import {
 } from "./queries";
 
 export class DatabaseAPI {
+
+    /**
+     * Convert to a Buffer and then deserialize a transaction
+     * @param {string} transaction
+     * @param {number} blockHeight
+     * @static
+     */
     private static deserializeTransaction(
-        transaction,
+        transaction: string,
         blockHeight: number
     ): Interfaces.ITransaction {
         try {
-            const buffer = Buffer.from(transaction, "hex");
+            const buffer: Buffer = Buffer.from(transaction, "hex");
             const serialized: string = Buffer.from(buffer).toString("hex");
             return Crypto.deserializeTransaction(serialized, blockHeight);
         } catch (error) {
-            logger.error(`Deserializing transaction: ${error.message}`);
+            logger.error(`Deserialize transaction: ${error.message}`);
             return null;
         }
     }
+
     private readonly psql: Postgres;
 
     constructor(databaseConfig: DatabaseConfig) {
         this.psql = new Postgres(databaseConfig);
     }
 
+    /**
+     *
+     * @param delegatePublicKey
+     * @param startBlockHeight
+     * @param historyAmountBlocks
+     */
     public async getForgedBlocks(
         delegatePublicKey: string,
         startBlockHeight: number,
@@ -50,18 +66,18 @@ export class DatabaseAPI {
             startBlockHeight,
             historyAmountBlocks
         );
-        const result = await this.psql.query(getForgedBlocksQuery);
+        const result: Result = await this.psql.query(getForgedBlocksQuery);
         await this.psql.close();
 
         if (result.rows.length === 0) {
             return [];
         }
 
-        const forgedBlocks: ForgedBlock[] = result.rows.map(block => {
+        const forgedBlocks: ForgedBlock[] = result.rows.map((block: Block) => {
             return {
-                height: parseInt(block.height, 10),
+                height: block.height,
                 fees: new BigNumber(block.totalFee),
-                timestamp: parseInt(block.timestamp, 10),
+                timestamp: block.timestamp,
             };
         });
 
@@ -83,7 +99,9 @@ export class DatabaseAPI {
             delegatePublicKey
         );
         await this.psql.connect();
-        const result = await this.psql.query(getDelegateTransactionsQuery);
+        const result: Result = await this.psql.query(
+            getDelegateTransactionsQuery
+        );
         await this.psql.close();
 
         if (result.rows.length === 0) {
@@ -130,7 +148,7 @@ export class DatabaseAPI {
     ): Promise<VoterMutation[]> {
         const getVoterSinceHeightQuery = getVoterSinceHeight(startBlockHeight);
         await this.psql.connect();
-        const result = await this.psql.query(getVoterSinceHeightQuery);
+        const result: Result = await this.psql.query(getVoterSinceHeightQuery);
         await this.psql.close();
 
         if (result.rows.length === 0) {
@@ -165,7 +183,7 @@ export class DatabaseAPI {
             startBlockHeight
         );
         await this.psql.connect();
-        const result = await this.psql.query(getVotingDelegatesQuery);
+        const result: Result = await this.psql.query(getVotingDelegatesQuery);
         await this.psql.close();
 
         if (result.rows.length === 0) {
@@ -204,7 +222,7 @@ export class DatabaseAPI {
         );
 
         await this.psql.connect();
-        const result = await this.psql.query(getTransactionsQuery);
+        const result: Result = await this.psql.query(getTransactionsQuery);
         await this.psql.close();
 
         if (result.rows.length === 0) {

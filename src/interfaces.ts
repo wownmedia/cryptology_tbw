@@ -64,6 +64,12 @@ export interface ForgedBlock {
     fees: BigNumber;
 }
 
+export interface Block {
+    height: number;
+    totalFee: number;
+    timestamp: number;
+}
+
 export interface DelegateTransaction {
     height: number;
     recipientId: string;
