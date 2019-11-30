@@ -308,7 +308,7 @@ export class TrueBlockWeightEngine {
 
     for ( let transaction of delegatePayoutTransactions ) {
       if(transaction.recipientId !== null) {
-        const height: number = latestPayouts.get(transaction.recipientId);
+        const height: BigNumber = new BigNumber(latestPayouts.get(transaction.recipientId));
         //if(!height || height < transaction.height) {
           logger.warn(`New height for ${transaction.recipientId}: from ${height} to ${transaction.height}`);
           latestPayouts.set(transaction.recipientId, transaction.height);
@@ -316,7 +316,7 @@ export class TrueBlockWeightEngine {
         //}
       } else {
         for(let receiver of transaction.multiPayment) {
-          const height: number = latestPayouts.get(receiver.recipientId);
+          const height: BigNumber = new BigNumber(latestPayouts.get(receiver.recipientId));
           //if(!height || height < transaction.height) {
             logger.warn(`New height for ${receiver.recipientId}: from ${height} to ${transaction.height}`);
             latestPayouts.set(receiver.recipientId, transaction.height);
