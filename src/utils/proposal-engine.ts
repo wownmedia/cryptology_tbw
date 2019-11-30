@@ -5,7 +5,6 @@ import { Config, logger } from "../services";
 
 export class ProposalEngine {
   private readonly config: Config;
-  private readonly minimalPayoutArktoshiValue: BigNumber;
 
   constructor() {
     BigNumber.config({
@@ -14,9 +13,6 @@ export class ProposalEngine {
 
     try {
       this.config = new Config();
-      this.minimalPayoutArktoshiValue = this.config.minimalPayoutValue.times(
-        ARKTOSHI
-      );
     } catch (e) {
       logger.error(e.message);
       process.exit(1);
@@ -72,12 +68,12 @@ export class ProposalEngine {
         );
         payouts.set(address, payout);
         if (
-          payouts.get(address).lt(this.minimalPayoutArktoshiValue) ||
+          payouts.get(address).lt(this.config.minimalPayoutValue) ||
           payouts.get(address).eq(0)
         ) {
           if (payouts.get(address).gt(0)) {
             logger.warn(
-              `Payout to ${address} pending (min. value ${this.minimalPayoutArktoshiValue
+              `Payout to ${address} pending (min. value ${this.config.minimalPayoutValue
                 .div(ARKTOSHI)
                 .toNumber()}): ${payouts
                 .get(address)

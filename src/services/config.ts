@@ -96,8 +96,8 @@ export class Config {
     }
 
     this.minimalPayoutValue = process.env.MIN_PAYOUT_VALUE
-      ? new BigNumber(process.env.MIN_PAYOUT_VALUE)
-      : new BigNumber(0.25);
+      ? new BigNumber(process.env.MIN_PAYOUT_VALUE).times(ARKTOSHI)
+      : new BigNumber(0.0025).times(ARKTOSHI);
     if (this.minimalPayoutValue.isNaN()) {
       throw new TypeError("Invalid MIN_PAYOUT_VALUE configuration");
     }
