@@ -3,6 +3,7 @@ import { ARKTOSHI, SEPARATOR } from "./constants";
 import { Payouts, Receiver } from "./interfaces";
 import { Config, logger, Network } from "./services";
 import { TransactionEngine, TrueBlockWeightEngine } from "./utils";
+import { Interfaces } from "@arkecosystem/crypto";
 
 export class TrueBlockWeight {
     private readonly config: Config;
@@ -19,7 +20,7 @@ export class TrueBlockWeight {
         const trueBlockWeightEngine = new TrueBlockWeightEngine();
         const payouts: Payouts = await trueBlockWeightEngine.generatePayouts();
         const transfers = await this.generateTransactions(payouts);
-        const adminTransactions: [] = await this.generateAdminPayouts(
+        const adminTransactions: Interfaces.ITransactionData[] = await this.generateAdminPayouts(
             payouts.delegateProfit,
             payouts.timestamp
         );
@@ -116,7 +117,7 @@ export class TrueBlockWeight {
             receivers.push(receiver);
         }
 
-        const transactions = await this.transactionEngine.createMultiPayment(
+        const transactions:Interfaces.ITransactionData[] = await this.transactionEngine.createMultiPayment(
             receivers,
             payouts.timestamp
         );
@@ -139,9 +140,9 @@ export class TrueBlockWeight {
     private async generateAdminPayouts(
         totalAmount: BigNumber,
         timestamp: number
-    ): Promise<any> {
+    ): Promise<Interfaces.ITransactionData[]> {
         let payoutAmount: BigNumber = new BigNumber(0);
-        const adminTransactions = [];
+        const adminTransactions:Interfaces.ITransactionData[] = [];
         for (const admin of this.config.admins) {
             const amount: BigNumber = totalAmount.times(admin.percentage);
             const vendorField = `${this.config.delegate} - ${admin.vendorField}`;
@@ -150,7 +151,7 @@ export class TrueBlockWeight {
                 vendorField,
                 wallet: admin.wallet,
             };
-            const transaction = await this.transactionEngine.createTransaction(
+            const transaction: Interfaces.ITransactionData = await this.transactionEngine.createTransaction(
                 receiver,
                 timestamp
             );
@@ -164,8 +165,8 @@ export class TrueBlockWeight {
         }
 
         for (const item of adminTransactions) {
-            const admin = item.recipientId;
-            const amount = new BigNumber(item.amount);
+            const admin: string = item.recipientId;
+            const amount: BigNumber = new BigNumber(item.amount.toString());
             logger.info(
                 `Administrative Payout to ${admin} prepared: ${amount
                     .div(ARKTOSHI)
@@ -178,7 +179,7 @@ export class TrueBlockWeight {
     private async generateDonationPayout(
         amount: BigNumber,
         timestamp: number
-    ): Promise<any> {
+    ): Promise<Interfaces.ITransactionData> {
         if (amount.isNaN() || amount.lte(0)) {
             return null;
         }

@@ -76,7 +76,7 @@ export class TransactionEngine {
     public async createTransaction(
         receiver: Receiver,
         timestamp: number
-    ): Promise<any> {
+    ): Promise<Interfaces.ITransactionData> {
         await this.setupNetwork();
         this.nonce += 1;
 
