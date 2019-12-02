@@ -3,7 +3,7 @@
     "version": "2.6.0",
     "private": true,
     "description": "Cryptology True Block Weight",
-    "license": "MIT",
+    "license": "CC BY-ND 4.0",
     "author": "Cryptology",
     "files": [
         "dist",
