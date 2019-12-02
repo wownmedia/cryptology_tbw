@@ -168,6 +168,8 @@ export class DatabaseAPI {
             return [];
         }
 
+        logger.warn(`Voter Mutations: ${JSON.stringify(result.rows)}`);
+
         const voterMutations: VoterMutation[] = result.rows
             .map((transaction: VoteTransaction) => {
                 const data: Interfaces.ITransaction = DatabaseAPI.deserializeTransaction(
