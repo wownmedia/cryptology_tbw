@@ -176,7 +176,6 @@ export class DatabaseAPI {
                     transaction.serialized,
                     startBlockHeight
                 );
-                logger.warn(`Voter Mutations: ${JSON.stringify(data)}`);
                 const address: string = Crypto.getAddressFromPublicKey(data.data.senderPublicKey, networkVersion);
                 return {
                     height: new BigNumber(transaction.height).integerValue(),
