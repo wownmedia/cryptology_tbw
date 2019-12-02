@@ -240,6 +240,6 @@ export class ProposalEngine {
         if (this.config.donationShare.gt(0)) {
             return 1;
         }
-        return 0.01;
+        return 0;
     }
 }
