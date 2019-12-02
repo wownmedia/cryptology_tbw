@@ -240,6 +240,11 @@ export class Config {
         let totalPercentage = new BigNumber(0);
         for (const wallet in admins) {
             if (admins.hasOwnProperty(wallet)) {
+                if (!Identities.Address.validate(wallet, this.networkVersion)) {
+                    throw new Error(
+                        `Admin ${wallet} is not a valid address for this blockchain.`
+                    );
+                }
                 const receiver: Receiver = {
                     percentage: admins[wallet].hasOwnProperty("percentage")
                         ? new BigNumber(admins[wallet].percentage)
