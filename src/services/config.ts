@@ -241,7 +241,7 @@ export class Config {
         for (const wallet in admins) {
             if (admins.hasOwnProperty(wallet)) {
                 if (!Identities.Address.validate(wallet, this.networkVersion)) {
-                    throw new Error(
+                    throw new TypeError(
                         `Admin ${wallet} is not a valid address for this blockchain.`
                     );
                 }

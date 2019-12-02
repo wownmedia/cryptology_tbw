@@ -19,6 +19,14 @@ export class ProposalEngine {
         }
     }
 
+    /**
+     *
+     * @param currentBlock
+     * @param latestPayouts
+     * @param smallWallets
+     * @param payouts
+     * @param feesPayouts
+     */
     public applyProposal(
         currentBlock: number,
         latestPayouts: Map<string, number>,
@@ -31,7 +39,6 @@ export class ProposalEngine {
         let acfDonation: BigNumber = new BigNumber(0);
 
         for (const [address, balance] of payouts) {
-            // TODO: OPTIMIZE THIS
             if (
                 this.isFrequencyMinimumReached(
                     address,
@@ -133,17 +140,19 @@ export class ProposalEngine {
         return { payouts, acfDonation, delegateProfit, timestamp: 0 };
     }
 
-    /*
-        Returns true if no custom frequency is set, the address hasn't yet received a disbursement,
-        or the current block has now passed the custom minimum threshold. Returns false otherwise.
-      */
+    /**
+     *
+     * @param address
+     * @param currentBlock
+     * @param latestPayouts
+     */
     public isFrequencyMinimumReached(
         address: string,
         currentBlock: number,
-        latestPayouts
+        latestPayouts: Map<string, number>
     ): boolean {
         const frequency: number = this.getFrequencyAddress(address);
-        const lastPayoutHeight = latestPayouts.get(address);
+        const lastPayoutHeight: number = latestPayouts.get(address);
 
         if (!lastPayoutHeight || !frequency) {
             return true;
@@ -160,6 +169,10 @@ export class ProposalEngine {
         return false;
     }
 
+    /**
+     *
+     * @param address
+     */
     public getFrequencyAddress(address: string): number {
         if (
             this.config.customPayoutFrequencies.hasOwnProperty(address) ===
@@ -171,6 +184,11 @@ export class ProposalEngine {
         return 0;
     }
 
+    /**
+     *
+     * @param address
+     * @param smallWallets
+     */
     public getSharePercentage(address: string, smallWallets): BigNumber {
         if (this.config.customShares.hasOwnProperty(address) === true) {
             logger.info(
@@ -205,6 +223,9 @@ export class ProposalEngine {
         return this.config.voterShare;
     }
 
+    /**
+     *
+     */
     public getAdminFeeCount(): number {
         const ADMIN_PAYOUT_LIST = process.env.ADMIN_PAYOUT_LIST
             ? JSON.parse(process.env.ADMIN_PAYOUT_LIST)
@@ -212,10 +233,13 @@ export class ProposalEngine {
         return Object.keys(ADMIN_PAYOUT_LIST).length;
     }
 
+    /**
+     *
+     */
     public getACFFeeCount(): number {
         if (this.config.donationShare.gt(0)) {
             return 1;
         }
-        return 0;
+        return 0.01;
     }
 }
