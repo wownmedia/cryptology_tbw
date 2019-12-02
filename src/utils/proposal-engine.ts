@@ -19,11 +19,10 @@ export class ProposalEngine {
         }
     }
 
-    // TODO typecasting
     public applyProposal(
-        currentBlock,
-        latestPayouts,
-        smallWallets,
+        currentBlock: number,
+        latestPayouts: Map<string, number>,
+        smallWallets: Map<string, boolean>,
         payouts: Map<string, BigNumber>,
         feesPayouts: Map<string, BigNumber>
     ): Payouts {
