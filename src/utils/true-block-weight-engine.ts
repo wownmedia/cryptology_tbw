@@ -87,8 +87,14 @@ export class TrueBlockWeightEngine {
                 this.payoutSignature
             );
 
-            const voters: Voters = await this.getVoters(delegatePublicKey, forgedBlocks);
-            const voterBalances: VoterBalances = await this.getVoterBalances(voters.voters, voters.voterWallets);
+            const voters: Voters = await this.getVoters(
+                delegatePublicKey,
+                forgedBlocks
+            );
+            const voterBalances: VoterBalances = await this.getVoterBalances(
+                voters.voters,
+                voters.voterWallets
+            );
             const votingDelegateBlocks: VoterBlock[] = await this.databaseAPI.getVotingDelegateBlocks(
                 voters.voterWallets,
                 this.startBlockHeight
@@ -101,7 +107,9 @@ export class TrueBlockWeightEngine {
                 this.config.networkVersion
             );
 
-            const previousPayouts: LatestPayouts = this.findLatestPayouts(delegatePayoutTransactions);
+            const previousPayouts: LatestPayouts = this.findLatestPayouts(
+                delegatePayoutTransactions
+            );
 
             const processedBalances: VoterBalancesPerForgedBlock = this.processBalances(
                 forgedBlocks,
@@ -134,6 +142,11 @@ export class TrueBlockWeightEngine {
         }
     }
 
+    /**
+     *
+     * @param delegatePublicKey
+     * @param forgedBlocks
+     */
     public async getVoters(
         delegatePublicKey: string,
         forgedBlocks: ForgedBlock[]
@@ -149,7 +162,7 @@ export class TrueBlockWeightEngine {
             this.startBlockHeight
         );
 
-        const { votersPerForgedBlock, voters } = this.setVotersPerForgedBlock(
+        const perForgedBlock: VotersPerForgedBlock = this.setVotersPerForgedBlock(
             voterMutations,
             currentVoters.slice(0),
             forgedBlocks
@@ -161,7 +174,12 @@ export class TrueBlockWeightEngine {
             currentVoters
         );
 
-        return { votersPerForgedBlock, voters, currentVoters, voterWallets };
+        return {
+            votersPerForgedBlock: perForgedBlock.votersPerForgedBlock,
+            voters: perForgedBlock.validVoters,
+            currentVoters,
+            voterWallets,
+        };
     }
 
     public setVotersPerForgedBlock(
@@ -206,8 +224,8 @@ export class TrueBlockWeightEngine {
         const votersPerForgedBlock: Map<number, string[]> = new Map(
             calculatedVotersPerForgedBlock
         );
-        voters = this.processWhiteList(voters);
-        return { votersPerForgedBlock, voters };
+        const validVoters: string[] = this.processWhiteList(voters);
+        return { votersPerForgedBlock, validVoters };
     }
 
     public filterVoteTransactionsForRound(

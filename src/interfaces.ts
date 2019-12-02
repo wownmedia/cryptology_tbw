@@ -46,6 +46,11 @@ export interface Voters {
     voterWallets: Voter[];
 }
 
+export interface VotersPerForgedBlock {
+    validVoters: string[];
+    votersPerForgedBlock: Map<number, string[]>;
+}
+
 export interface VoterMutation {
     height: number;
     address: string;
@@ -109,11 +114,6 @@ export interface Transaction {
 export interface MutatedVotersPerRound {
     voters: string[];
     votersPerRound: string[];
-}
-
-export interface VotersPerForgedBlock {
-    voters: string[];
-    votersPerForgedBlock: Map<number, string[]>;
 }
 
 export interface VoterBalancesPerForgedBlock {
