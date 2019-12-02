@@ -176,7 +176,10 @@ export class DatabaseAPI {
                     transaction.serialized,
                     startBlockHeight
                 );
-                const address: string = Crypto.getAddressFromPublicKey(data.data.senderPublicKey, networkVersion);
+                const address: string = Crypto.getAddressFromPublicKey(
+                    data.data.senderPublicKey,
+                    networkVersion
+                );
                 return {
                     height: new BigNumber(transaction.height).integerValue(),
                     address,

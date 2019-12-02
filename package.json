@@ -112,7 +112,7 @@
         "request": "^2.88.0",
         "request-promise": "^4.2.5",
         "rimraf": "^3.0.0",
-        "snyk": "^1.252.0",
+        "snyk": "^1.254.0",
         "ts-jest": "^24.2.0",
         "tslint": "^5.20.1",
         "tslint-config-prettier": "^1.18.0",
