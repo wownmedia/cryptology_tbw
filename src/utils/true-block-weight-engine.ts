@@ -22,16 +22,18 @@ import { ProposalEngine } from "./proposal-engine";
 
 export class TrueBlockWeightEngine {
     /**
-     * @dev Retrieve the CURRENT voters of the delegate
+     * Create an array of the current voters
+     * @param currentVotersFromAPI
      */
-    private static async getCurrentVoters(
+    private static formatCurrentVoters(
         currentVotersFromAPI: Voter[]
-    ): Promise<string[]> {
+    ): string[] {
         if (currentVotersFromAPI.length === 0) {
             return [];
         }
         return currentVotersFromAPI.map(voter => voter.address);
     }
+
     private readonly config: Config;
     private readonly network: Network;
     private readonly databaseAPI: DatabaseAPI;
@@ -59,6 +61,9 @@ export class TrueBlockWeightEngine {
         this.proposalEngine = new ProposalEngine();
     }
 
+    /**
+     *
+     */
     public async generatePayouts(): Promise<Payouts> {
         try {
             const delegatePublicKey: string = await this.network.getDelegatePublicKey(
@@ -82,58 +87,43 @@ export class TrueBlockWeightEngine {
                 this.payoutSignature
             );
 
-            const {
-                votersPerForgedBlock,
-                voters,
-                currentVoters,
-                voterWallets,
-            } = await this.getVoters(delegatePublicKey, forgedBlocks);
-
-            const {
-                voterBalances,
-                votersPublicKeys,
-            } = await this.getVoterBalances(voters, voterWallets);
+            const voters: Voters = await this.getVoters(delegatePublicKey, forgedBlocks);
+            const voterBalances: VoterBalances = await this.getVoterBalances(voters.voters, voters.voterWallets);
             const votingDelegateBlocks: VoterBlock[] = await this.databaseAPI.getVotingDelegateBlocks(
-                voterWallets,
+                voters.voterWallets,
                 this.startBlockHeight
             );
 
             const transactions: Transaction[] = await this.databaseAPI.getTransactions(
-                voters,
-                votersPublicKeys,
+                voters.voters,
+                voterBalances.publicKeys,
                 this.startBlockHeight,
                 this.config.networkVersion
             );
 
-            const {
-                latestPayouts,
-                latestPayoutsTimeStamp,
-            } = this.findLatestPayouts(delegatePayoutTransactions);
+            const previousPayouts: LatestPayouts = this.findLatestPayouts(delegatePayoutTransactions);
 
-            const {
-                votersBalancePerForgedBlock,
-                smallWallets,
-            } = this.processBalances(
+            const processedBalances: VoterBalancesPerForgedBlock = this.processBalances(
                 forgedBlocks,
-                voterBalances,
+                voterBalances.balances,
                 transactions,
                 votingDelegateBlocks
             );
 
-            const { payouts, feesPayouts } = this.generateShares(
-                votersPerForgedBlock,
+            const voterShares: PayoutBalances = this.generateShares(
+                voters.votersPerForgedBlock,
                 forgedBlocks,
-                latestPayoutsTimeStamp,
-                votersBalancePerForgedBlock,
-                currentVoters
+                previousPayouts.latestPayoutsTimeStamp,
+                processedBalances.votersBalancePerForgedBlock,
+                voters.currentVoters
             );
 
             const proposal: Payouts = this.proposalEngine.applyProposal(
                 currentBlock,
-                latestPayouts,
-                smallWallets,
-                payouts,
-                feesPayouts
+                previousPayouts.latestPayouts,
+                processedBalances.smallWallets,
+                voterShares.payouts,
+                voterShares.feesPayouts
             );
             proposal.timestamp = timestamp;
 
@@ -151,7 +141,7 @@ export class TrueBlockWeightEngine {
         const currentVotersFromAPI: Voter[] = await this.network.getVoters(
             this.config.delegate
         );
-        const currentVoters: string[] = await TrueBlockWeightEngine.getCurrentVoters(
+        const currentVoters: string[] = TrueBlockWeightEngine.formatCurrentVoters(
             currentVotersFromAPI
         );
         const voterMutations: VoterMutation[] = await this.databaseAPI.getVoterMutations(
@@ -301,7 +291,7 @@ export class TrueBlockWeightEngine {
         const votersPublicKeys: string[] = voterBalances.map(
             balances => balances.publicKey
         );
-        return { voterBalances, votersPublicKeys };
+        return { balances: voterBalances, publicKeys: votersPublicKeys };
     }
 
     public findLatestPayouts(

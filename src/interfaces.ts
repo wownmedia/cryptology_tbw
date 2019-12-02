@@ -59,8 +59,8 @@ export interface VoterBlock {
 }
 
 export interface VoterBalances {
-    voterBalances: Voter[];
-    votersPublicKeys: string[];
+    balances: Voter[];
+    publicKeys: string[];
 }
 
 export interface ForgedBlock {
