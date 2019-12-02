@@ -152,10 +152,12 @@ export class DatabaseAPI {
      * Get all the votes/unvotes for this delegate that are within range.
      * @param delegatePublicKey
      * @param startBlockHeight
+     * @param networkVersion
      */
     public async getVoterMutations(
         delegatePublicKey: string,
-        startBlockHeight: number
+        startBlockHeight: number,
+        networkVersion: number
     ): Promise<VoterMutation[]> {
         const getVoterSinceHeightQuery: string = getVoterSinceHeight(
             startBlockHeight
@@ -177,7 +179,7 @@ export class DatabaseAPI {
                 logger.warn(`Voter Mutations: ${JSON.stringify(data)}`);
                 return {
                     height: new BigNumber(transaction.height).integerValue(),
-                    address: transaction.recipientId,
+                    address: Crypto.getAddressFromPublicKey(transaction.senderPublicKey, networkVersion),
                     vote: data.data.asset.votes[0],
                 };
             })

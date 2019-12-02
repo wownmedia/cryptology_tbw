@@ -160,7 +160,8 @@ export class TrueBlockWeightEngine {
         );
         const voterMutations: VoterMutation[] = await this.databaseAPI.getVoterMutations(
             delegatePublicKey,
-            this.startBlockHeight
+            this.startBlockHeight,
+            this.config.networkVersion
         );
 
         const perForgedBlock: VotersPerForgedBlock = this.setVotersPerForgedBlock(

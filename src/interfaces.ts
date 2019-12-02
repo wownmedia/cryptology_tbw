@@ -83,7 +83,7 @@ export interface Block {
 export interface VoteTransaction {
     height: number;
     serialized: string;
-    recipientId: string;
+    senderPublicKey: string;
 }
 
 export interface DataBaseTransaction {
