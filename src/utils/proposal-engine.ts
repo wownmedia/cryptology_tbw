@@ -67,7 +67,7 @@ export class ProposalEngine {
                 acfDonation = acfDonation.plus(acfPayout);
 
                 let voterFeePayout: BigNumber = new BigNumber(0);
-                const feePayout: BigNumber = feesPayouts.get(address);
+                const feePayout: BigNumber = new BigNumber(feesPayouts.get(address));
                 if (!feePayout.isNaN() && feePayout.gt(0)) {
                     voterFeePayout = new BigNumber(
                         feePayout
