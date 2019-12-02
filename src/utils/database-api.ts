@@ -177,9 +177,10 @@ export class DatabaseAPI {
                     startBlockHeight
                 );
                 logger.warn(`Voter Mutations: ${JSON.stringify(data)}`);
+                const address: string = Crypto.getAddressFromPublicKey(data.data.senderPublicKey, networkVersion);
                 return {
                     height: new BigNumber(transaction.height).integerValue(),
-                    address: Crypto.getAddressFromPublicKey(transaction.senderPublicKey, networkVersion),
+                    address,
                     vote: data.data.asset.votes[0],
                 };
             })
