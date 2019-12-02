@@ -73,6 +73,7 @@ export class Network {
                 this.nodes[0].hasOwnProperty("port")
                     ? `http://${this.nodes[0].host}:${this.nodes[0].port}`
                     : this.server;
+            logger.warn(`ENDPOINT: ${endPoint}`);
             const response = await axios.get(`${node}${endPoint}`, {
                 params,
                 headers: { "API-Version": 2 },
