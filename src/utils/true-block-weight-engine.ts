@@ -1,3 +1,4 @@
+import { Identities } from "@arkecosystem/crypto";
 import BigNumber from "bignumber.js";
 import {
     DatabaseConfig,
@@ -182,6 +183,12 @@ export class TrueBlockWeightEngine {
         };
     }
 
+    /**
+     *
+     * @param voterMutations
+     * @param voters
+     * @param forgedBlocks
+     */
     public setVotersPerForgedBlock(
         voterMutations: VoterMutation[],
         voters: string[],
@@ -228,6 +235,12 @@ export class TrueBlockWeightEngine {
         return { votersPerForgedBlock, validVoters };
     }
 
+    /**
+     *
+     * @param voterMutations
+     * @param height
+     * @param previousHeight
+     */
     public filterVoteTransactionsForRound(
         voterMutations: VoterMutation[],
         height: number,
@@ -241,6 +254,14 @@ export class TrueBlockWeightEngine {
         });
     }
 
+    /**
+     *
+     * @param height
+     * @param previousHeight
+     * @param votersPerRound
+     * @param voters
+     * @param voteTransactions
+     */
     public mutateVoters(
         height: number,
         previousHeight: number,
@@ -248,8 +269,6 @@ export class TrueBlockWeightEngine {
         voters: string[],
         voteTransactions: VoterMutation[]
     ): MutatedVotersPerRound {
-        // Process the mutations
-
         for (const item of voteTransactions) {
             if (item.hasOwnProperty("address") && item.hasOwnProperty("vote")) {
                 // Check if we have seen this voter before
@@ -270,6 +289,10 @@ export class TrueBlockWeightEngine {
         return { voters, votersPerRound };
     }
 
+    /**
+     *
+     * @param voters
+     */
     public processWhiteList(voters: string[]): string[] {
         const whitelisted: string[] = [];
         for (const address of voters) {
@@ -291,6 +314,11 @@ export class TrueBlockWeightEngine {
         return whitelisted;
     }
 
+    /**
+     *
+     * @param voters
+     * @param voterWallets
+     */
     public async getVoterBalances(
         voters: string[],
         voterWallets: Voter[]
@@ -312,6 +340,10 @@ export class TrueBlockWeightEngine {
         return { balances: voterBalances, publicKeys: votersPublicKeys };
     }
 
+    /**
+     *
+     * @param delegatePayoutTransactions
+     */
     public findLatestPayouts(
         delegatePayoutTransactions: DelegateTransaction[]
     ): LatestPayouts {
@@ -360,6 +392,13 @@ export class TrueBlockWeightEngine {
         return { latestPayouts, latestPayoutsTimeStamp };
     }
 
+    /**
+     *
+     * @param forgedBlocks
+     * @param voterBalances
+     * @param transactions
+     * @param votingDelegateBlocks
+     */
     public processBalances(
         forgedBlocks: ForgedBlock[],
         voterBalances: Voter[],
@@ -416,6 +455,14 @@ export class TrueBlockWeightEngine {
         return { votersBalancePerForgedBlock, smallWallets };
     }
 
+    /**
+     *
+     * @param height
+     * @param previousHeight
+     * @param votersBalancePerForgedBlock
+     * @param transactions
+     * @param votingDelegateBlocks
+     */
     public mutateVotersBalances(
         height: number,
         previousHeight: number,
@@ -506,6 +553,14 @@ export class TrueBlockWeightEngine {
         return votersBalancePerForgedBlock;
     }
 
+    /**
+     *
+     * @param votersPerForgedBlock
+     * @param forgedBlocks
+     * @param latestPayoutsTimeStamp
+     * @param votersBalancePerForgedBlock
+     * @param currentVoters
+     */
     public generateShares(
         votersPerForgedBlock: Map<number, string[]>,
         forgedBlocks: ForgedBlock[],
@@ -586,6 +641,11 @@ export class TrueBlockWeightEngine {
         return { payouts, feesPayouts };
     }
 
+    /**
+     *
+     * @param validVoters
+     * @param currentVoters
+     */
     private filterPoolHoppers(validVoters: string[], currentVoters: string[]) {
         validVoters = validVoters.filter(address => {
             return currentVoters.indexOf(address) >= 0;
@@ -593,6 +653,11 @@ export class TrueBlockWeightEngine {
         return validVoters.slice(0);
     }
 
+    /**
+     *
+     * @param walletBalances
+     * @param validVoters
+     */
     private sumBalances(
         walletBalances: Map<string, BigNumber>,
         validVoters: string[]
@@ -613,9 +678,19 @@ export class TrueBlockWeightEngine {
         return balance;
     }
 
+    /**
+     *
+     * @param address
+     */
     private getRedirectAddress(address: string): string {
         if (this.config.walletRedirections.hasOwnProperty(address) === true) {
-            return this.config.walletRedirections[address]; // TODO validate address
+            address = this.config.walletRedirections[address];
+        }
+
+        if (!Identities.Address.validate(address, this.config.networkVersion)) {
+            throw new Error(
+                `${address} is not a valid address for this blockchain.`
+            );
         }
         return address;
     }
