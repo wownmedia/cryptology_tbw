@@ -28,3 +28,9 @@ You can use the script in 3 ways:
 1. To calculate the amounts that would be paid out: `bin/app`
 2. To check the transactions that will be generated: `bin/app check`
 3. To payout your voters: `bin/app payout`
+
+Or to use the script from a cron job for automated payments add this line to your crontab:
+
+`00 12 * * * cd ~/cryptology_tbw && node --max-old-space-size=4096 ~/cryptology_tbw/bin/app payout`
+
+
