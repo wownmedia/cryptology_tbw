@@ -168,14 +168,13 @@ export class DatabaseAPI {
             return [];
         }
 
-        logger.warn(`Voter Mutations: ${JSON.stringify(result.rows)}`);
-
         const voterMutations: VoterMutation[] = result.rows
             .map((transaction: VoteTransaction) => {
                 const data: Interfaces.ITransaction = DatabaseAPI.deserializeTransaction(
                     transaction.serialized,
                     startBlockHeight
                 );
+                logger.warn(`Voter Mutations: ${JSON.stringify(data)}`);
                 return {
                     height: new BigNumber(transaction.height).integerValue(),
                     address: transaction.recipientId,
