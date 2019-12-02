@@ -1,23 +1,30 @@
-**Make sure to set your `startheight` to the block after your last payout in case you upgrade**
+_The Cryptology True BlockWeight payout script is licenced under a 
+[Creative Commons Attribution-NoDerivatives 4.0 International License](https://creativecommons.org/licenses/by-nd/4.0/)._
 
-# cryptology_tbw
+# Before you start:
 
-Cryptology True Block Weight and Fair Fees
+**The Cryptology TBW payout script is charging a 1% license fee that will automatically be generated
+and transferred to a wallet in my control. I realize that not every delegate will agree to this 
+and in case you do not agree then I suggest you a) write your own script or 
+b) use one of the other scripts.** 
 
-1. Clone the project to a server with a full ARK Node running
-2. Select the V1 or V2 branch
-3. yarn install (do not use npm!)
-4. Copy example.env to .env
-5. Edit .env to match your configuration
+# Installation
+
+- Clone the repository to your server;
+- go to the directory of the script;
+- `yarn install`
+- `yarn build`
+- `chmod +x bin/app`
+- `cp example.env .env`
+- `nano .env` and fill out the values for your setup
+
+if you are upgrading from V2.5 then please make sure to set the `START_BLOCK_HEIGHT` setting to 
+a height that is above the block where V2.6 went live.
 
 # Usage
 
-`node bin/app.js` to show calculated payouts
+You can use the script in 3 ways:
 
-`node bin/app.js check` to show calculated payouts and generated transactions
-
-`node bin/app.js payout` to run payouts => will send payouts to your own forger, V1: and wait for it's slot
-
-# Limitations
-
-Please make sure to set the start blockheight to the first block after your previous payout and configure the .env NODE to point to the IP of your forger.
+1. To calculate the amounts that would be paid out: `bin/app`
+2. To check the transactions that will be generated: `bin/app check`
+3. To payout your voters: `bin/app payout`
