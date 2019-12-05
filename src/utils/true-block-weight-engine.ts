@@ -659,10 +659,11 @@ export class TrueBlockWeightEngine {
             const height: number = item.height;
             const timestamp: number = item.timestamp;
             const totalFeesThisBlock: BigNumber = new BigNumber(item.fees);
+            logger.info("YUP")
+
             const totalBusinessIncomeThisBlock: BigNumber = new BigNumber(
                 businessRevenue.get(height)
             );
-            logger.info("YUP")
             let validVoters: string[] = votersPerForgedBlock.get(height);
             const walletBalances: Map<
                 string,
