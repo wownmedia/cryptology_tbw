@@ -149,7 +149,9 @@ export interface Receiver {
 
 export interface Transfers {
     totalAmount: BigNumber;
+    totalBusinessAmount: BigNumber;
     totalFees: BigNumber;
+    totalBusinessFees: BigNumber;
     transactions: Interfaces.ITransactionData[];
     businessTransactions: Interfaces.ITransactionData[];
 }

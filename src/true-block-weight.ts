@@ -55,12 +55,22 @@ export class TrueBlockWeight {
 
         logger.info(SEPARATOR);
         logger.info(
-            `Ready to Payout: ${transfers.totalAmount
+            `Ready to Payout from Delegate Account: ${transfers.totalAmount
                 .div(ARKTOSHI)
                 .toFixed(8)} + ${transfers.totalFees
                 .div(ARKTOSHI)
                 .toFixed(8)} fees.`
         );
+        if(transfers.businessTransactions.length > 0) {
+            for(let item of transfers.businessTransactions) {
+                transfers.transactions.push(item);
+            }
+            logger.info(`Ready to payout from Business Revenue Account: ${transfers.totalBusinessAmount
+                .div(ARKTOSHI)
+                .toFixed(8)} + ${transfers.totalBusinessFees
+                .div(ARKTOSHI)
+                .toFixed(8)} fees.`)
+        }
         logger.info(SEPARATOR);
         return transfers;
     }
@@ -110,6 +120,7 @@ export class TrueBlockWeight {
     private async generateTransactions(payouts: Payouts): Promise<Transfers> {
         let totalAmount: BigNumber = new BigNumber(0);
         let totalFees: BigNumber = new BigNumber(0);
+        let totalBusinessAmount: BigNumber = new BigNumber(0);
 
         const receivers: Receiver[] = [];
         const businessReceivers: Receiver[] = [];
@@ -133,6 +144,7 @@ export class TrueBlockWeight {
                 address
             );
             if (businessAmount.gt(0)) {
+                totalBusinessAmount = totalBusinessAmount.plus(businessAmount);
                 const receiver: Receiver = {
                     amount: businessAmount,
                     wallet,
@@ -168,7 +180,8 @@ export class TrueBlockWeight {
             this.config.businessSecondPassphrase,
             true
         );
-        return { totalAmount, totalFees, transactions, businessTransactions };
+        const totalBusinessFees: BigNumber = this.config.multiTransferFee.times(businessTransactions.length);
+        return { totalAmount, totalFees, transactions, businessTransactions, totalBusinessFees, totalBusinessAmount };
     }
 
     /**
