@@ -464,6 +464,7 @@ export class TrueBlockWeightEngine {
                         }
                     }
                     revenuePerForgedBlock.set(height, amount);
+                    logger.info(`REVENUE: at ${height} = ${amount.toString()}`);
                     previousHeight = height;
                 }
             );
