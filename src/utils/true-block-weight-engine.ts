@@ -120,7 +120,10 @@ export class TrueBlockWeightEngine {
                 votingDelegateBlocks
             );
 
-            const businessRevenue: Map<number, BigNumber> = await this.getBusinessIncome(forgedBlocks);
+            const businessRevenue: Map<
+                number,
+                BigNumber
+            > = await this.getBusinessIncome(forgedBlocks);
 
             const voterShares: PayoutBalances = this.generateShares(
                 voters.votersPerForgedBlock,
@@ -659,11 +662,10 @@ export class TrueBlockWeightEngine {
             const height: number = item.height;
             const timestamp: number = item.timestamp;
             const totalFeesThisBlock: BigNumber = new BigNumber(item.fees);
-            logger.info("YUP")
-
-            const totalBusinessIncomeThisBlock: BigNumber = new BigNumber(
-                businessRevenue.get(height)
-            );
+            const totalBusinessIncomeThisBlock: BigNumber =
+                businessRevenue === null
+                    ? new BigNumber(0)
+                    : new BigNumber(businessRevenue.get(height));
             let validVoters: string[] = votersPerForgedBlock.get(height);
             const walletBalances: Map<
                 string,
