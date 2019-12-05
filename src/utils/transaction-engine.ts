@@ -4,11 +4,13 @@ import { TransferBuilder } from "@arkecosystem/crypto/dist/transactions/builders
 import BigNumber from "bignumber.js";
 import { Receiver } from "../interfaces";
 import { Config, logger, Network } from "../services";
+import { Crypto } from "./crypto";
 
 export class TransactionEngine {
     private readonly config: Config;
     private readonly network: Network;
     private nonce: number = null;
+    private businessNonce: number = null;
 
     constructor() {
         BigNumber.config({
@@ -29,14 +31,21 @@ export class TransactionEngine {
      *
      * @param receivers
      * @param timestamp
+     * @param vendorField
+     * @param seed
+     * @param secondPassphrase
+     * @param business
      */
     public async createMultiPayment(
         receivers: Receiver[],
-        timestamp: number
+        timestamp: number,
+        vendorField: string,
+        seed: string,
+        secondPassphrase: string,
+        business: boolean
     ): Promise<Interfaces.ITransactionData[]> {
         await this.setupNetwork();
         const transactions: Interfaces.ITransactionData[] = [];
-        const vendorField: string = `${this.config.delegate} - ${this.config.vendorField}`;
 
         for (
             let i = 0;
@@ -47,11 +56,19 @@ export class TransactionEngine {
                 i,
                 i + this.config.transactionsPerMultitransfer
             );
-            this.nonce += 1;
+
+            let nonce: string;
+            if (business) {
+                this.businessNonce += 1;
+                nonce = this.businessNonce.toString();
+            } else {
+                this.nonce += 1;
+                nonce = this.nonce.toString();
+            }
             let transaction: MultiPaymentBuilder = Transactions.BuilderFactory.multiPayment()
                 .vendorField(vendorField)
                 .fee(this.config.multiTransferFee.toFixed(0))
-                .nonce(this.nonce.toString());
+                .nonce(nonce);
             for (const receiver of chunk) {
                 transaction.addPayment(
                     receiver.wallet,
@@ -62,11 +79,11 @@ export class TransactionEngine {
                 transaction.data.timestamp = timestamp;
             }
 
-            transaction = transaction.sign(this.config.seed);
+            transaction = transaction.sign(seed);
 
-            if (this.config.secondPassphrase !== null) {
+            if (secondPassphrase !== null) {
                 transaction = transaction.secondSign(
-                    this.config.secondPassphrase
+                    secondPassphrase
                 );
             }
             transactions.push(transaction.getStruct());
@@ -128,6 +145,19 @@ export class TransactionEngine {
         if (this.nonce === null) {
             this.nonce = await this.network.getNonceForDelegate(
                 this.config.delegate
+            );
+        }
+
+        const businessPublicKey: string = Crypto.getPublicKeyFromSeed(
+            this.config.businessSeed
+        );
+        const businessWallet: string = Crypto.getAddressFromPublicKey(
+            businessPublicKey,
+            this.config.networkVersion
+        );
+        if (this.businessNonce === null) {
+            this.businessNonce = await this.network.getNonceForWallet(
+                businessWallet
             );
         }
     }

@@ -112,6 +112,7 @@ export class TrueBlockWeight {
         let totalFees: BigNumber = new BigNumber(0);
 
         const receivers: Receiver[] = [];
+        const businessReceivers: Receiver[] = [];
         for (const [address] of payouts.payouts) {
             const wallet: string = this.getRedirectAddress(address);
             logger.info(
@@ -121,23 +122,53 @@ export class TrueBlockWeight {
                     .toFixed(8)}`
             );
             const amount: BigNumber = payouts.payouts.get(address);
-
             const receiver: Receiver = {
                 amount,
                 wallet,
             };
             totalAmount = totalAmount.plus(amount);
             receivers.push(receiver);
+
+            const businessAmount: BigNumber = payouts.businessPayouts.get(
+                address
+            );
+            if (businessAmount.gt(0)) {
+                const receiver: Receiver = {
+                    amount: businessAmount,
+                    wallet,
+                };
+                businessReceivers.push(receiver);
+                logger.info(
+                    `Business Revenue Payout to ${wallet} prepared: ${businessAmount
+                        .div(ARKTOSHI)
+                        .toFixed(8)}`
+                );
+            }
         }
 
-        const transactions: Interfaces.ITransactionData[] = await this.transactionEngine.createMultiPayment(
+        let vendorField: string = `${this.config.delegate} - ${this.config.vendorField}`;
+        let transactions: Interfaces.ITransactionData[] = await this.transactionEngine.createMultiPayment(
             receivers,
-            payouts.timestamp
+            payouts.timestamp,
+            vendorField,
+            this.config.seed,
+            this.config.secondPassphrase,
+            false
         );
         totalFees = totalFees.plus(
             this.config.multiTransferFee.times(transactions.length)
         );
-        return { totalAmount, totalFees, transactions };
+
+        vendorField = `${this.config.delegate} - Business Revenue Share.`; //todo
+        const businessTransactions: Interfaces.ITransactionData[] = await this.transactionEngine.createMultiPayment(
+            businessReceivers,
+            payouts.timestamp,
+            vendorField,
+            this.config.businessSeed,
+            this.config.businessSecondPassphrase,
+            true
+        );
+        return { totalAmount, totalFees, transactions, businessTransactions };
     }
 
     /**

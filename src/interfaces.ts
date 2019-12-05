@@ -151,4 +151,5 @@ export interface Transfers {
     totalAmount: BigNumber;
     totalFees: BigNumber;
     transactions: Interfaces.ITransactionData[];
+    businessTransactions: Interfaces.ITransactionData[];
 }

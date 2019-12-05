@@ -42,15 +42,23 @@ export class Network {
             const delegateWallet: string = await this.getDelegateAddress(
                 delegate
             );
+            return this.getNonceForWallet(delegateWallet);
+        } catch (e) {
+            return null;
+        }
+    }
+
+    public async getNonceForWallet(wallet: string): Promise<number> {
+        try {
             const walletInfo: APIResults = await this.getFromAPI(
-                `/api/wallets/${delegateWallet}`
+                `/api/wallets/${wallet}`
             );
             const nonce: number =
                 walletInfo.hasOwnProperty("data") &&
                 walletInfo.data.hasOwnProperty("nonce")
                     ? parseInt(walletInfo.data.nonce, 10)
                     : null;
-            logger.info(`Nonce loaded for ${delegateWallet}: ${nonce}`);
+            logger.info(`Nonce loaded for ${wallet}: ${nonce}`);
             return nonce;
         } catch (e) {
             return null;
