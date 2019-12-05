@@ -67,7 +67,7 @@ export class ProposalEngine {
                     .minus(acfPayout)
                     .minus(voterPayout);
 
-                let businessBalance = businessPayouts.get(address);
+                let businessBalance = new BigNumber( businessPayouts.get(address));
                 if (businessBalance.isNaN() || businessBalance.lt(0)) {
                     businessBalance = new BigNumber(0);
                 }
