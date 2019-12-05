@@ -54,6 +54,7 @@ export class ProposalEngine {
                     address,
                     smallWallets
                 );
+
                 const acfPayout: BigNumber = new BigNumber(
                     balance
                         .times(this.config.donationShare)
@@ -71,7 +72,7 @@ export class ProposalEngine {
                     businessBalance = new BigNumber(0);
                 }
                 const businessPayout: BigNumber = new BigNumber(
-                    businessBalance.times(percentage).integerValue(BigNumber.ROUND_DOWN)
+                    businessBalance.times(this.config.voterBusinessShare).integerValue(BigNumber.ROUND_DOWN)
                 );
                 delegateProfit = delegateProfit.plus(delegatePayout);
                 acfDonation = acfDonation.plus(acfPayout);

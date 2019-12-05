@@ -662,6 +662,7 @@ export class TrueBlockWeightEngine {
             const totalBusinessIncomeThisBlock: BigNumber = new BigNumber(
                 businessRevenue.get(height)
             );
+            logger.info("YUP")
             let validVoters: string[] = votersPerForgedBlock.get(height);
             const walletBalances: Map<
                 string,
