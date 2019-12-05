@@ -34,4 +34,8 @@ export class Crypto {
         Managers.configManager.setHeight(blockHeight);
         return Transactions.Deserializer.deserialize(serialized);
     }
+
+    public static getPublicKeyFromSeed(seed: string): string {
+        return Identities.PublicKey.fromPassphrase(seed);
+    }
 }

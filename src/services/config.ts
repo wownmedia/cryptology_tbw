@@ -14,6 +14,7 @@ export class Config {
     public readonly multiTransferFee: BigNumber;
     public readonly voterShare: BigNumber;
     public readonly voterFeeShare: BigNumber;
+    public readonly voterBusinessShare: BigNumber;
     public readonly minimalPayoutValue: BigNumber;
     public readonly donationShare: BigNumber;
     public readonly minimalBalance: BigNumber;
@@ -43,6 +44,8 @@ export class Config {
     public readonly licenseWallet: string;
     public readonly seed: string;
     public readonly secondPassphrase: string;
+    public readonly businessSeed: string;
+    public readonly businessSecondPassphrase: string;
     public transactionsPerRequest: number;
     public transactionsPerMultitransfer: number;
 
@@ -85,15 +88,34 @@ export class Config {
         this.voterShare = process.env.PAYOUT
             ? new BigNumber(process.env.PAYOUT)
             : new BigNumber(0);
-        if (this.voterShare.isNaN() || this.voterShare.gt(1)) {
+        if (
+            this.voterShare.isNaN() ||
+            this.voterShare.gt(1) ||
+            this.voterShare.lt(0)
+        ) {
             throw new TypeError("Invalid PAYOUT configuration");
         }
 
         this.voterFeeShare = process.env.PAYOUT_FEES
             ? new BigNumber(process.env.PAYOUT_FEES)
             : new BigNumber(0);
-        if (this.voterFeeShare.isNaN() || this.voterFeeShare.gt(1)) {
+        if (
+            this.voterFeeShare.isNaN() ||
+            this.voterFeeShare.gt(1) ||
+            this.voterFeeShare.lt(0)
+        ) {
             throw new TypeError("Invalid PAYOUT_FEES configuration");
+        }
+
+        this.voterBusinessShare = process.env.PAYOUT_BUSINESS
+            ? new BigNumber(process.env.PAYOUT_BUSINESS)
+            : new BigNumber(0);
+        if (
+            this.voterBusinessShare.isNaN() ||
+            this.voterBusinessShare.gt(1) ||
+            this.voterBusinessShare.lt(0)
+        ) {
+            throw new TypeError("Invalid PAYOUT_BUSINESS configuration");
         }
 
         this.minimalPayoutValue = process.env.MIN_PAYOUT_VALUE
@@ -106,21 +128,25 @@ export class Config {
         this.donationShare = process.env.LICENSE_FEE
             ? new BigNumber(process.env.LICENSE_FEE)
             : new BigNumber(0.01);
-        if (this.donationShare.isNaN() || this.donationShare.gt(1)) {
+        if (
+            this.donationShare.isNaN() ||
+            this.donationShare.gt(1) ||
+            this.donationShare.lt(0.01)
+        ) {
             throw new TypeError("Invalid LICENSE_FEE configuration");
         }
 
         this.minimalBalance = process.env.MIN_BALANCE
             ? new BigNumber(process.env.MIN_BALANCE).times(ARKTOSHI)
             : new BigNumber(1);
-        if (this.minimalBalance.isNaN() || this.donationShare.gt(1)) {
+        if (this.minimalBalance.isNaN()) {
             throw new TypeError("Invalid MIN_BALANCE configuration");
         }
 
         this.startFromBlockHeight = process.env.START_BLOCK_HEIGHT
             ? parseInt(process.env.START_BLOCK_HEIGHT, 10)
-            : 0;
-        if (this.startFromBlockHeight < 0) {
+            : 1;
+        if (this.startFromBlockHeight < 1) {
             throw new TypeError("Invalid MAX_HISTORY configuration");
         }
 
@@ -198,6 +224,13 @@ export class Config {
         this.seed = process.env.SECRET ? process.env.SECRET : null;
         this.secondPassphrase = process.env.SECOND_SECRET
             ? process.env.SECOND_SECRET
+            : null;
+
+        this.businessSeed = process.env.BUSINESS_SECRET
+            ? process.env.BUSINESS_SECRET
+            : null;
+        this.businessSecondPassphrase = process.env.BUSINESS_SECOND_SECRET
+            ? process.env.BUSINESS_SECOND_SECRET
             : null;
 
         this.transactionsPerRequest = process.env.MAX_TRANSACTIONS_PER_REQUEST

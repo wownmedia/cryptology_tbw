@@ -123,6 +123,7 @@ export interface VoterBalancesPerForgedBlock {
 
 export interface Payouts {
     payouts: Map<string, BigNumber>;
+    businessPayouts: Map<string, BigNumber>;
     delegateProfit: BigNumber;
     acfDonation: BigNumber;
     timestamp: number;
@@ -131,6 +132,7 @@ export interface Payouts {
 export interface PayoutBalances {
     payouts: Map<string, BigNumber>;
     feesPayouts: Map<string, BigNumber>;
+    businessPayouts: Map<string, BigNumber>;
 }
 
 export interface LatestPayouts {

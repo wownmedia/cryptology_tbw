@@ -26,17 +26,20 @@ export class ProposalEngine {
      * @param smallWallets
      * @param payouts
      * @param feesPayouts
+     * @param businessPayouts
      */
     public applyProposal(
         currentBlock: number,
         latestPayouts: Map<string, number>,
         smallWallets: Map<string, boolean>,
         payouts: Map<string, BigNumber>,
-        feesPayouts: Map<string, BigNumber>
+        feesPayouts: Map<string, BigNumber>,
+        businessPayouts: Map<string, BigNumber>
     ): Payouts {
         let totalPayout: BigNumber = new BigNumber(0);
         let delegateProfit: BigNumber = new BigNumber(0);
         let acfDonation: BigNumber = new BigNumber(0);
+        let totalBusinessPayout: BigNumber = new BigNumber(0);
 
         for (const [address, balance] of payouts) {
             if (
@@ -63,8 +66,16 @@ export class ProposalEngine {
                     .minus(acfPayout)
                     .minus(voterPayout);
 
+                let businessBalance = businessPayouts.get(address);
+                if (businessBalance.isNaN() || businessBalance.lt(0)) {
+                    businessBalance = new BigNumber(0);
+                }
+                const businessPayout: BigNumber = new BigNumber(
+                    businessBalance.times(percentage).integerValue(BigNumber.ROUND_DOWN)
+                );
                 delegateProfit = delegateProfit.plus(delegatePayout);
                 acfDonation = acfDonation.plus(acfPayout);
+                totalBusinessPayout = totalBusinessPayout.plus(businessPayout);
 
                 let voterFeePayout: BigNumber = new BigNumber(0);
                 const feePayout: BigNumber = new BigNumber(
@@ -82,6 +93,7 @@ export class ProposalEngine {
                     );
                 }
                 payouts.set(address, voterPayout.plus(voterFeePayout));
+                businessPayouts.set(address, businessPayout);
 
                 if (
                     payouts.get(address).lt(this.config.minimalPayoutValue) ||
@@ -98,11 +110,13 @@ export class ProposalEngine {
                         );
                     }
                     payouts.delete(address);
+                    businessPayouts.delete(address);
                 } else {
                     totalPayout = totalPayout.plus(payouts.get(address));
                 }
             } else {
                 payouts.delete(address);
+                businessPayouts.delete(address);
             }
         }
 
@@ -119,6 +133,7 @@ export class ProposalEngine {
                 .div(totalPayout)
                 .times(totalFees);
             payouts.set(address, balance.minus(fairFees));
+            businessPayouts.set(address, businessPayouts.get(address).minus(fairFees));
         }
 
         logger.info(SEPARATOR);
@@ -137,9 +152,12 @@ export class ProposalEngine {
         );
         logger.info(`License Fee: ${acfDonation.div(ARKTOSHI).toFixed(8)}`);
         logger.info(`Transaction Fees: ${totalFees.div(ARKTOSHI).toFixed(8)}`);
+        if(totalBusinessPayout.gt(0)) {
+            logger.info(`Business Revenue Payout: ${totalBusinessPayout.div(ARKTOSHI).toFixed(8)}`);
+        }
         logger.info(SEPARATOR);
 
-        return { payouts, acfDonation, delegateProfit, timestamp: 0 };
+        return { payouts, businessPayouts, acfDonation, delegateProfit, timestamp: 0 };
     }
 
     /**

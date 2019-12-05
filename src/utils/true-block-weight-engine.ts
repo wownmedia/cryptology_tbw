@@ -20,6 +20,7 @@ import {
 import { Config, logger, Network } from "../services";
 import { DatabaseAPI } from "./database-api";
 import { ProposalEngine } from "./proposal-engine";
+import { Crypto } from "./crypto";
 
 export class TrueBlockWeightEngine {
     /**
@@ -119,9 +120,12 @@ export class TrueBlockWeightEngine {
                 votingDelegateBlocks
             );
 
+            const businessRevenue: Map<number, BigNumber> = await this.getBusinessIncome(forgedBlocks);
+
             const voterShares: PayoutBalances = this.generateShares(
                 voters.votersPerForgedBlock,
                 forgedBlocks,
+                businessRevenue,
                 previousPayouts.latestPayoutsTimeStamp,
                 processedBalances.votersBalancePerForgedBlock,
                 voters.currentVoters
@@ -132,7 +136,8 @@ export class TrueBlockWeightEngine {
                 previousPayouts.latestPayouts,
                 processedBalances.smallWallets,
                 voterShares.payouts,
-                voterShares.feesPayouts
+                voterShares.feesPayouts,
+                voterShares.businessPayouts
             );
             proposal.timestamp = timestamp;
 
@@ -393,6 +398,80 @@ export class TrueBlockWeightEngine {
         return { latestPayouts, latestPayoutsTimeStamp };
     }
 
+    public async getBusinessIncome(
+        forgedBlocks: ForgedBlock[]
+    ): Promise<Map<number, BigNumber>> {
+        if (this.config.businessSeed) {
+            const businessPublicKey: string = Crypto.getPublicKeyFromSeed(
+                this.config.businessSeed
+            );
+            const businessWallet: string = Crypto.getAddressFromPublicKey(
+                businessPublicKey,
+                this.config.networkVersion
+            );
+            const businessTransactions: Transaction[] = await this.databaseAPI.getTransactions(
+                [businessWallet],
+                [businessPublicKey],
+                this.startBlockHeight,
+                this.config.networkVersion
+            );
+            if (businessTransactions.length === 0) {
+                return null;
+            }
+
+            let previousHeight: number = null;
+            const revenuePerForgedBlock: Map<number, BigNumber> = new Map(
+                forgedBlocks.map(block => [block.height, new BigNumber(0)])
+            );
+            revenuePerForgedBlock.forEach(
+                (revenue: BigNumber, height: number) => {
+                    if (previousHeight === null) {
+                        previousHeight = height + 1;
+                    }
+
+                    const calculatedTransactions: Transaction[] = businessTransactions.filter(
+                        transaction => {
+                            return (
+                                transaction.height >= height &&
+                                transaction.height < previousHeight
+                            );
+                        }
+                    );
+
+                    let amount: BigNumber = new BigNumber(0);
+                    for (const item of calculatedTransactions) {
+                        const recipientId: string = item.recipientId;
+
+                        if (item.multiPayment !== null) {
+                            for (const transaction of item.multiPayment) {
+                                const transactionAmount: BigNumber = new BigNumber(
+                                    transaction.amount.toFixed()
+                                );
+
+                                if (
+                                    transaction.recipientId === businessWallet
+                                ) {
+                                    amount = amount.plus(transactionAmount);
+                                }
+                            }
+                        } else {
+                            if (recipientId === businessWallet) {
+                                amount = amount.plus(item.amount);
+                            }
+                        }
+                    }
+                    revenuePerForgedBlock.set(height, amount);
+                    logger.info(`REVENUE: at ${height} = ${amount.toString()}`);
+                    previousHeight = height;
+                }
+            );
+
+            return revenuePerForgedBlock;
+        }
+
+        return null;
+    }
+
     /**
      *
      * @param forgedBlocks
@@ -558,6 +637,7 @@ export class TrueBlockWeightEngine {
      *
      * @param votersPerForgedBlock
      * @param forgedBlocks
+     * @param businessRevenue
      * @param latestPayoutsTimeStamp
      * @param votersBalancePerForgedBlock
      * @param currentVoters
@@ -565,6 +645,7 @@ export class TrueBlockWeightEngine {
     public generateShares(
         votersPerForgedBlock: Map<number, string[]>,
         forgedBlocks: ForgedBlock[],
+        businessRevenue: Map<number, BigNumber>,
         latestPayoutsTimeStamp: Map<string, number>,
         votersBalancePerForgedBlock: Map<number, Map<string, BigNumber>>,
         currentVoters: string[]
@@ -572,11 +653,15 @@ export class TrueBlockWeightEngine {
         logger.info("Starting to calculate shares...");
         const payouts: Map<string, BigNumber> = new Map();
         const feesPayouts: Map<string, BigNumber> = new Map();
+        const businessPayouts: Map<string, BigNumber> = new Map();
 
         for (const item of forgedBlocks) {
             const height: number = item.height;
             const timestamp: number = item.timestamp;
             const totalFeesThisBlock: BigNumber = new BigNumber(item.fees);
+            const totalBusinessIncomeThisBlock: BigNumber = new BigNumber(
+                businessRevenue.get(height)
+            );
             let validVoters: string[] = votersPerForgedBlock.get(height);
             const walletBalances: Map<
                 string,
@@ -634,12 +719,29 @@ export class TrueBlockWeightEngine {
                             );
                             feesPayouts.set(address, pendingFeesPayout);
                         }
+
+                        if (totalBusinessIncomeThisBlock.gt(0)) {
+                            let pendingBusinessPayout: BigNumber =
+                                typeof businessPayouts.get(address) !==
+                                "undefined"
+                                    ? new BigNumber(
+                                          businessPayouts.get(address)
+                                      )
+                                    : new BigNumber(0);
+                            const businessShare: BigNumber = new BigNumber(
+                                voterShare.times(totalBusinessIncomeThisBlock)
+                            ).decimalPlaces(8);
+                            pendingBusinessPayout = pendingBusinessPayout.plus(
+                                businessShare
+                            );
+                            businessPayouts.set(address, pendingBusinessPayout);
+                        }
                     }
                 }
             }
         }
         logger.info("Finished calculating shares...");
-        return { payouts, feesPayouts };
+        return { payouts, feesPayouts, businessPayouts };
     }
 
     /**
