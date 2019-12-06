@@ -127,7 +127,7 @@ export class TrueBlockWeight {
         for (const [address] of payouts.payouts) {
             const wallet: string = this.getRedirectAddress(address);
             logger.info(
-                `Payout to ${wallet} prepared: ${payouts.payouts
+                `Voter Share Payout to ${wallet} prepared: ${payouts.payouts
                     .get(address)
                     .div(ARKTOSHI)
                     .toFixed(8)}`
@@ -151,7 +151,7 @@ export class TrueBlockWeight {
                 };
                 businessReceivers.push(receiver);
                 logger.info(
-                    `Business Revenue Payout to ${wallet} prepared: ${businessAmount
+                    `Business Share Payout to ${wallet} prepared: ${businessAmount
                         .div(ARKTOSHI)
                         .toFixed(8)}`
                 );

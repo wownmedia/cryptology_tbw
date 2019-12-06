@@ -141,7 +141,6 @@ export class TransactionEngine {
         }
 
         let height: number = await this.network.getCurrentHeight();
-        logger.info(`Current height: ${height}`);
         if (height === null) {
             height = this.config.startFromBlockHeight;
         }
