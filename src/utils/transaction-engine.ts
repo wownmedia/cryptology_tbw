@@ -140,7 +140,12 @@ export class TransactionEngine {
             Managers.configManager.setConfig(networkConfig);
         }
 
-        Managers.configManager.setHeight(this.config.startFromBlockHeight);
+        let height: number = await this.network.getCurrentHeight();
+        logger.info(`Current height: ${height}`);
+        if (height === null) {
+            height = this.config.startFromBlockHeight;
+        }
+        Managers.configManager.setHeight(height);
 
         if (this.nonce === null) {
             this.nonce = await this.network.getNonceForDelegate(
@@ -148,14 +153,14 @@ export class TransactionEngine {
             );
         }
 
-        const businessPublicKey: string = Crypto.getPublicKeyFromSeed(
-            this.config.businessSeed
-        );
-        const businessWallet: string = Crypto.getAddressFromPublicKey(
-            businessPublicKey,
-            this.config.networkVersion
-        );
         if (this.businessNonce === null) {
+            const businessPublicKey: string = Crypto.getPublicKeyFromSeed(
+                this.config.businessSeed
+            );
+            const businessWallet: string = Crypto.getAddressFromPublicKey(
+                businessPublicKey,
+                this.config.networkVersion
+            );
             this.businessNonce = await this.network.getNonceForWallet(
                 businessWallet
             );
