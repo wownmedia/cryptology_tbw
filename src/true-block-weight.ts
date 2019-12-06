@@ -61,15 +61,17 @@ export class TrueBlockWeight {
                 .div(ARKTOSHI)
                 .toFixed(8)} fees.`
         );
-        if(transfers.businessTransactions.length > 0) {
-            for(let item of transfers.businessTransactions) {
+        if (transfers.businessTransactions.length > 0) {
+            for (const item of transfers.businessTransactions) {
                 transfers.transactions.push(item);
             }
-            logger.info(`Ready to payout from Business Revenue Account: ${transfers.totalBusinessAmount
-                .div(ARKTOSHI)
-                .toFixed(8)} + ${transfers.totalBusinessFees
-                .div(ARKTOSHI)
-                .toFixed(8)} fees.`)
+            logger.info(
+                `Ready to payout from Business Revenue Account: ${transfers.totalBusinessAmount
+                    .div(ARKTOSHI)
+                    .toFixed(8)} + ${transfers.totalBusinessFees
+                    .div(ARKTOSHI)
+                    .toFixed(8)} fees.`
+            );
         }
         logger.info(SEPARATOR);
         return transfers;
@@ -127,7 +129,7 @@ export class TrueBlockWeight {
         for (const [address] of payouts.payouts) {
             const wallet: string = this.getRedirectAddress(address);
             logger.info(
-                `Voter Share Payout to ${wallet} prepared: ${payouts.payouts
+                `Voter Share to ${wallet} prepared: ${payouts.payouts
                     .get(address)
                     .div(ARKTOSHI)
                     .toFixed(8)}`
@@ -151,7 +153,7 @@ export class TrueBlockWeight {
                 };
                 businessReceivers.push(receiver);
                 logger.info(
-                    `Business Share Payout to ${wallet} prepared: ${businessAmount
+                    `Revenue to ${wallet} prepared: ${businessAmount
                         .div(ARKTOSHI)
                         .toFixed(8)}`
                 );
@@ -159,7 +161,7 @@ export class TrueBlockWeight {
         }
 
         let vendorField: string = `${this.config.delegate} - ${this.config.vendorField}`;
-        let transactions: Interfaces.ITransactionData[] = await this.transactionEngine.createMultiPayment(
+        const transactions: Interfaces.ITransactionData[] = await this.transactionEngine.createMultiPayment(
             receivers,
             payouts.timestamp,
             vendorField,
@@ -171,7 +173,7 @@ export class TrueBlockWeight {
             this.config.multiTransferFee.times(transactions.length)
         );
 
-        vendorField = `${this.config.delegate} - Business Revenue Share.`; //todo
+        vendorField = `${this.config.delegate} - Business Revenue Share.`; // todo
         const businessTransactions: Interfaces.ITransactionData[] = await this.transactionEngine.createMultiPayment(
             businessReceivers,
             payouts.timestamp,
@@ -180,8 +182,17 @@ export class TrueBlockWeight {
             this.config.businessSecondPassphrase,
             true
         );
-        const totalBusinessFees: BigNumber = this.config.multiTransferFee.times(businessTransactions.length);
-        return { totalAmount, totalFees, transactions, businessTransactions, totalBusinessFees, totalBusinessAmount };
+        const totalBusinessFees: BigNumber = this.config.multiTransferFee.times(
+            businessTransactions.length
+        );
+        return {
+            totalAmount,
+            totalFees,
+            transactions,
+            businessTransactions,
+            totalBusinessFees,
+            totalBusinessAmount,
+        };
     }
 
     /**

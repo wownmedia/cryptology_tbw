@@ -67,12 +67,16 @@ export class ProposalEngine {
                     .minus(acfPayout)
                     .minus(voterPayout);
 
-                let businessBalance = new BigNumber( businessPayouts.get(address));
+                let businessBalance = new BigNumber(
+                    businessPayouts.get(address)
+                );
                 if (businessBalance.isNaN() || businessBalance.lt(0)) {
                     businessBalance = new BigNumber(0);
                 }
                 const businessPayout: BigNumber = new BigNumber(
-                    businessBalance.times(this.config.voterBusinessShare).integerValue(BigNumber.ROUND_DOWN)
+                    businessBalance
+                        .times(this.config.voterBusinessShare)
+                        .integerValue(BigNumber.ROUND_DOWN)
                 );
                 delegateProfit = delegateProfit.plus(delegatePayout);
                 acfDonation = acfDonation.plus(acfPayout);
@@ -134,7 +138,10 @@ export class ProposalEngine {
                 .div(totalPayout)
                 .times(totalFees);
             payouts.set(address, balance.minus(fairFees));
-            businessPayouts.set(address, businessPayouts.get(address).minus(fairFees));
+            businessPayouts.set(
+                address,
+                businessPayouts.get(address).minus(fairFees)
+            );
         }
 
         logger.info(SEPARATOR);
@@ -153,12 +160,22 @@ export class ProposalEngine {
         );
         logger.info(`License Fee: ${acfDonation.div(ARKTOSHI).toFixed(8)}`);
         logger.info(`Transaction Fees: ${totalFees.div(ARKTOSHI).toFixed(8)}`);
-        if(totalBusinessPayout.gt(0)) {
-            logger.info(`Business Revenue Payout: ${totalBusinessPayout.div(ARKTOSHI).toFixed(8)}`);
+        if (totalBusinessPayout.gt(0)) {
+            logger.info(
+                `Business Revenue Payout: ${totalBusinessPayout
+                    .div(ARKTOSHI)
+                    .toFixed(8)}`
+            );
         }
         logger.info(SEPARATOR);
 
-        return { payouts, businessPayouts, acfDonation, delegateProfit, timestamp: 0 };
+        return {
+            payouts,
+            businessPayouts,
+            acfDonation,
+            delegateProfit,
+            timestamp: 0,
+        };
     }
 
     /**

@@ -79,7 +79,7 @@ export class DatabaseAPI {
                 height: new BigNumber(block.height).integerValue(),
                 fees: new BigNumber(block.totalFee),
                 timestamp: new BigNumber(block.timestamp).integerValue(),
-                business: new BigNumber(0)
+                business: new BigNumber(0),
             };
         });
 

@@ -38,9 +38,7 @@ export class Network {
      */
     public async getCurrentHeight(): Promise<number> {
         try {
-            const config: APIResults = await this.getFromAPI(
-                "/api/blockchain"
-            );
+            const config: APIResults = await this.getFromAPI("/api/blockchain");
             return config.data.block.height;
         } catch (e) {
             return null;

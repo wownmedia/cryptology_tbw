@@ -18,9 +18,9 @@ import {
     VotersPerForgedBlock,
 } from "../interfaces";
 import { Config, logger, Network } from "../services";
+import { Crypto } from "./crypto";
 import { DatabaseAPI } from "./database-api";
 import { ProposalEngine } from "./proposal-engine";
-import { Crypto } from "./crypto";
 
 export class TrueBlockWeightEngine {
     /**

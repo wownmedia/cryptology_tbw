@@ -82,9 +82,7 @@ export class TransactionEngine {
             transaction = transaction.sign(seed);
 
             if (secondPassphrase !== null) {
-                transaction = transaction.secondSign(
-                    secondPassphrase
-                );
+                transaction = transaction.secondSign(secondPassphrase);
             }
             transactions.push(transaction.getStruct());
         }
