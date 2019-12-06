@@ -66,7 +66,7 @@ export class TrueBlockWeight {
                 transfers.transactions.push(item);
             }
             logger.info(
-                `Ready to payout from Business Revenue Account: ${transfers.totalBusinessAmount
+                `Ready to payout from Business Account: ${transfers.totalBusinessAmount
                     .div(ARKTOSHI)
                     .toFixed(8)} + ${transfers.totalBusinessFees
                     .div(ARKTOSHI)
@@ -129,7 +129,7 @@ export class TrueBlockWeight {
         for (const [address] of payouts.payouts) {
             const wallet: string = this.getRedirectAddress(address);
             logger.info(
-                `Voter Share to ${wallet} prepared: ${payouts.payouts
+                `Delegate Share to ${wallet} prepared: ${payouts.payouts
                     .get(address)
                     .div(ARKTOSHI)
                     .toFixed(8)}`
@@ -153,7 +153,7 @@ export class TrueBlockWeight {
                 };
                 businessReceivers.push(receiver);
                 logger.info(
-                    `Revenue to ${wallet} prepared: ${businessAmount
+                    `Business Share to ${wallet} prepared: ${businessAmount
                         .div(ARKTOSHI)
                         .toFixed(8)}`
                 );
@@ -173,7 +173,7 @@ export class TrueBlockWeight {
             this.config.multiTransferFee.times(transactions.length)
         );
 
-        vendorField = `${this.config.delegate} - Business Revenue Share.`; // todo
+        vendorField = `${this.config.delegate} - Business Revenue Share.`; // todo config
         const businessTransactions: Interfaces.ITransactionData[] = await this.transactionEngine.createMultiPayment(
             businessReceivers,
             payouts.timestamp,
