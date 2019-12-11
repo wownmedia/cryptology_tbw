@@ -150,7 +150,7 @@ export class TransactionEngine {
             );
         }
 
-        if (this.businessNonce === null) {
+        if (this.businessNonce === null && this.config.businessSeed !== null) {
             const businessPublicKey: string = Crypto.getPublicKeyFromSeed(
                 this.config.businessSeed
             );
