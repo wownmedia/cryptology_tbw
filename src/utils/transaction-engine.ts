@@ -57,7 +57,7 @@ export class TransactionEngine {
                 i + this.config.transactionsPerMultitransfer
             );
 
-            if(chunk.length === 1) {
+            if(chunk.length === 2) {
                 const receiver: Receiver = {
                     wallet: chunk[0].wallet,
                     amount: chunk[0].amount,
