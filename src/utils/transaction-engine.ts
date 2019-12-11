@@ -57,34 +57,44 @@ export class TransactionEngine {
                 i + this.config.transactionsPerMultitransfer
             );
 
-            let nonce: string;
-            if (business) {
-                this.businessNonce += 1;
-                nonce = this.businessNonce.toString();
+            if(chunk.length === 1) {
+                const receiver: Receiver = {
+                    wallet: chunk[0].wallet,
+                    amount: chunk[0].amount,
+                    vendorField
+                };
+                const transaction: Interfaces.ITransactionData = await this.createTransaction(receiver, timestamp, business);
+                transactions.push(transaction);
             } else {
-                this.nonce += 1;
-                nonce = this.nonce.toString();
-            }
-            let transaction: MultiPaymentBuilder = Transactions.BuilderFactory.multiPayment()
-                .vendorField(vendorField)
-                .fee(this.config.multiTransferFee.toFixed(0))
-                .nonce(nonce);
-            for (const receiver of chunk) {
-                transaction.addPayment(
-                    receiver.wallet,
-                    receiver.amount.toFixed(0)
-                );
-            }
-            if (timestamp) {
-                transaction.data.timestamp = timestamp;
-            }
+                let nonce: string;
+                if (business) {
+                    this.businessNonce += 1;
+                    nonce = this.businessNonce.toString();
+                } else {
+                    this.nonce += 1;
+                    nonce = this.nonce.toString();
+                }
+                let transaction: MultiPaymentBuilder = Transactions.BuilderFactory.multiPayment()
+                    .vendorField(vendorField)
+                    .fee(this.config.multiTransferFee.toFixed(0))
+                    .nonce(nonce);
+                for (const receiver of chunk) {
+                    transaction.addPayment(
+                        receiver.wallet,
+                        receiver.amount.toFixed(0)
+                    );
+                }
+                if (timestamp) {
+                    transaction.data.timestamp = timestamp;
+                }
 
-            transaction = transaction.sign(seed);
+                transaction = transaction.sign(seed);
 
-            if (secondPassphrase !== null) {
-                transaction = transaction.secondSign(secondPassphrase);
+                if (secondPassphrase !== null) {
+                    transaction = transaction.secondSign(secondPassphrase);
+                }
+                transactions.push(transaction.getStruct());
             }
-            transactions.push(transaction.getStruct());
         }
         return transactions;
     }
@@ -93,20 +103,30 @@ export class TransactionEngine {
      *
      * @param receiver
      * @param timestamp
+     * @param business
      */
     public async createTransaction(
         receiver: Receiver,
-        timestamp: number
+        timestamp: number,
+        business:boolean = false
     ): Promise<Interfaces.ITransactionData> {
         await this.setupNetwork();
-        this.nonce += 1;
+
+        let nonce: string;
+        if (business) {
+            this.businessNonce += 1;
+            nonce = this.businessNonce.toString();
+        } else {
+            this.nonce += 1;
+            nonce = this.nonce.toString();
+        }
 
         let transaction: TransferBuilder = Transactions.BuilderFactory.transfer()
             .amount(receiver.amount.toFixed(0))
             .recipientId(receiver.wallet)
             .vendorField(receiver.vendorField)
             .fee(this.config.transferFee.toFixed(0))
-            .nonce(this.nonce.toString());
+            .nonce(nonce);
 
         // todo somehow it doesn't take it as 255 from the setConfig with ARK mainnet
         if (
