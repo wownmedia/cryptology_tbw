@@ -122,6 +122,7 @@ export class DatabaseAPI {
                     transaction.serialized,
                     startBlockHeight
                 );
+
                 return {
                     height: new BigNumber(transaction.height).integerValue(),
                     recipientId:
@@ -178,15 +179,19 @@ export class DatabaseAPI {
                     transaction.serialized,
                     startBlockHeight
                 );
-                const address: string = Crypto.getAddressFromPublicKey(
-                    data.data.senderPublicKey,
-                    networkVersion
-                );
-                return {
-                    height: new BigNumber(transaction.height).integerValue(),
-                    address,
-                    vote: data.data.asset.votes[0],
-                };
+
+                if(data !== null) {
+                    const address: string = Crypto.getAddressFromPublicKey(
+                        data.data.senderPublicKey,
+                        networkVersion
+                    );
+                    return {
+                        height: new BigNumber(transaction.height).integerValue(),
+                        address,
+                        vote: data.data.asset.votes[0],
+                    };
+                }
+                return {};
             })
             .filter((transaction: VoterMutation) => {
                 return transaction.vote.includes(`${delegatePublicKey}`);
