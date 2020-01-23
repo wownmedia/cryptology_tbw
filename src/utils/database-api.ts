@@ -168,6 +168,7 @@ export class DatabaseAPI {
         await this.psql.close();
 
         if (result.rows.length === 0) {
+            logger.info("No Voter mutations retrieved.");
             return [];
         }
 
