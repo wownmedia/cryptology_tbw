@@ -120,7 +120,7 @@ export class DatabaseAPI {
             .map((transaction: DataBaseTransaction) => {
                 const data: Interfaces.ITransaction = DatabaseAPI.deserializeTransaction(
                     transaction.serialized,
-                    startBlockHeight
+                    transaction.height
                 );
 
                 return {
@@ -274,7 +274,7 @@ export class DatabaseAPI {
             (transaction: DataBaseTransaction) => {
                 const data: Interfaces.ITransaction = DatabaseAPI.deserializeTransaction(
                     transaction.serialized,
-                    startBlockHeight
+                    transaction.height
                 );
                 const senderId: string = Crypto.getAddressFromPublicKey(
                     data.data.senderPublicKey,
