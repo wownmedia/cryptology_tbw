@@ -177,7 +177,7 @@ export class DatabaseAPI {
             .map((transaction: VoteTransaction) => {
                 const data: Interfaces.ITransaction = DatabaseAPI.deserializeTransaction(
                     transaction.serialized,
-                    startBlockHeight
+                    transaction.height
                 );
 
                 if(data !== null) {
