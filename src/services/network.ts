@@ -105,7 +105,7 @@ export class Network {
                 return response.data;
             }
         } catch (error) {
-            logger.error(error);
+            logger.error(`${error} for URL: ${endPoint}`);
         }
         return null;
     }
