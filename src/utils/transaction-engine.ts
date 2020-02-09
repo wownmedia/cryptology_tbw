@@ -164,7 +164,7 @@ export class TransactionEngine {
         }
         Managers.configManager.setHeight(height);
 
-        const milestone = networkConfig.milestones.reverse().find(milestone => milestone.height <= height);
+        const milestone = Managers.configManager.getMilestone(height);
         this.config.transactionsPerMultitransfer = Math.min(this.config.transactionsPerMultitransfer, milestone.multiPaymentLimit);
 
         if (this.nonce === null) {
