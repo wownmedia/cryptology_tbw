@@ -112,8 +112,8 @@ export class DatabaseAPI {
         );
         await this.psql.close();
 
-        logger.info(`Delegate payouts received: ${result.rows.length}`);
         if (result.rows.length === 0) {
+            logger.info("No Delegate payouts retrieved.");
             return [];
         }
 
