@@ -125,7 +125,6 @@ export class DatabaseAPI {
                     transaction.height
                 );
 
-                logger.info(JSON.stringify(data));
                 return {
                     height: new BigNumber(transaction.height).integerValue(),
                     recipientId:
