@@ -170,12 +170,15 @@ export class TrueBlockWeightEngine {
         delegatePublicKey: string,
         forgedBlocks: ForgedBlock[]
     ): Promise<Voters> {
+        logger.info("Retrieving Current Voters from API.");
         const currentVotersFromAPI: Voter[] = await this.network.getVoters(
             this.config.delegate
         );
         const currentVoters: string[] = TrueBlockWeightEngine.formatCurrentVoters(
             currentVotersFromAPI
         );
+
+        logger.info("Retrieving Voter mutations.");
         const voterMutations: VoterMutation[] = await this.databaseAPI.getVoterMutations(
             delegatePublicKey,
             this.startBlockHeight,
