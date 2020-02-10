@@ -39,7 +39,7 @@ export class DatabaseAPI {
             const serialized: string = Buffer.from(buffer).toString("hex");
             return Crypto.deserializeTransaction(serialized, blockHeight);
         } catch (error) {
-            logger.error(`Deserialize transaction: ${error.message} (blockheight: ${blockHeight})`);
+            logger.error(`Deserialize transaction: ${error.message}`);
             return null;
         }
     }
@@ -113,6 +113,7 @@ export class DatabaseAPI {
         await this.psql.close();
 
         if (result.rows.length === 0) {
+            logger.info("No Delegate payouts retrieved.");
             return [];
         }
 
@@ -169,36 +170,43 @@ export class DatabaseAPI {
         await this.psql.close();
 
         if (result.rows.length === 0) {
-            logger.info("No Voter mutations retrieved.");
+            logger.info("0 Voter mutations retrieved.");
             return [];
         }
 
-        const voterMutations: VoterMutation[] = result.rows
-            .map((transaction: VoteTransaction) => {
-                const data: Interfaces.ITransaction = DatabaseAPI.deserializeTransaction(
-                    transaction.serialized,
-                    transaction.height
-                );
-
-                if(data !== null) {
-                    const address: string = Crypto.getAddressFromPublicKey(
-                        data.data.senderPublicKey,
-                        networkVersion
+        try {
+            const voterMutations: VoterMutation[] = result.rows
+                .map((transaction: VoteTransaction) => {
+                    const data: Interfaces.ITransaction = DatabaseAPI.deserializeTransaction(
+                        transaction.serialized,
+                        transaction.height
                     );
-                    return {
-                        height: new BigNumber(transaction.height).integerValue(),
-                        address,
-                        vote: data.data.asset.votes[0],
-                    };
-                }
-                return {};
-            })
-            .filter((transaction: VoterMutation) => {
-                return transaction.vote.includes(`${delegatePublicKey}`);
-            });
 
-        logger.info(`${voterMutations.length} Voter mutations retrieved.`);
-        return voterMutations;
+                    if (data !== null) {
+                        const address: string = Crypto.getAddressFromPublicKey(
+                            data.data.senderPublicKey,
+                            networkVersion
+                        );
+                        return {
+                            height: new BigNumber(
+                                transaction.height
+                            ).integerValue(),
+                            address,
+                            vote: data.data.asset.votes[0],
+                        };
+                    }
+                    return {};
+                })
+                .filter((transaction: VoterMutation) => {
+                    return transaction.vote.includes(`${delegatePublicKey}`);
+                });
+
+            logger.info(`${voterMutations.length} Voter mutations retrieved.`);
+            return voterMutations;
+        } catch (e) {
+            logger.info("0 Voter mutations retrieved.");
+            return [];
+        }
     }
 
     /**

@@ -60,12 +60,17 @@ export class ProposalEngine {
                         .times(this.config.donationShare)
                         .integerValue(BigNumber.ROUND_CEIL)
                 );
-                const voterPayout: BigNumber = new BigNumber(
+                let voterPayout: BigNumber = new BigNumber(
                     balance.times(percentage).integerValue(BigNumber.ROUND_DOWN)
                 );
-                const delegatePayout: BigNumber = new BigNumber(balance)
+                let delegatePayout: BigNumber = new BigNumber(balance)
                     .minus(acfPayout)
                     .minus(voterPayout);
+
+                if (delegatePayout.lt(0)) {
+                    voterPayout = voterPayout.minus(delegatePayout);
+                    delegatePayout = new BigNumber(0);
+                }
 
                 let businessBalance = new BigNumber(
                     businessPayouts.get(address)

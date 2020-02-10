@@ -72,36 +72,50 @@ export class TrueBlockWeightEngine {
                 this.config.delegate
             );
 
+            logger.info("Retrieving Forged Blocks.");
             const forgedBlocks: ForgedBlock[] = await this.databaseAPI.getForgedBlocks(
                 delegatePublicKey,
                 this.startBlockHeight,
                 this.config.historyAmountBlocks
             );
+
+            if (forgedBlocks.length === 0) {
+                logger.error("No forged blocks retrieved!");
+                return null;
+            }
+
             const currentBlock: number = forgedBlocks[0].height;
             const timestamp: number = forgedBlocks[0].timestamp + 1;
             const oldestBlock: number =
                 forgedBlocks[forgedBlocks.length - 1].height;
             this.startBlockHeight = oldestBlock - 1;
 
+            logger.info("Retrieving Delegate Payouts.");
             const delegatePayoutTransactions: DelegateTransaction[] = await this.databaseAPI.getDelegatePayoutTransactions(
                 delegatePublicKey,
                 this.startBlockHeight,
                 this.payoutSignature
             );
 
+            logger.info("Retrieving Voters.");
             const voters: Voters = await this.getVoters(
                 delegatePublicKey,
                 forgedBlocks
             );
+
+            logger.info("Retrieving Voter Balances.");
             const voterBalances: VoterBalances = await this.getVoterBalances(
                 voters.voters,
                 voters.voterWallets
             );
+
+            logger.info("Retrieving Voters forged blocks.");
             const votingDelegateBlocks: VoterBlock[] = await this.databaseAPI.getVotingDelegateBlocks(
                 voters.voterWallets,
                 this.startBlockHeight
             );
 
+            logger.info("Retrieving Voter Transactions.");
             const transactions: Transaction[] = await this.databaseAPI.getTransactions(
                 voters.voters,
                 voterBalances.publicKeys,
@@ -113,6 +127,7 @@ export class TrueBlockWeightEngine {
                 delegatePayoutTransactions
             );
 
+            logger.info("Processing Voter Balances.");
             const processedBalances: VoterBalancesPerForgedBlock = this.processBalances(
                 forgedBlocks,
                 voterBalances.balances,
@@ -134,6 +149,7 @@ export class TrueBlockWeightEngine {
                 voters.currentVoters
             );
 
+            logger.info("Applying Proposal.");
             const proposal: Payouts = this.proposalEngine.applyProposal(
                 currentBlock,
                 previousPayouts.latestPayouts,
@@ -160,12 +176,15 @@ export class TrueBlockWeightEngine {
         delegatePublicKey: string,
         forgedBlocks: ForgedBlock[]
     ): Promise<Voters> {
+        logger.info("Retrieving Current Voters from API.");
         const currentVotersFromAPI: Voter[] = await this.network.getVoters(
             this.config.delegate
         );
         const currentVoters: string[] = TrueBlockWeightEngine.formatCurrentVoters(
             currentVotersFromAPI
         );
+
+        logger.info("Retrieving Voter mutations.");
         const voterMutations: VoterMutation[] = await this.databaseAPI.getVoterMutations(
             delegatePublicKey,
             this.startBlockHeight,
