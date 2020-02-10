@@ -189,7 +189,6 @@ export class DatabaseAPI {
                             data.data.senderPublicKey,
                             networkVersion
                         );
-                        logger.info(JSON.stringify(data.data.asset.votes[0]));
                         return {
                             height: new BigNumber(transaction.height).integerValue(),
                             address,
