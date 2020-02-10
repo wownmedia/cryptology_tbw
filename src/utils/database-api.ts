@@ -172,11 +172,10 @@ export class DatabaseAPI {
         await this.psql.close();
 
         if (result.rows.length === 0) {
-            logger.info("No Voter mutations retrieved.");
+            logger.info("0 Voter mutations retrieved.");
             return [];
         }
 
-        logger.info(`${result.rows.length} Voter mutations retrieved.`);
         const voterMutations: VoterMutation[] = result.rows
             .map((transaction: VoteTransaction) => {
                 const data: Interfaces.ITransaction = DatabaseAPI.deserializeTransaction(
@@ -189,6 +188,7 @@ export class DatabaseAPI {
                         data.data.senderPublicKey,
                         networkVersion
                     );
+                    logger.info(JSON.stringify(data));
                     return {
                         height: new BigNumber(transaction.height).integerValue(),
                         address,
