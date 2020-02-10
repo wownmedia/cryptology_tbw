@@ -205,7 +205,7 @@ export class DatabaseAPI {
             logger.info(`${voterMutations.length} Voter mutations retrieved.`);
             return voterMutations;
         } catch (e) {
-            logger.error(e);
+            logger.info("0 Voter mutations retrieved.");
             return [];
         }
 
