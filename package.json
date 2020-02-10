@@ -56,7 +56,7 @@
     },
     "homepage": "https://github.com/wownmedia/cryptology_tbw#readme",
     "dependencies": {
-        "@arkecosystem/crypto": "^2.6.0-next.9",
+        "@arkecosystem/crypto": "^2.6.0-next.10",
         "axios": "0.19.2",
         "bignumber.js": "^9.0.0",
         "chalk": "^3.0.0",
