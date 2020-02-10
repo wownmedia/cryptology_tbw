@@ -78,6 +78,12 @@ export class TrueBlockWeightEngine {
                 this.startBlockHeight,
                 this.config.historyAmountBlocks
             );
+
+            if(forgedBlocks.length ===0) {
+                logger.error("No forged blocks retrieved!");
+                return null;
+            }
+
             const currentBlock: number = forgedBlocks[0].height;
             const timestamp: number = forgedBlocks[0].timestamp + 1;
             const oldestBlock: number =
