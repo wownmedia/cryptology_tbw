@@ -39,7 +39,7 @@ export class DatabaseAPI {
             const serialized: string = Buffer.from(buffer).toString("hex");
             return Crypto.deserializeTransaction(serialized, blockHeight);
         } catch (error) {
-            logger.error(`Deserialize transaction: ${error.message} (blockheight: ${blockHeight})`);
+            logger.error(`Deserialize transaction: ${error.message} (blockheight: ${blockHeight}) ${transaction}`);
             return null;
         }
     }
