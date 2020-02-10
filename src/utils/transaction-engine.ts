@@ -50,11 +50,11 @@ export class TransactionEngine {
         for (
             let i = 0;
             i < receivers.length;
-            i += 1 //this.config.transactionsPerMultitransfer
+            i += this.config.transactionsPerMultitransfer
         ) {
             const chunk: Receiver[] = receivers.slice(
                 i,
-                i + 1 //this.config.transactionsPerMultitransfer
+                i + this.config.transactionsPerMultitransfer
             );
 
             if(chunk.length === 1) {
