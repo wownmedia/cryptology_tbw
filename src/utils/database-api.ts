@@ -112,9 +112,11 @@ export class DatabaseAPI {
         );
         await this.psql.close();
 
+        logger.info(`Delegate payouts received: ${result.rows.length}`);
         if (result.rows.length === 0) {
             return [];
         }
+
 
         const delegatePayoutTransactions: DelegateTransaction[] = result.rows
             .map((transaction: DataBaseTransaction) => {
