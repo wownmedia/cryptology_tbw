@@ -176,6 +176,7 @@ export class DatabaseAPI {
             return [];
         }
 
+        logger.info(`${result.rows.length} Voter mutations retrieved.`);
         const voterMutations: VoterMutation[] = result.rows
             .map((transaction: VoteTransaction) => {
                 const data: Interfaces.ITransaction = DatabaseAPI.deserializeTransaction(
