@@ -79,7 +79,7 @@ export class TrueBlockWeightEngine {
                 this.config.historyAmountBlocks
             );
 
-            if(forgedBlocks.length ===0) {
+            if (forgedBlocks.length === 0) {
                 logger.error("No forged blocks retrieved!");
                 return null;
             }

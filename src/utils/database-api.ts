@@ -117,7 +117,6 @@ export class DatabaseAPI {
             return [];
         }
 
-
         const delegatePayoutTransactions: DelegateTransaction[] = result.rows
             .map((transaction: DataBaseTransaction) => {
                 const data: Interfaces.ITransaction = DatabaseAPI.deserializeTransaction(
@@ -189,7 +188,9 @@ export class DatabaseAPI {
                             networkVersion
                         );
                         return {
-                            height: new BigNumber(transaction.height).integerValue(),
+                            height: new BigNumber(
+                                transaction.height
+                            ).integerValue(),
                             address,
                             vote: data.data.asset.votes[0],
                         };
@@ -206,7 +207,6 @@ export class DatabaseAPI {
             logger.info("0 Voter mutations retrieved.");
             return [];
         }
-
     }
 
     /**

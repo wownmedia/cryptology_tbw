@@ -57,13 +57,17 @@ export class TransactionEngine {
                 i + this.config.transactionsPerMultitransfer
             );
 
-            if(chunk.length === 1) {
+            if (chunk.length === 1) {
                 const receiver: Receiver = {
                     wallet: chunk[0].wallet,
                     amount: chunk[0].amount,
-                    vendorField
+                    vendorField,
                 };
-                const transaction: Interfaces.ITransactionData = await this.createTransaction(receiver, timestamp, business);
+                const transaction: Interfaces.ITransactionData = await this.createTransaction(
+                    receiver,
+                    timestamp,
+                    business
+                );
                 transactions.push(transaction);
             } else {
                 let nonce: string;
@@ -108,7 +112,7 @@ export class TransactionEngine {
     public async createTransaction(
         receiver: Receiver,
         timestamp: number,
-        business:boolean = false
+        business: boolean = false
     ): Promise<Interfaces.ITransactionData> {
         await this.setupNetwork();
 
