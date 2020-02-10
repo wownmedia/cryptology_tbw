@@ -96,10 +96,14 @@ export class TrueBlockWeightEngine {
                 delegatePublicKey,
                 forgedBlocks
             );
+
+            logger.info("Retrieving Voter Balances.");
             const voterBalances: VoterBalances = await this.getVoterBalances(
                 voters.voters,
                 voters.voterWallets
             );
+
+            logger.info("Retrieving Voters forged blocks.");
             const votingDelegateBlocks: VoterBlock[] = await this.databaseAPI.getVotingDelegateBlocks(
                 voters.voterWallets,
                 this.startBlockHeight
