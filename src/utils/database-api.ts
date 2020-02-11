@@ -124,20 +124,23 @@ export class DatabaseAPI {
                     transaction.height
                 );
 
-                return {
-                    height: new BigNumber(transaction.height).integerValue(),
-                    recipientId:
-                        data.data.type === 0 ? data.data.recipientId : null,
-                    multiPayment:
-                        data.data.type === 6 ? data.data.asset.payments : null,
-                    vendorField:
-                        data && data.hasVendorField()
-                            ? data.data.vendorField
-                            : "",
-                    timestamp: new BigNumber(
-                        transaction.timestamp
-                    ).integerValue(),
-                };
+                if (data !== null) {
+
+                    return {
+                        height: new BigNumber(transaction.height).integerValue(),
+                        recipientId:
+                            data.data.type === 0 ? data.data.recipientId : null,
+                        multiPayment:
+                            data.data.type === 6 ? data.data.asset.payments : null,
+                        vendorField:
+                            data && data.hasVendorField()
+                                ? data.data.vendorField
+                                : "",
+                        timestamp: new BigNumber(
+                            transaction.timestamp
+                        ).integerValue(),
+                    };
+                } return {};
             })
             .filter((transaction: DelegateTransaction) => {
                 return (

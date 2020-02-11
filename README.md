@@ -28,6 +28,7 @@ Part of a delegate skillset would be the ability to create such a script, in cas
 # Upgrade from V2.5
 
 if you are upgrading from V2.5 then please make sure to check any new setting in the `example.env` file and apply those to your `.env`.
+and set your `START_BLOCK_HEIGHT` setting to one block after your last payout.
 
 -   go to the directory of the script;
 -   `git pull`
