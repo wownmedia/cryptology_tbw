@@ -1,4 +1,13 @@
 # Snyk (https://snyk.io) policy file, patches or ignores known vulnerabilities.
 version: v1.13.5
-ignore: {}
+# ignores vulnerabilities until expiry date; change duration by modifying expiry date
+ignore:
+  SNYK-JS-ELLIPTIC-511941:
+    - '@arkecosystem/crypto > bip32 > tiny-secp256k1 > elliptic':
+        reason: None given
+        expires: '2020-03-11T22:36:57.522Z'
+  'npm:utile:20180614':
+    - prompt > utile:
+        reason: None given
+        expires: '2020-03-11T22:36:57.522Z'
 patch: {}
