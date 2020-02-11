@@ -284,24 +284,28 @@ export class DatabaseAPI {
                     transaction.serialized,
                     transaction.height
                 );
-                const senderId: string = Crypto.getAddressFromPublicKey(
-                    data.data.senderPublicKey,
-                    networkVersion
-                );
-                return {
-                    amount: data.data.amount,
-                    recipientId:
-                        data.data.type === 0 ? data.data.recipientId : null,
-                    multiPayment:
-                        data.data.type === 6 ? data.data.asset.payments : null,
-                    senderId,
-                    senderPublicKey: data.data.senderPublicKey,
-                    fee: data.data.fee,
-                    height: new BigNumber(transaction.height).integerValue(),
-                    timestamp: new BigNumber(
-                        transaction.timestamp
-                    ).integerValue(),
-                };
+
+                if (data !== null) {
+                    const senderId: string = Crypto.getAddressFromPublicKey(
+                        data.data.senderPublicKey,
+                        networkVersion
+                    );
+                    return {
+                        amount: data.data.amount,
+                        recipientId:
+                            data.data.type === 0 ? data.data.recipientId : null,
+                        multiPayment:
+                            data.data.type === 6 ? data.data.asset.payments : null,
+                        senderId,
+                        senderPublicKey: data.data.senderPublicKey,
+                        fee: data.data.fee,
+                        height: new BigNumber(transaction.height).integerValue(),
+                        timestamp: new BigNumber(
+                            transaction.timestamp
+                        ).integerValue(),
+                    };
+                }
+                return {};
             }
         );
 
