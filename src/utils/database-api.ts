@@ -201,7 +201,10 @@ export class DatabaseAPI {
                     return {};
                 })
                 .filter((transaction: VoterMutation) => {
-                    return transaction.vote.includes(`${delegatePublicKey}`);
+                    return (
+                        transaction.vote &&
+                        transaction.vote.includes(`${delegatePublicKey}`)
+                    );
                 });
 
             logger.info(`${voterMutations.length} Voter mutations retrieved.`);
