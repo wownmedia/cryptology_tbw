@@ -44,7 +44,7 @@ export class DatabaseAPI {
             try {
                 return Crypto.deserializeTransaction(serialized, 1);
             } catch (error) {
-                logger.error(`Deserialize transaction: ${error.message}: ${transaction}`);
+                logger.error(`Deserialize transaction at ${blockHeight}: ${error.message}: ${transaction}`);
 
                 return null;
             }
