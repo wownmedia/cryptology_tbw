@@ -40,15 +40,13 @@ export class DatabaseAPI {
         try {
             return Crypto.deserializeTransaction(serialized, blockHeight);
         } catch (error) {
-
-        }
-
-        // Try to deserialize with a lower blocHheight
-        try {
-            return Crypto.deserializeTransaction(serialized, 1);
-        } catch (error) {
-            logger.error(`Deserialize transaction: ${error.message}`);
-            return null;
+            // Try to deserialize with a lower blocHheight
+            try {
+                return Crypto.deserializeTransaction(serialized, 1);
+            } catch (error) {
+                logger.error(`Deserialize transaction: ${error.message}`);
+                return null;
+            }
         }
     }
 
