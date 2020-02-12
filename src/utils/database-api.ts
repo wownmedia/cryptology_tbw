@@ -34,10 +34,18 @@ export class DatabaseAPI {
         transaction: string,
         blockHeight: number
     ): Interfaces.ITransaction {
+        const buffer: Buffer = Buffer.from(transaction, "hex");
+        const serialized: string = Buffer.from(buffer).toString("hex");
+
         try {
-            const buffer: Buffer = Buffer.from(transaction, "hex");
-            const serialized: string = Buffer.from(buffer).toString("hex");
             return Crypto.deserializeTransaction(serialized, blockHeight);
+        } catch (error) {
+
+        }
+
+        // Try to deserialize with a lower blocHheight
+        try {
+            return Crypto.deserializeTransaction(serialized, 1);
         } catch (error) {
             logger.error(`Deserialize transaction: ${error.message}`);
             return null;
