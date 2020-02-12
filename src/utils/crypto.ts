@@ -43,6 +43,8 @@ export class Crypto {
         const transaction = {} as Interfaces.ITransaction;
         transaction.data = {} as Interfaces.ITransactionData;
 
+        transaction.data.vendorField = "";
+
         const buffer: ByteBuffer = this.getByteBuffer(serialized);
         buffer.skip(1); // Skip 0xFF marker
         transaction.data.version = buffer.readUint8();
