@@ -4,6 +4,8 @@ import {
     Managers,
     Transactions,
 } from "@arkecosystem/crypto";
+import ByteBuffer from "bytebuffer";
+import { BigNumber } from "@arkecosystem/utils";
 
 export class Crypto {
     /**
@@ -35,7 +37,45 @@ export class Crypto {
         return Transactions.Deserializer.deserialize(serialized);
     }
 
+    public static deserializeMagistrateTransaction(
+        serialized: string
+    ): Interfaces.ITransaction {
+        const transaction = {} as Interfaces.ITransaction;
+        transaction.data = {} as Interfaces.ITransactionData;
+
+        const buffer: ByteBuffer = this.getByteBuffer(serialized);
+        buffer.skip(1); // Skip 0xFF marker
+        transaction.data.version = buffer.readUint8();
+        transaction.data.network = buffer.readUint8();
+
+        if (transaction.data.version === 1) {
+            transaction.data.type = buffer.readUint8();
+            transaction.data.timestamp = buffer.readUint32();
+        } else {
+            transaction.data.typeGroup = buffer.readUint32();
+            transaction.data.type = buffer.readUint16();
+            transaction.data.nonce = BigNumber.make(buffer.readUint64().toString());
+        }
+
+        transaction.data.senderPublicKey = buffer.readBytes(33).toString("hex");
+        transaction.data.fee = BigNumber.make(buffer.readUint64().toString());
+        transaction.data.amount = BigNumber.ZERO;
+        return transaction.data.fee.isGreaterThan(0) ? transaction : null;
+    }
+
     public static getPublicKeyFromSeed(seed: string): string {
         return Identities.PublicKey.fromPassphrase(seed);
+    }
+
+    private static getByteBuffer(serialized: Buffer | string): ByteBuffer {
+        if (!(serialized instanceof Buffer)) {
+            serialized = Buffer.from(serialized, "hex");
+        }
+
+        const buffer: ByteBuffer = new ByteBuffer(serialized.length, true);
+        buffer.append(serialized);
+        buffer.reset();
+
+        return buffer;
     }
 }
