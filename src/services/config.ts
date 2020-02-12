@@ -154,7 +154,7 @@ export class Config {
         this.endAtBlockHeight = process.env.END_BLOCK_HEIGHT
             ? parseInt(process.env.END_BLOCK_HEIGHT, 10)
             : null;
-        if (Number.isInteger(this.endAtBlockHeight) && this.endAtBlockHeight < 1) {
+        if (Number.isInteger(this.endAtBlockHeight) && this.endAtBlockHeight <= this.startFromBlockHeight) {
             throw new TypeError("Invalid END_BLOCK_HEIGHT configuration");
         }
 
