@@ -42,6 +42,7 @@ export class TrueBlockWeightEngine {
     private readonly proposalEngine: ProposalEngine;
     private readonly payoutSignature: string;
     private startBlockHeight: number;
+    private endBlockHeight: number;
 
     constructor() {
         BigNumber.config({
@@ -51,6 +52,7 @@ export class TrueBlockWeightEngine {
         this.config = new Config();
         this.payoutSignature = `${this.config.delegate} - `;
         this.startBlockHeight = this.config.startFromBlockHeight;
+        this.endBlockHeight = this.config.endAtBlockHeight;
         this.network = new Network(this.config.server, this.config.nodes);
         const databaseConfig: DatabaseConfig = {
             host: this.config.databaseHost,
@@ -76,6 +78,7 @@ export class TrueBlockWeightEngine {
             const forgedBlocks: ForgedBlock[] = await this.databaseAPI.getForgedBlocks(
                 delegatePublicKey,
                 this.startBlockHeight,
+                this.endBlockHeight,
                 this.config.historyAmountBlocks
             );
 
@@ -94,6 +97,7 @@ export class TrueBlockWeightEngine {
             const delegatePayoutTransactions: DelegateTransaction[] = await this.databaseAPI.getDelegatePayoutTransactions(
                 delegatePublicKey,
                 this.startBlockHeight,
+                this.endBlockHeight,
                 this.payoutSignature
             );
 
@@ -112,7 +116,8 @@ export class TrueBlockWeightEngine {
             logger.info("Retrieving Voters forged blocks.");
             const votingDelegateBlocks: VoterBlock[] = await this.databaseAPI.getVotingDelegateBlocks(
                 voters.voterWallets,
-                this.startBlockHeight
+                this.startBlockHeight,
+                this.endBlockHeight,
             );
 
             logger.info("Retrieving Voter Transactions.");
@@ -120,6 +125,7 @@ export class TrueBlockWeightEngine {
                 voters.voters,
                 voterBalances.publicKeys,
                 this.startBlockHeight,
+                this.endBlockHeight,
                 this.config.networkVersion
             );
 
@@ -188,6 +194,7 @@ export class TrueBlockWeightEngine {
         const voterMutations: VoterMutation[] = await this.databaseAPI.getVoterMutations(
             delegatePublicKey,
             this.startBlockHeight,
+            this.endBlockHeight,
             this.config.networkVersion
         );
 
@@ -435,6 +442,7 @@ export class TrueBlockWeightEngine {
                 [businessWallet],
                 [businessPublicKey],
                 this.startBlockHeight,
+                this.endBlockHeight,
                 this.config.networkVersion
             );
             if (businessTransactions.length === 0) {

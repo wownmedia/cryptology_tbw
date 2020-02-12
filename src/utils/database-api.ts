@@ -60,17 +60,20 @@ export class DatabaseAPI {
      *
      * @param delegatePublicKey
      * @param startBlockHeight
+     * @param endBlockHeight
      * @param historyAmountBlocks
      */
     public async getForgedBlocks(
         delegatePublicKey: string,
         startBlockHeight: number,
+        endBlockHeight: number,
         historyAmountBlocks: number
     ): Promise<ForgedBlock[]> {
         await this.psql.connect();
         const getForgedBlocksQuery: string = getForgedBlocks(
             delegatePublicKey,
             startBlockHeight,
+            endBlockHeight,
             historyAmountBlocks
         );
         const result: Result = await this.psql.query(getForgedBlocksQuery);
@@ -101,15 +104,18 @@ export class DatabaseAPI {
      *
      * @param delegatePublicKey
      * @param startBlockHeight
+     * @param endBlockHeight
      * @param payoutSignature
      */
     public async getDelegatePayoutTransactions(
         delegatePublicKey: string,
         startBlockHeight: number,
+        endBlockHeight: number,
         payoutSignature: string
     ): Promise<DelegateTransaction[]> {
         const getDelegateTransactionsQuery = getDelegateTransactions(
             startBlockHeight,
+            endBlockHeight,
             delegatePublicKey
         );
         await this.psql.connect();
@@ -164,15 +170,18 @@ export class DatabaseAPI {
      * Get all the votes/unvotes for this delegate that are within range.
      * @param delegatePublicKey
      * @param startBlockHeight
+     * @param endBlockHeight
      * @param networkVersion
      */
     public async getVoterMutations(
         delegatePublicKey: string,
         startBlockHeight: number,
+        endBlockHeight: number,
         networkVersion: number
     ): Promise<VoterMutation[]> {
         const getVoterSinceHeightQuery: string = getVoterSinceHeight(
-            startBlockHeight
+            startBlockHeight,
+            endBlockHeight,
         );
         await this.psql.connect();
         const result: Result = await this.psql.query(getVoterSinceHeightQuery);
@@ -225,16 +234,19 @@ export class DatabaseAPI {
      *
      * @param voterWallets
      * @param startBlockHeight
+     * @param endBlockHeight
      */
     public async getVotingDelegateBlocks(
         voterWallets: Voter[],
-        startBlockHeight: number
+        startBlockHeight: number,
+        endBlockHeight: number
     ): Promise<VoterBlock[]> {
         const wallets: Map<string, string> = new Map(
             voterWallets.map(wallet => [wallet.publicKey, wallet.address])
         );
         const getVotingDelegatesQuery: string = getVotingDelegates(
-            startBlockHeight
+            startBlockHeight,
+            endBlockHeight
         );
         await this.psql.connect();
         const result: Result = await this.psql.query(getVotingDelegatesQuery);
@@ -268,18 +280,21 @@ export class DatabaseAPI {
      * @param voters
      * @param votersPublicKeys
      * @param startBlockHeight
+     * @param endBlockHeight
      * @param networkVersion
      */
     public async getTransactions(
         voters: string[],
         votersPublicKeys: string[],
         startBlockHeight: number,
+        endBlockHeight: number,
         networkVersion: number
     ): Promise<Transaction[]> {
         const getTransactionsQuery = getTransactions(
             voters,
             votersPublicKeys,
-            startBlockHeight
+            startBlockHeight,
+            endBlockHeight,
         );
 
         await this.psql.connect();

@@ -19,6 +19,7 @@ export class Config {
     public readonly donationShare: BigNumber;
     public readonly minimalBalance: BigNumber;
     public readonly startFromBlockHeight: number;
+    public readonly endAtBlockHeight: number;
     public readonly historyAmountBlocks: number;
     public readonly poolHoppingProtection: boolean;
     public readonly whitelistedVoters: string[];
@@ -147,7 +148,14 @@ export class Config {
             ? parseInt(process.env.START_BLOCK_HEIGHT, 10)
             : 1;
         if (this.startFromBlockHeight < 1) {
-            throw new TypeError("Invalid MAX_HISTORY configuration");
+            throw new TypeError("Invalid START_BLOCK_HEIGHT configuration");
+        }
+
+        this.endAtBlockHeight = process.env.END_BLOCK_HEIGHT
+            ? parseInt(process.env.END_BLOCK_HEIGHT, 10)
+            : null;
+        if (Number.isInteger(this.endAtBlockHeight) && this.endAtBlockHeight <= this.startFromBlockHeight) {
+            throw new TypeError("Invalid END_BLOCK_HEIGHT configuration");
         }
 
         this.historyAmountBlocks = process.env.MAX_HISTORY
