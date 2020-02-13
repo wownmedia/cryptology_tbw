@@ -17,7 +17,7 @@ export const getForgedBlocks = (
           AND blocks.height >= ${startBlockHeight}`;
 
     if (endBlockHeight) {
-      query = `${query} AND blocks.height <= ${endBlockHeight}`;
+        query = `${query} AND blocks.height <= ${endBlockHeight}`;
     }
 
     query = `${query} ORDER BY blocks.height DESC LIMIT ${limit};`;
@@ -30,13 +30,16 @@ export const getForgedBlocks = (
  * @param startBlockHeight
  * @param endBlockHeight
  */
-export const getVotingDelegates = (startBlockHeight: number, endBlockHeight: number): string => {
+export const getVotingDelegates = (
+    startBlockHeight: number,
+    endBlockHeight: number
+): string => {
     let query = `SELECT blocks."generator_public_key", blocks."height", blocks."total_fee" \
           FROM blocks \
           WHERE blocks.height >= ${startBlockHeight}`;
 
     if (endBlockHeight) {
-      query = `${query} AND blocks.height <= ${endBlockHeight}`;
+        query = `${query} AND blocks.height <= ${endBlockHeight}`;
     }
 
     query = `${query} ORDER BY blocks."height" ASC;`;
@@ -49,14 +52,17 @@ export const getVotingDelegates = (startBlockHeight: number, endBlockHeight: num
  * @param startBlockHeight
  * @param endBlockHeight
  */
-export const getVoterSinceHeight = (startBlockHeight: number, endBlockHeight: number): string => {
+export const getVoterSinceHeight = (
+    startBlockHeight: number,
+    endBlockHeight: number
+): string => {
     let query = `SELECT transactions."serialized", transactions."recipient_id" AS "recipientId", blocks."height" \
           FROM transactions INNER JOIN blocks ON blocks."id" = transactions."block_id"  
           WHERE transactions."type" = 3 \
           AND blocks.height >= ${startBlockHeight}`;
 
     if (endBlockHeight) {
-      query = `${query} AND blocks.height <= ${endBlockHeight}`;
+        query = `${query} AND blocks.height <= ${endBlockHeight}`;
     }
 
     query = `${query} ORDER BY blocks."height" ASC;`;
@@ -87,7 +93,7 @@ export const getTransactions = (
           WHERE blocks."height" >= ${startBlockHeight}`;
 
     if (endBlockHeight) {
-      query = `${query} AND blocks.height <= ${endBlockHeight}`;
+        query = `${query} AND blocks.height <= ${endBlockHeight}`;
     }
 
     query = `${query} AND ( transactions."sender_public_key" in (${votersPublicKeys}) \
@@ -113,7 +119,7 @@ export const getDelegateTransactions = (
           WHERE blocks."height" >= ${startBlockHeight}`;
 
     if (endBlockHeight) {
-      query = `${query} AND blocks.height <= ${endBlockHeight}`;
+        query = `${query} AND blocks.height <= ${endBlockHeight}`;
     }
 
     query = `${query} AND transactions."sender_public_key" = '${delegatePublicKey}' \

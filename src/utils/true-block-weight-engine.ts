@@ -117,7 +117,7 @@ export class TrueBlockWeightEngine {
             const votingDelegateBlocks: VoterBlock[] = await this.databaseAPI.getVotingDelegateBlocks(
                 voters.voterWallets,
                 this.startBlockHeight,
-                this.endBlockHeight,
+                this.endBlockHeight
             );
 
             logger.info("Retrieving Voter Transactions.");

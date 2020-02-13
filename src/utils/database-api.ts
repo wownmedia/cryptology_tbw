@@ -136,13 +136,16 @@ export class DatabaseAPI {
                 );
 
                 if (data !== null) {
-
                     return {
-                        height: new BigNumber(transaction.height).integerValue(),
+                        height: new BigNumber(
+                            transaction.height
+                        ).integerValue(),
                         recipientId:
                             data.data.type === 0 ? data.data.recipientId : null,
                         multiPayment:
-                            data.data.type === 6 ? data.data.asset.payments : null,
+                            data.data.type === 6
+                                ? data.data.asset.payments
+                                : null,
                         vendorField:
                             data && data.hasVendorField()
                                 ? data.data.vendorField
@@ -151,7 +154,8 @@ export class DatabaseAPI {
                             transaction.timestamp
                         ).integerValue(),
                     };
-                } return {};
+                }
+                return {};
             })
             .filter((transaction: DelegateTransaction) => {
                 return (
@@ -180,7 +184,7 @@ export class DatabaseAPI {
     ): Promise<VoterMutation[]> {
         const getVoterSinceHeightQuery: string = getVoterSinceHeight(
             startBlockHeight,
-            endBlockHeight,
+            endBlockHeight
         );
         await this.psql.connect();
         const result: Result = await this.psql.query(getVoterSinceHeightQuery);
@@ -293,7 +297,7 @@ export class DatabaseAPI {
             voters,
             votersPublicKeys,
             startBlockHeight,
-            endBlockHeight,
+            endBlockHeight
         );
 
         await this.psql.connect();
@@ -321,11 +325,15 @@ export class DatabaseAPI {
                         recipientId:
                             data.data.type === 0 ? data.data.recipientId : null,
                         multiPayment:
-                            data.data.type === 6 ? data.data.asset.payments : null,
+                            data.data.type === 6
+                                ? data.data.asset.payments
+                                : null,
                         senderId,
                         senderPublicKey: data.data.senderPublicKey,
                         fee: data.data.fee,
-                        height: new BigNumber(transaction.height).integerValue(),
+                        height: new BigNumber(
+                            transaction.height
+                        ).integerValue(),
                         timestamp: new BigNumber(
                             transaction.timestamp
                         ).integerValue(),

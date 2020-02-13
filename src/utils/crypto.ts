@@ -43,7 +43,9 @@ export class Crypto {
         const transaction = {} as Interfaces.ITransaction;
         transaction.data = {} as Interfaces.ITransactionData;
 
-        transaction.hasVendorField = () => { return false };
+        transaction.hasVendorField = () => {
+            return false;
+        };
 
         const buffer: ByteBuffer = this.getByteBuffer(serialized);
         buffer.skip(1); // Skip 0xFF marker
@@ -56,7 +58,9 @@ export class Crypto {
         } else {
             transaction.data.typeGroup = buffer.readUint32();
             transaction.data.type = buffer.readUint16();
-            transaction.data.nonce = BigNumber.make(buffer.readUint64().toString());
+            transaction.data.nonce = BigNumber.make(
+                buffer.readUint64().toString()
+            );
         }
 
         transaction.data.senderPublicKey = buffer.readBytes(33).toString("hex");
