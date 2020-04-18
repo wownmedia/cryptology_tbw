@@ -195,6 +195,7 @@ export class Network {
                     getWalletEndpoint
                 );
                 if (
+                    walletAPIResult &&
                     walletAPIResult.hasOwnProperty("data") &&
                     walletAPIResult.data.hasOwnProperty("address") &&
                     walletAPIResult.data.hasOwnProperty("publicKey") &&
