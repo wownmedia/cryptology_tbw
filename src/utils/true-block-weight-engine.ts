@@ -743,6 +743,7 @@ export class TrueBlockWeightEngine {
                         walletBalances.get(address)
                     );
 
+                    logger.warn(`${address} payout at ${height} for balance: ${voterBalance}`);
                     // Only payout voters that had a ballance that exceeds or equals the configured minimum balance.
                     if (voterBalance.gte(this.config.minimalBalance)) {
                         const voterShare: BigNumber = voterBalance.div(balance);
