@@ -93,6 +93,8 @@ export class TrueBlockWeightEngine {
                 forgedBlocks[forgedBlocks.length - 1].height;
             this.startBlockHeight = oldestBlock - 1;
 
+            logger.info(`Oldest forged block in range is ${oldestBlock}`);
+
             logger.info("Retrieving Delegate Payouts.");
             const delegatePayoutTransactions: DelegateTransaction[] = await this.databaseAPI.getDelegatePayoutTransactions(
                 delegatePublicKey,
