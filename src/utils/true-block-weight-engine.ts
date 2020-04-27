@@ -318,10 +318,6 @@ export class TrueBlockWeightEngine {
         for (const item of voteTransactions) {
             if (item.hasOwnProperty("address") && item.hasOwnProperty("vote")) {
 
-                if(item.address === "ATPNyMxMFwFw2TgrcRdx2siqBRmUXZbiQ2") {
-                    logger.warn(`ATPNyMxMFwFw2TgrcRdx2siqBRmUXZbiQ2 found: ${item.vote}`);
-                }
-
                 // Check if we have seen this voter before
                 if (voters.indexOf(item.address) < 0) {
                     voters.push(item.address);
@@ -564,7 +560,6 @@ export class TrueBlockWeightEngine {
                 );
                 calculatedVoters.forEach(
                     (balance: BigNumber, address: string) => {
-                        logger.warn(`${address} : balance: ${balance} at height: ${height}`);
                         if (
                             new BigNumber(balance).gt(
                                 this.config.smallWalletBonus.walletLimit
