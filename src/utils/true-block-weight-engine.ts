@@ -195,6 +195,8 @@ export class TrueBlockWeightEngine {
             currentVotersFromAPI
         );
 
+        logger.info(`There are ${currentVoters.length} wallets currently voting.`);
+
         logger.info("Retrieving Voter mutations.");
         const voterMutations: VoterMutation[] = await this.databaseAPI.getVoterMutations(
             delegatePublicKey,
