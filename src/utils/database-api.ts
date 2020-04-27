@@ -245,7 +245,7 @@ export class DatabaseAPI {
         endBlockHeight: number
     ): Promise<VoterBlock[]> {
         const wallets: Map<string, string> = new Map(
-            voterWallets.map(wallet => [wallet.publicKey, wallet.address])
+            voterWallets.map((wallet) => [wallet.publicKey, wallet.address])
         );
         const getVotingDelegatesQuery: string = getVotingDelegates(
             startBlockHeight,

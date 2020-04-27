@@ -83,9 +83,9 @@ export const getTransactions = (
     startBlockHeight: number,
     endBlockHeight: number
 ): string => {
-    const votersAddresses = voters.map(address => `'${address}'`).join(",");
+    const votersAddresses = voters.map((address) => `'${address}'`).join(",");
     const votersPublicKeys = votersKeys
-        .map(publicKey => `'${publicKey}'`)
+        .map((publicKey) => `'${publicKey}'`)
         .join(",");
 
     let query = `SELECT transactions."serialized", transactions."timestamp", blocks."height" \

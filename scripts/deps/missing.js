@@ -5,7 +5,7 @@ const { lstatSync, readdirSync } = require("fs");
 const source = resolve(__dirname, "./");
 
 const pkgs = readdirSync(source)
-    .filter(name => lstatSync(`${source}/${name}`).isDirectory())
+    .filter((name) => lstatSync(`${source}/${name}`).isDirectory())
     .sort();
 
 for (const pkg of pkgs) {
@@ -15,7 +15,7 @@ for (const pkg of pkgs) {
             ignoreDirs: ["__tests__", "benchmark", "dist", "docker", "scripts"],
             ignoreMatches: ["@types/*"],
         },
-        unused => {
+        (unused) => {
             const missing = Object.keys(unused.missing);
 
             if (missing.length > 0) {
