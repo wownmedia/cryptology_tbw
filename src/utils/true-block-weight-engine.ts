@@ -564,6 +564,7 @@ export class TrueBlockWeightEngine {
                 );
                 calculatedVoters.forEach(
                     (balance: BigNumber, address: string) => {
+                        logger.warn(`${address} : balance: ${balance} at height: ${height}`);
                         if (
                             new BigNumber(balance).gt(
                                 this.config.smallWalletBonus.walletLimit
