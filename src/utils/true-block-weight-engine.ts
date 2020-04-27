@@ -267,7 +267,9 @@ export class TrueBlockWeightEngine {
                     height,
                     votersRound.slice(0)
                 );
-                logger.warn(`calculatedVotersPerForgedBlock: ${votersRound.length} : ${height}`);
+                if(votersRound.indexOf("ATPNyMxMFwFw2TgrcRdx2siqBRmUXZbiQ2")) {
+                    logger.warn(`calculatedVotersPerForgedBlock: ${votersRound.length} : ${height}`);
+                }
 
             }
         );
@@ -315,6 +317,10 @@ export class TrueBlockWeightEngine {
     ): MutatedVotersPerRound {
         for (const item of voteTransactions) {
             if (item.hasOwnProperty("address") && item.hasOwnProperty("vote")) {
+
+                if(item.address === "ATPNyMxMFwFw2TgrcRdx2siqBRmUXZbiQ2") {
+                    logger.warn(`ATPNyMxMFwFw2TgrcRdx2siqBRmUXZbiQ2 found: ${item.vote}`);
+                }
 
                 // Check if we have seen this voter before
                 if (voters.indexOf(item.address) < 0) {
