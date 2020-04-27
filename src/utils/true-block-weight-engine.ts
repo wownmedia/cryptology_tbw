@@ -743,8 +743,7 @@ export class TrueBlockWeightEngine {
                         walletBalances.get(address)
                     );
 
-                    logger.warn(`${address} payout at ${height} for balance: ${voterBalance}`);
-                    // Only payout voters that had a ballance that exceeds or equals the configured minimum balance.
+                    // Only payout voters that had a balance that exceeds or equals the configured minimum balance.
                     if (voterBalance.gte(this.config.minimalBalance)) {
                         const voterShare: BigNumber = voterBalance.div(balance);
                         const rewardShare: BigNumber = new BigNumber(
@@ -753,7 +752,8 @@ export class TrueBlockWeightEngine {
 
                         pendingPayout = pendingPayout.plus(rewardShare);
                         payouts.set(address, pendingPayout);
-
+                        logger.warn(`${address} payout at ${height} for balance: ${voterBalance}`);
+                        logger.warn(`${address}: pending payout: ${pendingPayout}`);
                         if (totalFeesThisBlock.gt(0)) {
                             let pendingFeesPayout: BigNumber =
                                 typeof feesPayouts.get(address) !== "undefined"
