@@ -319,7 +319,7 @@ export class TrueBlockWeightEngine {
             if (item.hasOwnProperty("address") && item.hasOwnProperty("vote")) {
 
                 if(item.address === "Aao3G3v97FZzdKFW27ntQJAjCkJhpWgdfz") {
-                    logger.debug("Aao3G3v97FZzdKFW27ntQJAjCkJhpWgdfz found");
+                    logger.warn("Aao3G3v97FZzdKFW27ntQJAjCkJhpWgdfz found");
                 }
                 // Check if we have seen this voter before
                 if (voters.indexOf(item.address) < 0) {
