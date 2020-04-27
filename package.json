@@ -129,7 +129,7 @@
     },
     "lint-staged": {
         "*.js": [
-            "eslint --fix"
+            "eslint --fix --debug"
         ]
     },
     "engines": {
