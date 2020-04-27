@@ -267,9 +267,7 @@ export class TrueBlockWeightEngine {
                     height,
                     votersRound.slice(0)
                 );
-                if(votersRound.indexOf("Aao3G3v97FZzdKFW27ntQJAjCkJhpWgdfz") > 0) {
-                    logger.warn(`calculatedVotersPerForgedBlock: ${votersRound.length} : ${height}`);
-                }
+                logger.warn(`calculatedVotersPerForgedBlock: ${votersRound.length} : ${height}`);
 
             }
         );
@@ -318,9 +316,6 @@ export class TrueBlockWeightEngine {
         for (const item of voteTransactions) {
             if (item.hasOwnProperty("address") && item.hasOwnProperty("vote")) {
 
-                if(item.address === "Aao3G3v97FZzdKFW27ntQJAjCkJhpWgdfz") {
-                    logger.warn("Aao3G3v97FZzdKFW27ntQJAjCkJhpWgdfz found");
-                }
                 // Check if we have seen this voter before
                 if (voters.indexOf(item.address) < 0) {
                     voters.push(item.address);
