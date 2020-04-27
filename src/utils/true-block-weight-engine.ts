@@ -91,9 +91,12 @@ export class TrueBlockWeightEngine {
             const timestamp: number = forgedBlocks[0].timestamp + 1;
             const oldestBlock: number =
                 forgedBlocks[forgedBlocks.length - 1].height;
-            this.startBlockHeight = oldestBlock - 1;
 
-            logger.info(`Oldest forged block in range is ${oldestBlock}`);
+            if (this.startBlockHeight < oldestBlock - 1) {
+                this.startBlockHeight = oldestBlock - 1;
+            }
+
+            logger.info(`Starting calculations from ${this.startBlockHeight}`);
 
             logger.info("Retrieving Delegate Payouts.");
             const delegatePayoutTransactions: DelegateTransaction[] = await this.databaseAPI.getDelegatePayoutTransactions(
