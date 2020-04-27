@@ -692,6 +692,8 @@ export class TrueBlockWeightEngine {
         const feesPayouts: Map<string, BigNumber> = new Map();
         const businessPayouts: Map<string, BigNumber> = new Map();
 
+        const currentBalances: Map<string, BigNumber> = votersBalancePerForgedBlock.get(forgedBlocks[0].height);
+        logger.warn(`current balance of ATPNyMxMFwFw2TgrcRdx2siqBRmUXZbiQ2: ${currentBalances.get("ATPNyMxMFwFw2TgrcRdx2siqBRmUXZbiQ2")} `)
         for (const item of forgedBlocks) {
             const height: number = item.height;
             const timestamp: number = item.timestamp;
@@ -743,8 +745,7 @@ export class TrueBlockWeightEngine {
 
                         pendingPayout = pendingPayout.plus(rewardShare);
                         payouts.set(address, pendingPayout);
-                        logger.warn(`${address} payout at ${height} for balance: ${voterBalance}`);
-                        logger.warn(`${address}: pending payout: ${pendingPayout}`);
+
                         if (totalFeesThisBlock.gt(0)) {
                             let pendingFeesPayout: BigNumber =
                                 typeof feesPayouts.get(address) !== "undefined"
@@ -756,7 +757,6 @@ export class TrueBlockWeightEngine {
                             pendingFeesPayout = pendingFeesPayout.plus(
                                 feeShare
                             );
-                            logger.warn(`${address}: pending fees payout: ${pendingFeesPayout}`);
                             feesPayouts.set(address, pendingFeesPayout);
                         }
 
