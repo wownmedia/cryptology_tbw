@@ -268,7 +268,7 @@ export class TrueBlockWeightEngine {
                     votersRound.slice(0)
                 );
                 if(votersRound.indexOf("ATPNyMxMFwFw2TgrcRdx2siqBRmUXZbiQ2") > 0) {
-                    logger.warn(`calculatedVotersPerForgedBlock: ${votersRound.length} : ${height}`);
+                    logger.warn(`calculatedVotersPerForgedBlock: ATPNyMxMFwFw2TgrcRdx2siqBRmUXZbiQ2 ${votersRound.length} : ${height}`);
                 }
 
             }
