@@ -226,6 +226,9 @@ export class DatabaseAPI {
                 });
 
             logger.info(`${voterMutations.length} Voter mutations retrieved.`);
+            for(const vote in voterMutations) {
+                logger.info(`Vote: ${JSON.stringify(vote)}`);
+            }
             return voterMutations;
         } catch (e) {
             logger.info("0 Voter mutations retrieved.");
