@@ -226,8 +226,14 @@ export class DatabaseAPI {
                 });
 
             logger.info(`${voterMutations.length} Voter mutations retrieved.`);
-            for(const vote in voterMutations) {
-                logger.info(`Vote: ${JSON.stringify(voterMutations[vote])}`);
+            for (const vote in voterMutations) {
+                const votingTransaction: VoterMutation = voterMutations[vote];
+                const voterAction = votingTransaction.vote.startsWith("+")
+                    ? "voted"
+                    : "unvoted";
+                logger.info(
+                    `Vote: ${votingTransaction.address} ${voterAction} at blockHeight ${votingTransaction.height}`
+                );
             }
             return voterMutations;
         } catch (e) {
@@ -248,7 +254,7 @@ export class DatabaseAPI {
         endBlockHeight: number
     ): Promise<VoterBlock[]> {
         const wallets: Map<string, string> = new Map(
-            voterWallets.map((wallet) => [wallet.publicKey, wallet.address])
+            voterWallets.map(wallet => [wallet.publicKey, wallet.address])
         );
         const getVotingDelegatesQuery: string = getVotingDelegates(
             startBlockHeight,
