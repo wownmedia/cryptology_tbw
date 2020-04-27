@@ -244,6 +244,7 @@ export class TrueBlockWeightEngine {
 
         calculatedVotersPerForgedBlock.forEach(
             (votersDuringBlock: any, height: number) => {
+                logger.warn(`calculatedVotersPerForgedBlock: ${votersDuringBlock} : ${height}`);
                 if (previousHeight === null) {
                     previousHeight = height + 1;
                 }
