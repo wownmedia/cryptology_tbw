@@ -802,9 +802,6 @@ export class TrueBlockWeightEngine {
         validVoters = validVoters.filter(address => {
             const balance: BigNumber = currentBalances.get(address);
             const isCurrentVoter: boolean = currentVoters.indexOf(address) >= 0;
-            if (!isCurrentVoter || balance.eq(0)) {
-                logger.warn(`Pool Hopper ${address} removed.`);
-            }
             return isCurrentVoter && balance.gt(0);
         });
 
