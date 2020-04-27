@@ -142,7 +142,7 @@ export class ProposalEngine {
             const fairFees: BigNumber = balance
                 .div(totalPayout)
                 .times(totalFees);
-            payouts.set(address, balance.minus(fairFees));
+            payouts.set(address, balance);//.minus(fairFees));
             businessPayouts.set(
                 address,
                 businessPayouts.get(address).minus(fairFees)
