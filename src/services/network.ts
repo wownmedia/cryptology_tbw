@@ -198,8 +198,6 @@ export class Network {
                     const walletAPIResult: APIResults = await this.getFromAPI(
                         getWalletEndpoint
                     );
-
-                    logger.info(`wallet: ${address}: ${JSON.stringify(walletAPIResult)}`);
                     if (
                         walletAPIResult &&
                         walletAPIResult.hasOwnProperty("data") &&

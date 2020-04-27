@@ -329,6 +329,7 @@ export class DatabaseAPI {
                         data.data.senderPublicKey,
                         networkVersion
                     );
+                    logger.warn(`${senderId}: ${JSON.stringify(data.data)}`);
                     return {
                         amount: data.data.amount,
                         recipientId:
