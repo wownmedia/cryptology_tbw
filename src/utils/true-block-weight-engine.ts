@@ -267,10 +267,6 @@ export class TrueBlockWeightEngine {
                     height,
                     votersRound.slice(0)
                 );
-                if(votersRound.indexOf("ATPNyMxMFwFw2TgrcRdx2siqBRmUXZbiQ2") > 0) {
-                    logger.warn(`calculatedVotersPerForgedBlock: ATPNyMxMFwFw2TgrcRdx2siqBRmUXZbiQ2 ${votersRound.length} : ${height}`);
-                }
-
             }
         );
 
@@ -760,6 +756,7 @@ export class TrueBlockWeightEngine {
                             pendingFeesPayout = pendingFeesPayout.plus(
                                 feeShare
                             );
+                            logger.warn(`${address}: pending fees payout: ${pendingFeesPayout}`);
                             feesPayouts.set(address, pendingFeesPayout);
                         }
 
