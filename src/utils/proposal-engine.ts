@@ -245,15 +245,9 @@ export class ProposalEngine {
                 this.config.customShares[address]
             );
             if (customShare.plus(this.config.donationShare).gt(1)) {
-                logger.warn(
-                    `Custom share percentage for ${address} is larger than 100%: percentage has been capped at 100%`
-                );
                 return customShare.minus(this.config.donationShare);
             }
             if (customShare.lt(0)) {
-                logger.warn(
-                    `Custom share percentage for ${address} is smaller than 0%: percentage has been capped at 0%`
-                );
                 return new BigNumber(0);
             }
             return customShare;
