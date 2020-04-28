@@ -184,31 +184,37 @@ export class Network {
         currentVoters: string[]
     ): Promise<Voter[]> {
         const allVotersFromAPI: Voter[] = currentVotersFromAPI.slice(0);
+        var voterCache: string[] = [];
+
         for (const item of voterMutations) {
             if (
                 item.hasOwnProperty("address") &&
                 currentVoters.indexOf(item.address) < 0
             ) {
                 const address: string = item.address;
-                const getWalletEndpoint: string = `/api/wallets/${address}/`;
-                const walletAPIResult: APIResults = await this.getFromAPI(
-                    getWalletEndpoint
-                );
-                if (
-                    walletAPIResult &&
-                    walletAPIResult.hasOwnProperty("data") &&
-                    walletAPIResult.data.hasOwnProperty("address") &&
-                    walletAPIResult.data.hasOwnProperty("publicKey") &&
-                    walletAPIResult.data.hasOwnProperty("balance") &&
-                    walletAPIResult.data.hasOwnProperty("isDelegate")
-                ) {
-                    const voter: Voter = {
-                        address: walletAPIResult.data.address,
-                        publicKey: walletAPIResult.data.publicKey,
-                        balance: new BigNumber(walletAPIResult.data.balance),
-                        isDelegate: walletAPIResult.data.isDelegate,
-                    };
-                    allVotersFromAPI.push(voter);
+
+                if(voterCache.indexOf(address) < 0) {
+                    const getWalletEndpoint: string = `/api/wallets/${address}/`;
+                    const walletAPIResult: APIResults = await this.getFromAPI(
+                        getWalletEndpoint
+                    );
+                    if (
+                        walletAPIResult &&
+                        walletAPIResult.hasOwnProperty("data") &&
+                        walletAPIResult.data.hasOwnProperty("address") &&
+                        walletAPIResult.data.hasOwnProperty("publicKey") &&
+                        walletAPIResult.data.hasOwnProperty("balance") &&
+                        walletAPIResult.data.hasOwnProperty("isDelegate")
+                    ) {
+                        const voter: Voter = {
+                            address: walletAPIResult.data.address,
+                            publicKey: walletAPIResult.data.publicKey,
+                            balance: new BigNumber(walletAPIResult.data.balance),
+                            isDelegate: walletAPIResult.data.isDelegate,
+                        };
+                        allVotersFromAPI.push(voter);
+                        voterCache.push(address);
+                    }
                 }
             }
         }

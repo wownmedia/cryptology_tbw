@@ -226,6 +226,15 @@ export class DatabaseAPI {
                 });
 
             logger.info(`${voterMutations.length} Voter mutations retrieved.`);
+            for (const vote in voterMutations) {
+                const votingTransaction: VoterMutation = voterMutations[vote];
+                const voterAction = votingTransaction.vote.startsWith("+")
+                    ? "voted"
+                    : "unvoted";
+                logger.info(
+                    `Vote: ${votingTransaction.address} ${voterAction} at blockHeight ${votingTransaction.height}`
+                );
+            }
             return voterMutations;
         } catch (e) {
             logger.info("0 Voter mutations retrieved.");

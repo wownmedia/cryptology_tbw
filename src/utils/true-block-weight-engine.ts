@@ -91,7 +91,12 @@ export class TrueBlockWeightEngine {
             const timestamp: number = forgedBlocks[0].timestamp + 1;
             const oldestBlock: number =
                 forgedBlocks[forgedBlocks.length - 1].height;
-            this.startBlockHeight = oldestBlock - 1;
+
+            if (this.startBlockHeight < oldestBlock - 1) {
+                this.startBlockHeight = oldestBlock - 1;
+            }
+
+            logger.info(`Starting calculations from ${this.startBlockHeight}`);
 
             logger.info("Retrieving Delegate Payouts.");
             const delegatePayoutTransactions: DelegateTransaction[] = await this.databaseAPI.getDelegatePayoutTransactions(
@@ -190,6 +195,10 @@ export class TrueBlockWeightEngine {
             currentVotersFromAPI
         );
 
+        logger.info(
+            `There are ${currentVoters.length} wallets currently voting.`
+        );
+
         logger.info("Retrieving Voter mutations.");
         const voterMutations: VoterMutation[] = await this.databaseAPI.getVoterMutations(
             delegatePublicKey,
@@ -236,7 +245,7 @@ export class TrueBlockWeightEngine {
         );
 
         calculatedVotersPerForgedBlock.forEach(
-            (votersDuringBlock: any, height: number) => {
+            (votersDuringBlock: string[], height: number) => {
                 if (previousHeight === null) {
                     previousHeight = height + 1;
                 }
@@ -684,6 +693,10 @@ export class TrueBlockWeightEngine {
         const feesPayouts: Map<string, BigNumber> = new Map();
         const businessPayouts: Map<string, BigNumber> = new Map();
 
+        const currentBalances: Map<
+            string,
+            BigNumber
+        > = votersBalancePerForgedBlock.get(forgedBlocks[0].height);
         for (const item of forgedBlocks) {
             const height: number = item.height;
             const timestamp: number = item.timestamp;
@@ -704,7 +717,8 @@ export class TrueBlockWeightEngine {
             if (this.config.poolHoppingProtection) {
                 validVoters = this.filterPoolHoppers(
                     validVoters,
-                    currentVoters
+                    currentVoters,
+                    currentBalances
                 );
             }
 
@@ -726,7 +740,7 @@ export class TrueBlockWeightEngine {
                         walletBalances.get(address)
                     );
 
-                    // Only payout voters that had a ballance that exceeds or equals the configured minimum balance.
+                    // Only payout voters that had a balance that exceeds or equals the configured minimum balance.
                     if (voterBalance.gte(this.config.minimalBalance)) {
                         const voterShare: BigNumber = voterBalance.div(balance);
                         const rewardShare: BigNumber = new BigNumber(
@@ -778,11 +792,19 @@ export class TrueBlockWeightEngine {
      *
      * @param validVoters
      * @param currentVoters
+     * @param currentBalances
      */
-    private filterPoolHoppers(validVoters: string[], currentVoters: string[]) {
+    private filterPoolHoppers(
+        validVoters: string[],
+        currentVoters: string[],
+        currentBalances: Map<string, BigNumber>
+    ) {
         validVoters = validVoters.filter(address => {
-            return currentVoters.indexOf(address) >= 0;
+            const balance: BigNumber = currentBalances.get(address);
+            const isCurrentVoter: boolean = currentVoters.indexOf(address) >= 0;
+            return isCurrentVoter && balance.gt(0);
         });
+
         return validVoters.slice(0);
     }
 

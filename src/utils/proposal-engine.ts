@@ -234,28 +234,22 @@ export class ProposalEngine {
      */
     public getSharePercentage(address: string, smallWallets): BigNumber {
         if (this.config.customShares.hasOwnProperty(address) === true) {
-            logger.info(
-                `Custom share percentage found for ${address}: ${new BigNumber(
-                    this.config.customShares[address]
-                )
-                    .times(100)
-                    .toString()}%`
-            );
-            const customShare: BigNumber = new BigNumber(
+
+            var customShare: BigNumber = new BigNumber(
                 this.config.customShares[address]
             );
             if (customShare.plus(this.config.donationShare).gt(1)) {
-                logger.warn(
-                    `Custom share percentage for ${address} is larger than 100%: percentage has been capped at 100%`
-                );
-                return customShare.minus(this.config.donationShare);
+                customShare = customShare.minus(this.config.donationShare);
             }
             if (customShare.lt(0)) {
-                logger.warn(
-                    `Custom share percentage for ${address} is smaller than 0%: percentage has been capped at 0%`
-                );
-                return new BigNumber(0);
+                customShare = new BigNumber(0);
             }
+
+            logger.info(
+                `Custom share percentage found for ${address}: ${customShare
+                    .times(100)
+                    .toString()}%`
+            );
             return customShare;
         }
 
