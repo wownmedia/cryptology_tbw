@@ -11,6 +11,7 @@ export class Config {
     public readonly networkVersion: number;
     public readonly blockReward: BigNumber;
     public readonly transferFee: BigNumber;
+    public readonly noSignature: boolean;
     public readonly multiTransferFee: BigNumber;
     public readonly voterShare: BigNumber;
     public readonly voterFeeShare: BigNumber;
@@ -71,6 +72,10 @@ export class Config {
         if (this.blockReward.isNaN()) {
             throw new TypeError("Invalid BLOCK_REWARD configuration");
         }
+
+        this.noSignature = process.env.NO_SIGNATURE
+            ? parseInt(process.env.NO_SIGNATURE, 10) > 0
+            : false;
 
         this.transferFee = process.env.FEE
             ? new BigNumber(process.env.FEE).times(ARKTOSHI)
