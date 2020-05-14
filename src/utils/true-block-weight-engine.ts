@@ -103,7 +103,8 @@ export class TrueBlockWeightEngine {
                 delegatePublicKey,
                 this.startBlockHeight,
                 this.endBlockHeight,
-                this.payoutSignature
+                this.payoutSignature,
+                this.config.noSignature
             );
 
             logger.info("Retrieving Voters.");
