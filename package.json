@@ -1,6 +1,6 @@
 {
     "name": "cryptology_tbw",
-    "version": "2.6.1",
+    "version": "3.0",
     "private": true,
     "description": "Cryptology True Block Weight",
     "license": "CC BY-ND 4.0",
