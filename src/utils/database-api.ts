@@ -105,12 +105,14 @@ export class DatabaseAPI {
      * @param startBlockHeight
      * @param endBlockHeight
      * @param payoutSignature
+     * @param noSignature In case a Blockchain doesn't use a VendorField (e.g. like NOS)
      */
     public async getDelegatePayoutTransactions(
         delegatePublicKey: string,
         startBlockHeight: number,
         endBlockHeight: number,
-        payoutSignature: string
+        payoutSignature: string,
+        noSignature: boolean
     ): Promise<DelegateTransaction[]> {
         const getDelegateTransactionsQuery = getDelegateTransactions(
             startBlockHeight,
@@ -159,8 +161,9 @@ export class DatabaseAPI {
             })
             .filter((transaction: DelegateTransaction) => {
                 return (
-                    transaction.vendorField &&
-                    transaction.vendorField.includes(payoutSignature)
+                    noSignature ||
+                    ( transaction.vendorField &&
+                    transaction.vendorField.includes(payoutSignature))
                 );
             });
         logger.info(
