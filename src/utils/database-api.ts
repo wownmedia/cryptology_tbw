@@ -86,7 +86,7 @@ export class DatabaseAPI {
             return {
                 height: new BigNumber(block.height).integerValue(),
                 fees: new BigNumber(block.totalFee),
-                timestamp: new BigNumber(block.timestamp).integerValue(),
+                timestamp: new BigNumber(block.timestamp),
                 business: new BigNumber(0),
             };
         });
@@ -348,7 +348,7 @@ export class DatabaseAPI {
                         ).integerValue(),
                         timestamp: new BigNumber(
                             transaction.timestamp
-                        ).integerValue(),
+                        ),
                     };
                 }
                 return {};
