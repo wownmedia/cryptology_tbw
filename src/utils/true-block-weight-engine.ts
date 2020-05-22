@@ -139,7 +139,7 @@ export class TrueBlockWeightEngine {
                 delegatePayoutTransactions
             );
 
-            previousPayouts.latestPayoutsTimeStamp.forEach((value: number, key: string) => {
+            previousPayouts.latestPayoutsTimeStamp.forEach((value: BigNumber, key: string) => {
                 logger.warn(`Latest payout for ${key} at ${value}`);
             })
 
@@ -402,7 +402,7 @@ export class TrueBlockWeightEngine {
         delegatePayoutTransactions: DelegateTransaction[]
     ): LatestPayouts {
         const latestPayouts: Map<string, number> = new Map();
-        const latestPayoutsTimeStamp: Map<string, number> = new Map();
+        const latestPayoutsTimeStamp: Map<string, BigNumber> = new Map();
 
         for (const transaction of delegatePayoutTransactions) {
             if (transaction.recipientId !== null) {

@@ -154,7 +154,7 @@ export class DatabaseAPI {
                                 : "",
                         timestamp: new BigNumber(
                             transaction.timestamp
-                        ).integerValue(),
+                        ),
                     };
                 }
                 return {};

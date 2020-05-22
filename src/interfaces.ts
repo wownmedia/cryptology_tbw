@@ -97,7 +97,7 @@ export interface DelegateTransaction {
     recipientId: string;
     multiPayment: Interfaces.IMultiPaymentItem[];
     vendorField: string;
-    timestamp: number;
+    timestamp: BigNumber;
 }
 
 export interface Transaction {
@@ -137,7 +137,7 @@ export interface PayoutBalances {
 
 export interface LatestPayouts {
     latestPayouts: Map<string, number>;
-    latestPayoutsTimeStamp: Map<string, number>;
+    latestPayoutsTimeStamp: Map<string, BigNumber>;
 }
 
 export interface Receiver {
