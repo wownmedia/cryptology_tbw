@@ -147,6 +147,11 @@ export class TrueBlockWeightEngine {
                 votingDelegateBlocks
             );
 
+            processedBalances.votersBalancePerForgedBlock.forEach((balances:Map<string,BigNumber>, height: number) => {
+                logger.warn(`Balance for AVyiGH9nheqwEz3oyKcZsa8SDgLTxt3oAG at height ${height}: ${balances.get("AVyiGH9nheqwEz3oyKcZsa8SDgLTxt3oAG")}`);
+            });
+
+
             const businessRevenue: Map<
                 number,
                 BigNumber
