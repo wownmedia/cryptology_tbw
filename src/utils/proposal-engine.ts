@@ -179,7 +179,7 @@ export class ProposalEngine {
             businessPayouts,
             acfDonation,
             delegateProfit,
-            timestamp: 0,
+            timestamp: new BigNumber(0),
         };
     }
 

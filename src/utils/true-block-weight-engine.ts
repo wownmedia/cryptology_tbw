@@ -88,7 +88,7 @@ export class TrueBlockWeightEngine {
             }
 
             const currentBlock: number = forgedBlocks[0].height;
-            const timestamp: number = forgedBlocks[0].timestamp + 1;
+            const timestamp: BigNumber = forgedBlocks[0].timestamp.plus(1);
             const oldestBlock: number =
                 forgedBlocks[forgedBlocks.length - 1].height;
 
@@ -694,7 +694,7 @@ export class TrueBlockWeightEngine {
         votersPerForgedBlock: Map<number, string[]>,
         forgedBlocks: ForgedBlock[],
         businessRevenue: Map<number, BigNumber>,
-        latestPayoutsTimeStamp: Map<string, number>,
+        latestPayoutsTimeStamp: Map<string, BigNumber>,
         votersBalancePerForgedBlock: Map<number, Map<string, BigNumber>>,
         currentVoters: string[]
     ): PayoutBalances {
@@ -709,7 +709,7 @@ export class TrueBlockWeightEngine {
         > = votersBalancePerForgedBlock.get(forgedBlocks[0].height);
         for (const item of forgedBlocks) {
             const height: number = item.height;
-            const timestamp: number = item.timestamp;
+            const timestamp: BigNumber = item.timestamp;
             const totalFeesThisBlock: BigNumber = new BigNumber(item.fees);
             const totalBusinessIncomeThisBlock: BigNumber =
                 businessRevenue === null
@@ -734,13 +734,13 @@ export class TrueBlockWeightEngine {
 
             for (const address of validVoters) {
                 const payoutAddress: string = this.getRedirectAddress(address);
-                const latestPayout: number = latestPayoutsTimeStamp.get(
+                const latestPayout: BigNumber = latestPayoutsTimeStamp.get(
                     payoutAddress
                 );
 
                 if (
                     typeof latestPayout === "undefined" ||
-                    latestPayout <= timestamp
+                    latestPayout.lte(timestamp)
                 ) {
                     let pendingPayout: BigNumber =
                         typeof payouts.get(address) !== "undefined"
