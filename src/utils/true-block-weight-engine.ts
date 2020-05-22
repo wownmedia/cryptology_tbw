@@ -139,7 +139,7 @@ export class TrueBlockWeightEngine {
                 delegatePayoutTransactions
             );
 
-            previousPayouts.latestPayouts.forEach((value: number, key: string) => {
+            previousPayouts.latestPayoutsTimeStamp.forEach((value: number, key: string) => {
                 logger.warn(`Latest payout for ${key} at ${value}`);
             })
 
