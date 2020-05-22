@@ -70,14 +70,14 @@ export interface VoterBalances {
 
 export interface ForgedBlock {
     height: number;
-    timestamp: number;
+    timestamp: BigNumber;
     fees: BigNumber;
 }
 
 export interface Block {
     height: number;
     totalFee: number;
-    timestamp: number;
+    timestamp: BigNumber;
 }
 
 export interface VoteTransaction {
@@ -89,7 +89,7 @@ export interface VoteTransaction {
 export interface DataBaseTransaction {
     height: number;
     serialized: string;
-    timestamp: number;
+    timestamp: BigNumber;
 }
 
 export interface DelegateTransaction {
@@ -97,7 +97,7 @@ export interface DelegateTransaction {
     recipientId: string;
     multiPayment: Interfaces.IMultiPaymentItem[];
     vendorField: string;
-    timestamp: number;
+    timestamp: BigNumber;
 }
 
 export interface Transaction {
@@ -108,7 +108,7 @@ export interface Transaction {
     senderPublicKey: string;
     multiPayment: Interfaces.IMultiPaymentItem[];
     fee: BigNumber;
-    timestamp: number;
+    timestamp: BigNumber;
 }
 
 export interface MutatedVotersPerRound {
@@ -126,7 +126,7 @@ export interface Payouts {
     businessPayouts: Map<string, BigNumber>;
     delegateProfit: BigNumber;
     acfDonation: BigNumber;
-    timestamp: number;
+    timestamp: BigNumber;
 }
 
 export interface PayoutBalances {
@@ -137,7 +137,7 @@ export interface PayoutBalances {
 
 export interface LatestPayouts {
     latestPayouts: Map<string, number>;
-    latestPayoutsTimeStamp: Map<string, number>;
+    latestPayoutsTimeStamp: Map<string, BigNumber>;
 }
 
 export interface Receiver {

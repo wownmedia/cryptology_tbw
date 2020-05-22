@@ -86,7 +86,7 @@ export class DatabaseAPI {
             return {
                 height: new BigNumber(block.height).integerValue(),
                 fees: new BigNumber(block.totalFee),
-                timestamp: new BigNumber(block.timestamp).integerValue(),
+                timestamp: new BigNumber(block.timestamp),
                 business: new BigNumber(0),
             };
         });
@@ -152,9 +152,7 @@ export class DatabaseAPI {
                             data && data.hasVendorField()
                                 ? data.data.vendorField
                                 : "",
-                        timestamp: new BigNumber(
-                            transaction.timestamp
-                        ).integerValue(),
+                        timestamp: new BigNumber(transaction.timestamp),
                     };
                 }
                 return {};
@@ -162,8 +160,8 @@ export class DatabaseAPI {
             .filter((transaction: DelegateTransaction) => {
                 return (
                     noSignature ||
-                    ( transaction.vendorField &&
-                    transaction.vendorField.includes(payoutSignature))
+                    (transaction.vendorField &&
+                        transaction.vendorField.includes(payoutSignature))
                 );
             });
         logger.info(
@@ -230,13 +228,16 @@ export class DatabaseAPI {
 
             logger.info(`${voterMutations.length} Voter mutations retrieved.`);
             for (const vote in voterMutations) {
-                const votingTransaction: VoterMutation = voterMutations[vote];
-                const voterAction = votingTransaction.vote.startsWith("+")
-                    ? "voted"
-                    : "unvoted";
-                logger.info(
-                    `Vote: ${votingTransaction.address} ${voterAction} at blockHeight ${votingTransaction.height}`
-                );
+                if (voterMutations[vote]) {
+                    const votingTransaction: VoterMutation =
+                        voterMutations[vote];
+                    const voterAction = votingTransaction.vote.startsWith("+")
+                        ? "voted"
+                        : "unvoted";
+                    logger.info(
+                        `Vote: ${votingTransaction.address} ${voterAction} at blockHeight ${votingTransaction.height}`
+                    );
+                }
             }
             return voterMutations;
         } catch (e) {
@@ -257,7 +258,7 @@ export class DatabaseAPI {
         endBlockHeight: number
     ): Promise<VoterBlock[]> {
         const wallets: Map<string, string> = new Map(
-            voterWallets.map(wallet => [wallet.publicKey, wallet.address])
+            voterWallets.map((wallet) => [wallet.publicKey, wallet.address])
         );
         const getVotingDelegatesQuery: string = getVotingDelegates(
             startBlockHeight,
@@ -346,9 +347,7 @@ export class DatabaseAPI {
                         height: new BigNumber(
                             transaction.height
                         ).integerValue(),
-                        timestamp: new BigNumber(
-                            transaction.timestamp
-                        ).integerValue(),
+                        timestamp: new BigNumber(transaction.timestamp),
                     };
                 }
                 return {};

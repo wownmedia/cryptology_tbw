@@ -25,7 +25,7 @@ export class TrueBlockWeight {
         const transfers: Transfers = await this.generateTransactions(payouts);
         const adminTransactions: Interfaces.ITransactionData[] = await this.generateAdminPayouts(
             payouts.delegateProfit,
-            payouts.timestamp
+            payouts.timestamp.toNumber()
         );
         if (adminTransactions.length) {
             transfers.totalAmount = transfers.totalAmount.plus(
@@ -41,7 +41,7 @@ export class TrueBlockWeight {
 
         const acfDonationTransaction: Interfaces.ITransactionData = await this.generateDonationPayout(
             payouts.acfDonation,
-            payouts.timestamp
+            payouts.timestamp.toNumber()
         );
         if (acfDonationTransaction !== null) {
             transfers.transactions.push(acfDonationTransaction);
@@ -163,7 +163,7 @@ export class TrueBlockWeight {
         let vendorField: string = `${this.config.delegate} - ${this.config.vendorField}`;
         const transactions: Interfaces.ITransactionData[] = await this.transactionEngine.createMultiPayment(
             receivers,
-            payouts.timestamp,
+            payouts.timestamp.toNumber(),
             vendorField,
             this.config.seed,
             this.config.secondPassphrase,
@@ -176,7 +176,7 @@ export class TrueBlockWeight {
         vendorField = `${this.config.delegate} - Business Revenue Share.`; // todo config
         const businessTransactions: Interfaces.ITransactionData[] = await this.transactionEngine.createMultiPayment(
             businessReceivers,
-            payouts.timestamp,
+            payouts.timestamp.toNumber(),
             vendorField,
             this.config.businessSeed,
             this.config.businessSecondPassphrase,

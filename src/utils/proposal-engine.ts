@@ -179,7 +179,7 @@ export class ProposalEngine {
             businessPayouts,
             acfDonation,
             delegateProfit,
-            timestamp: 0,
+            timestamp: new BigNumber(0),
         };
     }
 
@@ -234,8 +234,7 @@ export class ProposalEngine {
      */
     public getSharePercentage(address: string, smallWallets): BigNumber {
         if (this.config.customShares.hasOwnProperty(address) === true) {
-
-            var customShare: BigNumber = new BigNumber(
+            let customShare: BigNumber = new BigNumber(
                 this.config.customShares[address]
             );
             if (customShare.plus(this.config.donationShare).gt(1)) {

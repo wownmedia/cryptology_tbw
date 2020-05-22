@@ -184,7 +184,7 @@ export class Network {
         currentVoters: string[]
     ): Promise<Voter[]> {
         const allVotersFromAPI: Voter[] = currentVotersFromAPI.slice(0);
-        var voterCache: string[] = [];
+        const voterCache: string[] = [];
 
         for (const item of voterMutations) {
             if (
@@ -193,7 +193,7 @@ export class Network {
             ) {
                 const address: string = item.address;
 
-                if(voterCache.indexOf(address) < 0) {
+                if (voterCache.indexOf(address) < 0) {
                     const getWalletEndpoint: string = `/api/wallets/${address}/`;
                     const walletAPIResult: APIResults = await this.getFromAPI(
                         getWalletEndpoint
@@ -209,7 +209,9 @@ export class Network {
                         const voter: Voter = {
                             address: walletAPIResult.data.address,
                             publicKey: walletAPIResult.data.publicKey,
-                            balance: new BigNumber(walletAPIResult.data.balance),
+                            balance: new BigNumber(
+                                walletAPIResult.data.balance
+                            ),
                             isDelegate: walletAPIResult.data.isDelegate,
                         };
                         allVotersFromAPI.push(voter);
