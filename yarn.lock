@@ -28,7 +28,7 @@
     tiny-glob "^0.2.6"
     wif "^2.0.6"
 
-"@arkecosystem/utils@1.1.8", "@arkecosystem/utils@^1.1":
+"@arkecosystem/utils@^1.1", "@arkecosystem/utils@^1.1.8":
   version "1.1.8"
   resolved "https://registry.yarnpkg.com/@arkecosystem/utils/-/utils-1.1.8.tgz#f00073107d637d58faf8faf364e871f8217444d0"
   integrity sha512-+04iv7R0ZJ8soKpIf04UYeFBbRgNWF6cZraG7xY60lF7FXLycphMfBBs08CSdlIYiA8xkMGiyuPPM/2fr88m/g==
