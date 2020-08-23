@@ -179,9 +179,9 @@ export class Network {
         const stakes: Stake[] = [];
         if(voter.hasOwnProperty("stakes")) {
             logger.info(`Stakes found for ${voter.address}`);
-            for( const item of voter.stakes) {
-                logger.info(`Stake: ${JSON.stringify(item)}`)
-            }
+            stakes.forEach((index, stake) => {
+                logger.info(`Stake: ${JSON.stringify(stake)}`)
+            })
 
         }
 
