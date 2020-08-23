@@ -79,7 +79,6 @@ export class TransactionEngine {
                     nonce = this.nonce.toString();
                 }
                 let transaction: MultiPaymentBuilder = Transactions.BuilderFactory.multiPayment()
-                    .vendorField(vendorField)
                     .fee(this.config.multiTransferFee.toFixed(0))
                     .nonce(nonce);
                 for (const receiver of chunk) {
@@ -128,17 +127,8 @@ export class TransactionEngine {
         let transaction: TransferBuilder = Transactions.BuilderFactory.transfer()
             .amount(receiver.amount.toFixed(0))
             .recipientId(receiver.wallet)
-            .vendorField(receiver.vendorField)
             .fee(this.config.transferFee.toFixed(0))
             .nonce(nonce);
-
-        // todo somehow it doesn't take it as 255 from the setConfig with ARK mainnet
-        if (
-            Buffer.from(receiver.vendorField).length > 64 &&
-            Buffer.from(receiver.vendorField).length <= 255
-        ) {
-            transaction.data.vendorField = this.config.vendorField;
-        }
 
         if (timestamp) {
             transaction.data.timestamp = timestamp;
