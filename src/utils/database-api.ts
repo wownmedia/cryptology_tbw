@@ -342,7 +342,7 @@ export class DatabaseAPI {
                             data.data.type === 0 ? data.data.recipientId : null,
                         multiPayment:
                             data.data.type === 6
-                                ? data.data.asset.payments
+                                ? data.data.asset && data.data.asset.payments
                                 : null,
                         senderId,
                         senderPublicKey: data.data.senderPublicKey,
