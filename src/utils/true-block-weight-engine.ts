@@ -607,7 +607,7 @@ export class TrueBlockWeightEngine {
             const fee: BigNumber = item.fee;
 
             logger.info(`voter balances: ${JSON.stringify(item.multiPayment)}`);
-            if (item.multiPayment !== null) {
+            if (item.multiPayment) {
                 for (const transaction of item.multiPayment) {
                     const transactionAmount: BigNumber = new BigNumber(
                         transaction.amount.toFixed()
