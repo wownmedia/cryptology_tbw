@@ -183,7 +183,6 @@ export class Network {
             const voterStakes = voter.stakes;
             for (const item in voterStakes) {
                 if (voterStakes.hasOwnProperty(item)) {
-                    logger.info(`Stake: ${JSON.stringify(voterStakes[item])}`);
                     const stake: Stake = {
                         amount: new BigNumber(voterStakes[item].amount),
                         duration: new BigNumber(voterStakes[item].duration),
@@ -196,6 +195,8 @@ export class Network {
                         }
                     }
                     stakes.push(stake);
+
+                    logger.info(`Stake: ${JSON.stringify(stake)}`);
                 }
             }
         }
