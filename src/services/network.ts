@@ -180,7 +180,7 @@ export class Network {
         if(voter.hasOwnProperty("stakes")) {
             logger.info(`Stakes found for ${voter.address}`);
             //stakes.forEach((index, stake) => {
-                logger.info(`Stake: ${voter.stakes}`)
+                logger.info(`Stake: ${voter.stakes[0]}`)
             //})
 
         }
