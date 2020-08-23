@@ -180,8 +180,8 @@ export class Network {
         if(voter.hasOwnProperty("stakes")) {
             logger.info(`Stakes found for ${voter.address}`);
             const voterStakes = voter.stakes;
-           for(const item of voterStakes) {
-                logger.info(`Stake: ${item}`)
+           for(const item in voterStakes) {
+                logger.info(`Stake: ${JSON.stringify(item)}`)
             }
 
         }
