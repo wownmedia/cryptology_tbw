@@ -179,10 +179,10 @@ export class Network {
         const stakes: Stake[] = [];
         if(voter.hasOwnProperty("stakes")) {
             logger.info(`Stakes found for ${voter.address}`);
-            const voterStakes = JSON.parse(voter.stakes);
-           for(const item in voterStakes) {
-                logger.info(`Stake: ${item}`)
-            }
+            const voterStakes = voter.stakes;
+           //for(const item in voterStakes) {
+                logger.info(`Stake: ${voterStakes}`)
+            //}
 
         }
 
