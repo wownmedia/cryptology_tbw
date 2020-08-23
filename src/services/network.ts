@@ -4,7 +4,8 @@ import BigNumber from "bignumber.js";
 import {
     APIResults,
     BroadcastResult,
-    Node, Stake,
+    Node,
+    Stake,
     Voter,
     VoterMutation,
 } from "../interfaces";
@@ -175,15 +176,16 @@ export class Network {
         return voters;
     }
 
-    public processStakes(voter: Voter ): Stake[] {
+    public processStakes(voter: Voter): Stake[] {
         const stakes: Stake[] = [];
-        if(voter.hasOwnProperty("stakes")) {
+        if (voter.hasOwnProperty("stakes")) {
             logger.info(`Stakes found for ${voter.address}`);
             const voterStakes = voter.stakes;
-           for(const item in voterStakes) {
-                logger.info(`Stake: ${JSON.stringify(voterStakes[item])}`)
+            for (const item in voterStakes) {
+                if (voterStakes.hasOwnProperty(item)) {
+                    logger.info(`Stake: ${JSON.stringify(voterStakes[item])}`);
+                }
             }
-
         }
 
         return stakes;
@@ -227,11 +229,11 @@ export class Network {
                             balance: new BigNumber(
                                 walletAPIResult.data.balance
                             ),
-                            power: new BigNumber(
-                                walletAPIResult.data.power
-                            ),
+                            power: new BigNumber(walletAPIResult.data.power),
                             isDelegate: walletAPIResult.data.isDelegate,
-                            processedStakes: this.processStakes(walletAPIResult.data)
+                            processedStakes: this.processStakes(
+                                walletAPIResult.data
+                            ),
                         };
                         allVotersFromAPI.push(voter);
                         voterCache.push(address);
