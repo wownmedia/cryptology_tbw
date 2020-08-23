@@ -164,7 +164,6 @@ export class Network {
                 votersAPIResults.hasOwnProperty("data") &&
                 votersAPIResults.data.length > 0
             ) {
-                votersAPIResults.data.stakes = this.processStakes(votersAPIResults);
                 voters = voters.concat(votersAPIResults.data);
             }
             params.page++;
@@ -176,7 +175,7 @@ export class Network {
         return voters;
     }
 
-    private processStakes(voter: APIResults ): Stake[] {
+    public processStakes(voter: APIResults ): Stake[] {
         const stakes: Stake[] = [];
         logger.info(`Stakes: ${JSON.stringify(voter.data)}`)
         if(voter.data.data.hasOwnProperty("stakes")) {
