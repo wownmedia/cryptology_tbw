@@ -181,7 +181,7 @@ export class Network {
             logger.info(`Stakes found for ${voter.address}`);
             const voterStakes = voter.stakes;
            for(const item in voterStakes) {
-                logger.info(`Stake: ${voterStakes}`)
+                logger.info(`Stake: ${item}`)
             }
 
         }
