@@ -48,7 +48,7 @@ export interface Voter {
     secondPublicKey?: string;
     balance: BigNumber;
     power: BigNumber;
-    stakes?: string;
+    stakes?:any;
     processedStakes?: Stake[];
     isDelegate?: boolean;
     vote?: string;
