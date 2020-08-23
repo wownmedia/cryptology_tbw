@@ -175,11 +175,11 @@ export class Network {
         return voters;
     }
 
-    public processStakes(voter: APIResults ): Stake[] {
+    public processStakes(voter: Voter ): Stake[] {
         const stakes: Stake[] = [];
-        logger.info(`Stakes: ${JSON.stringify(voter.data)}`)
-        if(voter.data.data.hasOwnProperty("stakes")) {
-            logger.info(`Stakes found for ${voter.data.data.address}`);
+        logger.info(`Stakes: ${JSON.stringify(voter)}`)
+        if(voter.hasOwnProperty("stakes")) {
+            logger.info(`Stakes found for ${voter.address}`);
         }
 
         return stakes;
@@ -227,7 +227,7 @@ export class Network {
                                 walletAPIResult.data.power
                             ),
                             isDelegate: walletAPIResult.data.isDelegate,
-                            stakes: this.processStakes(walletAPIResult)
+                            stakes: this.processStakes(walletAPIResult.data)
                         };
                         allVotersFromAPI.push(voter);
                         voterCache.push(address);
