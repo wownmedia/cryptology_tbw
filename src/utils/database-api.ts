@@ -333,6 +333,9 @@ export class DatabaseAPI {
                         data.data.senderPublicKey,
                         networkVersion
                     );
+
+                    logger.info(`getTransactions: ${JSON.stringify(data.data)}`);
+
                     return {
                         amount: data.data.amount,
                         recipientId:
