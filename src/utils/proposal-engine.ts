@@ -95,7 +95,6 @@ export class ProposalEngine {
                     const acfFeesPayout: BigNumber = new BigNumber(
                         feePayout
                             .times(this.config.donationShare)
-                            .integerValue(BigNumber.ROUND_DOWN)
                     );
                     acfDonation = acfDonation.plus(acfFeesPayout);
 
