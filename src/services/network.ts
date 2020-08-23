@@ -184,10 +184,21 @@ export class Network {
             for (const item in voterStakes) {
                 if (voterStakes.hasOwnProperty(item)) {
                     logger.info(`Stake: ${JSON.stringify(voterStakes[item])}`);
+                    const stake: Stake = {
+                        amount: new BigNumber(voterStakes[item].amount),
+                        duration: new BigNumber(voterStakes[item].duration),
+                        power: new BigNumber(voterStakes[item].power),
+                        timestamps: {
+                            created: new BigNumber(voterStakes[item].timestamps.created),
+                            graceEnd: new BigNumber(voterStakes[item].timestamps.graceEnd),
+                            powerUp: new BigNumber(voterStakes[item].timestamps.powerUp),
+                            redeemable: new BigNumber(voterStakes[item].timestamps.redeemable)
+                        }
+                    }
+                    stakes.push(stake);
                 }
             }
         }
-
         return stakes;
     }
 
