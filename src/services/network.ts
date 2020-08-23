@@ -180,20 +180,68 @@ export class Network {
         const stakes: Stake[] = [];
         if (voter.hasOwnProperty("stakes")) {
             logger.info(`Stakes found for ${voter.address}`);
-            const voterStakes = voter.stakes;
+            const voterStakes: any[] = voter.stakes;
             for (const item in voterStakes) {
                 if (voterStakes.hasOwnProperty(item)) {
                     const stake: Stake = {
-                        amount: new BigNumber(voterStakes[item].amount),
-                        duration: new BigNumber(voterStakes[item].duration),
-                        power: new BigNumber(voterStakes[item].power),
+                        amount: voterStakes[item].hasOwnProperty("amount")
+                            ? new BigNumber(voterStakes[item].amount)
+                            : new BigNumber(0),
+                        duration: voterStakes[item].hasOwnProperty("duration")
+                            ? new BigNumber(voterStakes[item].duration)
+                            : new BigNumber(0),
+                        power: voterStakes[item].hasOwnProperty("power")
+                            ? new BigNumber(voterStakes[item].power)
+                            : new BigNumber(0),
                         timestamps: {
-                            created: new BigNumber(voterStakes[item].timestamps.created),
-                            graceEnd: new BigNumber(voterStakes[item].timestamps.graceEnd),
-                            powerUp: new BigNumber(voterStakes[item].timestamps.powerUp),
-                            redeemable: new BigNumber(voterStakes[item].timestamps.redeemable)
-                        }
-                    }
+                            created:
+                                voterStakes[item].hasOwnProperty(
+                                    "timestamps"
+                                ) &&
+                                voterStakes[item].timestamps.hasOwnProperty(
+                                    "created"
+                                )
+                                    ? new BigNumber(
+                                          voterStakes[item].timestamps.created
+                                      )
+                                    : new BigNumber(0),
+                            graceEnd:
+                                voterStakes[item].hasOwnProperty(
+                                    "timestamps"
+                                ) &&
+                                voterStakes[item].timestamps.hasOwnProperty(
+                                    "graceEnd"
+                                )
+                                    ? new BigNumber(
+                                          voterStakes[item].timestamps.graceEnd
+                                      )
+                                    : new BigNumber(0),
+                            powerUp:
+                                voterStakes[item].hasOwnProperty(
+                                    "timestamps"
+                                ) &&
+                                voterStakes[item].timestamps.hasOwnProperty(
+                                    "powerUp"
+                                )
+                                    ? new BigNumber(
+                                          voterStakes[item].timestamps.powerUp
+                                      )
+                                    : new BigNumber(0),
+                            redeemable:
+                                voterStakes[item].hasOwnProperty(
+                                    "timestamps"
+                                ) &&
+                                voterStakes[item].timestamps.hasOwnProperty(
+                                    "redeemable"
+                                )
+                                    ? new BigNumber(
+                                          voterStakes[
+                                              item
+                                          ].timestamps.redeemable
+                                      )
+                                    : new BigNumber(0),
+                        },
+                    };
                     stakes.push(stake);
 
                     logger.info(`Stake: ${JSON.stringify(stake)}`);
