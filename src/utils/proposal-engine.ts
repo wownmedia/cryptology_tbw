@@ -107,7 +107,9 @@ export class ProposalEngine {
 
                     feesPayouts.set(address, voterFeePayout);
                     delegateProfit = delegateProfit.plus(
-                        feePayout.minus(voterFeePayout)
+                        feePayout
+                            .minus(voterFeePayout)
+                            .minus(acfFeesPayout)
                     );
                 }
                 payouts.set(address, voterPayout.plus(voterFeePayout));
