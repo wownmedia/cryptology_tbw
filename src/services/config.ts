@@ -61,7 +61,7 @@ export class Config {
 
         this.networkVersion = process.env.NETWORK_VERSION
             ? parseInt(process.env.NETWORK_VERSION, 10)
-            : 23;
+            : 88;
         if (this.networkVersion <= 0) {
             throw new TypeError("Invalid NETWORK_VERSION configuration");
         }
