@@ -413,7 +413,7 @@ export class TrueBlockWeightEngine {
                         transaction.timestamp
                     );
                 }
-            } else {
+            } else if (transaction.multiPayment !== null) {
                 logger.info(`transaction.multiPayment: ${JSON.stringify(transaction.multiPayment)}`);
                 for (const receiver of transaction.multiPayment) {
                     const height: BigNumber = new BigNumber(
