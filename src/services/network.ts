@@ -178,6 +178,7 @@ export class Network {
 
     private processStakes(voter: APIResults ): Stake[] {
         const stakes: Stake[] = [];
+        logger.info(`Stakes: ${JSON.stringify(voter)}`)
         if(voter.data.hasOwnProperty("stakes")) {
             logger.info(`Stakes found for ${voter.data.address}`);
         }
