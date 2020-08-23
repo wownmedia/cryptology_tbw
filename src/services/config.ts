@@ -66,16 +66,7 @@ export class Config {
             throw new TypeError("Invalid NETWORK_VERSION configuration");
         }
 
-        this.blockReward = process.env.BLOCK_REWARD
-            ? new BigNumber(process.env.BLOCK_REWARD).times(ARKTOSHI)
-            : new BigNumber(2).times(ARKTOSHI);
-        if (this.blockReward.isNaN()) {
-            throw new TypeError("Invalid BLOCK_REWARD configuration");
-        }
-
-        this.noSignature = process.env.NO_SIGNATURE
-            ? parseInt(process.env.NO_SIGNATURE, 10) > 0
-            : false;
+        this.noSignature = true;
 
         this.transferFee = process.env.FEE
             ? new BigNumber(process.env.FEE).times(ARKTOSHI)

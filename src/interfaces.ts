@@ -73,6 +73,7 @@ export interface ForgedBlock {
     height: number;
     timestamp: BigNumber;
     fees: BigNumber;
+    reward: BigNumber;
 }
 
 export interface Block {

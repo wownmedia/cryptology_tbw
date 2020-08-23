@@ -704,6 +704,7 @@ export class TrueBlockWeightEngine {
         for (const item of forgedBlocks) {
             const height: number = item.height;
             const timestamp: BigNumber = item.timestamp;
+            const rewardThisBlock: BigNumber = item.reward;
             const totalFeesThisBlock: BigNumber = new BigNumber(item.fees);
             const totalBusinessIncomeThisBlock: BigNumber =
                 businessRevenue === null
@@ -748,7 +749,7 @@ export class TrueBlockWeightEngine {
                     if (voterBalance.gte(this.config.minimalBalance)) {
                         const voterShare: BigNumber = voterBalance.div(balance);
                         const rewardShare: BigNumber = new BigNumber(
-                            voterShare.times(this.config.blockReward)
+                            voterShare.times(rewardThisBlock)
                         ).decimalPlaces(8);
 
                         pendingPayout = pendingPayout.plus(rewardShare);
