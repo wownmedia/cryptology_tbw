@@ -42,7 +42,7 @@ export class TrueBlockWeightEngine {
     private readonly proposalEngine: ProposalEngine;
     private readonly payoutSignature: string;
     private startBlockHeight: number;
-    private endBlockHeight: number;
+    private readonly endBlockHeight: number;
 
     constructor() {
         BigNumber.config({
@@ -374,6 +374,7 @@ export class TrueBlockWeightEngine {
                 publicKey: row.publicKey,
                 balance: new BigNumber(row.power), //TODO
                 power: new BigNumber(row.power),
+                stakes: row.stakes
             };
         });
         voterBalances = voterBalances.filter((wallet) => {

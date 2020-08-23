@@ -28,6 +28,19 @@ export interface BroadcastResult {
     node: string;
     response: any;
 }
+export interface StakeTimestamp {
+    created: BigNumber;
+    graceEnd: BigNumber;
+    powerUp: BigNumber;
+    redeemable: BigNumber;
+}
+
+export interface Stake {
+    amount: BigNumber;
+    duration: BigNumber;
+    power: BigNumber;
+    timestamps: StakeTimestamp;
+}
 
 export interface Voter {
     address: string;
@@ -35,6 +48,7 @@ export interface Voter {
     secondPublicKey?: string;
     balance: BigNumber;
     power: BigNumber;
+    stakes: Stake[];
     isDelegate?: boolean;
     vote?: string;
     username?: string;
