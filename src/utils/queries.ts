@@ -11,7 +11,9 @@ export const getForgedBlocks = (
     endBlockHeight: number,
     limit: number
 ): string => {
-    let query = `SELECT blocks.height, blocks.timestamp, blocks.total_fee AS "totalFee" \
+    let query = `SELECT blocks.height, blocks.timestamp, blocks.reward, \
+                        blocks.removed_fee AS "removedFee", \ 
+                        blocks.total_fee AS "totalFee" \
           FROM public.blocks \
           WHERE blocks."generator_public_key" = '${publicKey}' \
           AND blocks.height >= ${startBlockHeight}`;
