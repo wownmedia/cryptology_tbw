@@ -97,6 +97,13 @@ export class ProposalEngine {
                             .times(this.config.voterFeeShare)
                             .integerValue(BigNumber.ROUND_DOWN)
                     );
+                    const acfFeesPayout: BigNumber = new BigNumber(
+                        voterFeePayout
+                            .times(this.config.donationShare)
+                            .integerValue(BigNumber.ROUND_CEIL)
+                    );
+                    acfDonation = acfDonation.plus(acfFeesPayout);
+                    voterFeePayout = voterFeePayout.minus(acfFeesPayout);
                     feesPayouts.set(address, voterFeePayout);
                     delegateProfit = delegateProfit.plus(
                         feePayout.minus(voterFeePayout)
