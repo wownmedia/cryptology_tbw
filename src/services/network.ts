@@ -179,9 +179,10 @@ export class Network {
         const stakes: Stake[] = [];
         if(voter.hasOwnProperty("stakes")) {
             logger.info(`Stakes found for ${voter.address}`);
-            //stakes.forEach((index, stake) => {
-                logger.info(`Stake: ${voter.stakes[0]}`)
-            //})
+            const voterStakes = JSON.parse(voter.stakes);
+           for(const item in voterStakes) {
+                logger.info(`Stake: ${item}`)
+            }
 
         }
 
@@ -230,7 +231,7 @@ export class Network {
                                 walletAPIResult.data.power
                             ),
                             isDelegate: walletAPIResult.data.isDelegate,
-                            stakes: this.processStakes(walletAPIResult.data)
+                            processedStakes: this.processStakes(walletAPIResult.data)
                         };
                         allVotersFromAPI.push(voter);
                         voterCache.push(address);

@@ -374,7 +374,7 @@ export class TrueBlockWeightEngine {
                 publicKey: row.publicKey,
                 balance: new BigNumber(row.power), //TODO
                 power: new BigNumber(row.power),
-                stakes: this.network.processStakes(row)
+                processedStakes: this.network.processStakes(row)
             };
         });
         voterBalances = voterBalances.filter((wallet) => {
