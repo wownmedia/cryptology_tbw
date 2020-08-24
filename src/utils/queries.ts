@@ -5,8 +5,6 @@
  * @param endBlockHeight
  * @param limit
  */
-import { logger } from "../services";
-
 export const getForgedBlocks = (
     publicKey: string,
     startBlockHeight: number,
@@ -88,8 +86,6 @@ export const getTransactions = (
     endBlockHeight: number
 ): string => {
     const votersAddresses = voters.map((address) => `'${address}'`).join(",");
-    // todo
-    logger.info(`voters DB: ${votersAddresses}`);
     const votersPublicKeys = votersKeys
         .map((publicKey) => `'${publicKey}'`)
         .join(",");
