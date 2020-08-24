@@ -346,9 +346,9 @@ export class DatabaseAPI {
                     );
 
                     //todo remove
-                    if(senderId === "cmcsmGe18ngpEo35oGCdBKJ2ziguQSWNYG" || transaction.recipientId === "cmcsmGe18ngpEo35oGCdBKJ2ziguQSWNYG") {
+                    //if(senderId === "cmcsmGe18ngpEo35oGCdBKJ2ziguQSWNYG" || transaction.recipientId === "cmcsmGe18ngpEo35oGCdBKJ2ziguQSWNYG") {
                         logger.info(`transaction at ${transaction.height}: ${senderId} -> amount: ${transaction.amount} || ${transaction.recipientId}: ${JSON.stringify(data)}`)
-                    }
+                    //}
 
                     return {
                         amount: transaction.amount,
