@@ -337,7 +337,7 @@ export class DatabaseAPI {
                 );
 
                 //if (data === null) {
-                    logger.warn(`data null at ${transaction.height} for ${transaction.senderPublicKey} || ${data.data.senderPublicKey} || ${JSON.stringify(data)}`);
+                    //logger.warn(`data null at ${transaction.height} for ${transaction.senderPublicKey} || ${data.data.senderPublicKey} || ${JSON.stringify(data)}`);
                 //}
                 if (data !== null) {
                     const senderId: string = Crypto.getAddressFromPublicKey(
