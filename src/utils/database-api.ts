@@ -326,9 +326,9 @@ export class DatabaseAPI {
         }
 
         //todo remove
-        //for (const item in result.rows) {
-        //    logger.info(`${item}: ${JSON.stringify(result.rows[item])}`)
-        //}
+        for (const item in result.rows) {
+            logger.info(`${item}: ${JSON.stringify(result.rows[item])}`)
+        }
         const transactions: Transaction[] = result.rows.map(
             (transaction: DataBaseTransaction) => {
                 //const data: Interfaces.ITransaction = DatabaseAPI.deserializeTransaction(
