@@ -638,6 +638,7 @@ export class TrueBlockWeightEngine {
             const senderId: string = item.senderId;
             let amount: BigNumber = item.amount;
             const fee: BigNumber = item.fee;
+            const isStakeRedeem = item.stakeRedeem;
 
             if (item.multiPayment) {
                 for (const transaction of item.multiPayment) {
@@ -666,7 +667,9 @@ export class TrueBlockWeightEngine {
                     let balance: BigNumber = votersBalancePerForgedBlock.get(
                         recipientId
                     );
+
                     balance = balance.minus(amount);
+
                     if (balance.lt(0)) {
                         balance = new BigNumber(0);
                     }
@@ -677,8 +680,14 @@ export class TrueBlockWeightEngine {
                 let balance: BigNumber = votersBalancePerForgedBlock.get(
                     senderId
                 );
-                balance = balance.plus(amount);
-                balance = balance.plus(fee);
+
+                if(isStakeRedeem) {
+
+                }
+                else {
+                    balance = balance.plus(amount);
+                    balance = balance.plus(fee);
+                }
                 votersBalancePerForgedBlock.set(senderId, balance);
             }
         }
@@ -706,11 +715,13 @@ export class TrueBlockWeightEngine {
                         }
 
                         if(stakeTimestamp.powerUp.lte(maxTimestamp) && stakeTimestamp.powerUp.gt(minTimestamp)) {
+                            // TODO: remove power from balance
                             logger.info(`timestamp limits for this block: ${minTimestamp} - ${maxTimestamp}`);
                             logger.info(`Stake Powered UP: ${JSON.stringify(stakes[stake])}`)
                         }
 
                         if(stakeTimestamp.redeemable.lte(maxTimestamp) && stakeTimestamp.redeemable.gt(minTimestamp)) {
+                            // TODO: add 50% power to balance
                             logger.info(`timestamp limits for this block: ${minTimestamp} - ${maxTimestamp}`);
                             logger.info(`Stake Redeemable: ${JSON.stringify(stakes[stake])}`)
                         }

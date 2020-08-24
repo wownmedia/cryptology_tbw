@@ -36,6 +36,7 @@ export interface StakeTimestamp {
 }
 
 export interface Stake {
+    id: string;
     amount: BigNumber;
     duration: BigNumber;
     power: BigNumber;
@@ -128,6 +129,7 @@ export interface Transaction {
     multiPayment: Interfaces.IMultiPaymentItem[];
     fee: BigNumber;
     timestamp: BigNumber;
+    stakeRedeem: boolean;
 }
 
 export interface MutatedVotersPerRound {

@@ -181,8 +181,13 @@ export class Network {
         if (voter.hasOwnProperty("stakes")) {
             const voterStakes: any[] = voter.stakes;
             for (const item in voterStakes) {
-                if (voterStakes.hasOwnProperty(item) && voterStakes[item].hasOwnProperty("status") && voterStakes[item].status !== "canceled") {
+                if (
+                    voterStakes.hasOwnProperty(item) &&
+                    voterStakes[item].hasOwnProperty("status") &&
+                    voterStakes[item].status !== "canceled"
+                ) {
                     const stake: Stake = {
+                        id: item,
                         amount: voterStakes[item].hasOwnProperty("amount")
                             ? new BigNumber(voterStakes[item].amount)
                             : new BigNumber(0),
@@ -242,7 +247,6 @@ export class Network {
                         },
                     };
                     stakes.push(stake);
-
                 }
             }
         }
@@ -291,7 +295,8 @@ export class Network {
                             power: new BigNumber(walletAPIResult.data.power),
                             isDelegate: walletAPIResult.data.isDelegate,
                             processedStakes: this.processStakes(
-                                walletAPIResult.data, epochTimestamp
+                                walletAPIResult.data,
+                                epochTimestamp
                             ),
                         };
                         allVotersFromAPI.push(voter);

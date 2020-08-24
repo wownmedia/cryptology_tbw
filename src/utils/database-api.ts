@@ -352,6 +352,7 @@ export class DatabaseAPI {
                             transaction.height
                         ).integerValue(),
                         timestamp: new BigNumber(transaction.timestamp),
+                        stakeRedeem: false //todo
                     };
                 }
                 return {};
