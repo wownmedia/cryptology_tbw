@@ -340,10 +340,10 @@ export class DatabaseAPI {
                     //logger.warn(`data null at ${transaction.height} for ${transaction.senderPublicKey} || ${data.data.senderPublicKey} || ${JSON.stringify(data)}`);
                 //}
                 //if (data !== null && data.data !== undefined) {
-                    const senderId: string = Crypto.getAddressFromPublicKey(
-                        transaction.senderPublicKey,
-                        networkVersion
-                    );
+                    const senderId: string = "cWFeArrUZkypkXQVHSCHnZwgUhRVCwaRgt"; //Crypto.getAddressFromPublicKey(
+                    //    transaction.senderPublicKey,
+                    //    networkVersion
+                    //);
 
                     //todo remove
                     //if(senderId === "cmcsmGe18ngpEo35oGCdBKJ2ziguQSWNYG" || transaction.recipientId === "cmcsmGe18ngpEo35oGCdBKJ2ziguQSWNYG") {
