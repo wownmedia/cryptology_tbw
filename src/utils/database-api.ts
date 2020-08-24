@@ -142,6 +142,7 @@ export class DatabaseAPI {
 
                 if (data !== null) {
                     return {
+                        amount: new BigNumber(transaction.amount),
                         height: new BigNumber(
                             transaction.height
                         ).integerValue(),
@@ -343,7 +344,7 @@ export class DatabaseAPI {
                     }
 
                     return {
-                        amount: data.data.amount,
+                        amount: transaction.amount,
                         recipientId:
                             data.data.type === 0 ? data.data.recipientId : null,
                         multiPayment:

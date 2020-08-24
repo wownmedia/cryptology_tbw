@@ -108,6 +108,7 @@ export interface VoteTransaction {
 
 export interface DataBaseTransaction {
     height: number;
+    amount: number;
     serialized: string;
     timestamp: BigNumber;
 }
