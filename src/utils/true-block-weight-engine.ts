@@ -569,9 +569,6 @@ export class TrueBlockWeightEngine {
                     maxTimestamp = timestamp;
                 }
 
-                //todo
-                logger.info(`forgedBlock: ${height} - ${timestamp}`)
-
                 calculatedVoters = this.mutateVotersBalances(
                     height,
                     previousHeight,
@@ -686,8 +683,6 @@ export class TrueBlockWeightEngine {
             }
         }
 
-        //todo
-        logger.info(`timestamp limits for this block: ${minTimestamp} - ${maxTimestamp}`);
         for (const item in voters) {
             if(voters[item] && voters[item].hasOwnProperty("processedStakes")){
                 const stakes: Stake[] = voters[item].processedStakes;
@@ -700,6 +695,7 @@ export class TrueBlockWeightEngine {
                         //}
                         // todo
                         if(stakeTimestamp.powerUp.lte(maxTimestamp) && stakeTimestamp.powerUp.gt(minTimestamp)) {
+                            logger.info(`timestamp limits for this block: ${minTimestamp} - ${maxTimestamp}`);
                             logger.info(`Powered UP: ${JSON.stringify(stakes[stake])}`)
                         }
                     }
