@@ -7,7 +7,7 @@ import {
     LatestPayouts,
     MutatedVotersPerRound,
     PayoutBalances,
-    Payouts, StakeTimestamp,
+    Payouts, Stake, StakeTimestamp,
     Transaction,
     Voter,
     VoterBalances,
@@ -692,8 +692,9 @@ export class TrueBlockWeightEngine {
         //todo
         logger.info(`timestamp limits for this block: ${minTimestamp} - ${maxTimestamp}`);
         for (const item in voters) {
-            if(voters[item] && voters[item].hasOwnProperty("stakes")){
-                for (const stake in voters[item].stakes) {
+            if(voters[item] && voters[item].hasOwnProperty("processedStakes")){
+                const stakes: Stake[] = voters[item].processedStakes;
+                for (const stake in stakes) {
                    // if(item === "cmcsmGe18ngpEo35oGCdBKJ2ziguQSWNYG") {
                     logger.info(`stake loop: ${JSON.stringify(voters[item])}`)
                     //if (voters[item].stakes[stake] && voters[item].stakes[stake].hasOwnProperty("timestamps")) {
