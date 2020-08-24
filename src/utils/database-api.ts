@@ -355,7 +355,7 @@ export class DatabaseAPI {
                         recipientId:
                             transaction.type === 0 ? transaction.recipientId : null,
                         multiPayment:
-                            transaction.type === 6 && transaction.hasOwnProperty("asset") && transaction.asset.hasOwnProperty("payments")
+                            transaction.type === 6 && transaction.hasOwnProperty("asset") && transaction.asset && transaction.asset.hasOwnProperty("payments")
                                 ? transaction.asset.payments
                                 : null,
                         senderId,
@@ -367,6 +367,7 @@ export class DatabaseAPI {
                         timestamp: new BigNumber(transaction.timestamp),
                         stakeRedeem:
                             transaction.hasOwnProperty("asset") &&
+                            transaction.asset &&
                             transaction.asset.hasOwnProperty("stakeRedeem") &&
                             transaction.asset.stakeRedeem.hasOwnProperty("id")
                                 ? transaction.asset.stakeRedeem.id
