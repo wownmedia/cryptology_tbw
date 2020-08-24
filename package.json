@@ -57,7 +57,7 @@
     },
     "homepage": "https://github.com/wownmedia/cryptology_tbw#readme",
     "dependencies": {
-        "@arkecosystem/crypto": "^2.6.37",
+        "@arkecosystem/crypto": "^2.6.52",
         "@arkecosystem/utils": "^1.1.8",
         "bytebuffer": "^5.0.1",
         "axios": "0.19.2",
