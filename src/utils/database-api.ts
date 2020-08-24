@@ -346,7 +346,7 @@ export class DatabaseAPI {
                     return {
                         amount: transaction.amount,
                         recipientId:
-                            data.data.type === 0 ? data.data.recipientId : null,
+                            data.data.type === 0 ? transaction.recipientId : null,
                         multiPayment:
                             data.data.type === 6
                                 ? data.data.asset && data.data.asset.payments

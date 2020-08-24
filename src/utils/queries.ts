@@ -94,7 +94,7 @@ export const getTransactions = (
         .map((publicKey) => `'${publicKey}'`)
         .join(",");
 
-    let query = `SELECT transactions."serialized", transactions.amount, transactions."timestamp", blocks."height" \
+    let query = `SELECT transactions."serialized", transactions."amount", transactions."recipient_id" AS "recipientId", transactions."timestamp", blocks."height" \
           FROM transactions INNER JOIN blocks ON blocks."id" = transactions."block_id"  
           WHERE blocks."height" >= ${startBlockHeight}`;
 

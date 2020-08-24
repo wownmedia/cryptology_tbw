@@ -110,6 +110,7 @@ export interface DataBaseTransaction {
     height: number;
     amount: number;
     serialized: string;
+    recipientId: string;
     timestamp: BigNumber;
 }
 
