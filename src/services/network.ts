@@ -179,7 +179,6 @@ export class Network {
     public processStakes(voter: Voter, epochTimestamp: BigNumber): Stake[] {
         const stakes: Stake[] = [];
         if (voter.hasOwnProperty("stakes")) {
-            logger.info(`Stakes found for ${voter.address}`);
             const voterStakes: any[] = voter.stakes;
             for (const item in voterStakes) {
                 if (voterStakes.hasOwnProperty(item)) {
@@ -244,7 +243,6 @@ export class Network {
                     };
                     stakes.push(stake);
 
-                    logger.info(`Stake: ${JSON.stringify(stake)}`);
                 }
             }
         }
