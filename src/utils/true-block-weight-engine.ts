@@ -144,7 +144,8 @@ export class TrueBlockWeightEngine {
                 forgedBlocks,
                 voterBalances.balances,
                 transactions,
-                votingDelegateBlocks
+                votingDelegateBlocks,
+                voters.voterWallets
             );
 
             const businessRevenue: Map<
@@ -524,12 +525,14 @@ export class TrueBlockWeightEngine {
      * @param voterBalances
      * @param transactions
      * @param votingDelegateBlocks
+     * @param voters
      */
     public processBalances(
         forgedBlocks: ForgedBlock[],
         voterBalances: Voter[],
         transactions: Transaction[],
-        votingDelegateBlocks: VoterBlock[]
+        votingDelegateBlocks: VoterBlock[],
+        voters: Voter[]
     ): VoterBalancesPerForgedBlock {
         const smallWallets: Map<string, boolean> = new Map(
             voterBalances.map((voterBalances) => [voterBalances.address, true])
@@ -541,6 +544,14 @@ export class TrueBlockWeightEngine {
             ])
         );
         let previousHeight: number = null;
+        let minTimestamp: BigNumber = new BigNumber(0);
+        let maxTimestamp: BigNumber = new BigNumber(0);
+
+        const timestampPerForgedBlock: Map<
+            number,
+            BigNumber
+        > = new Map(forgedBlocks.map((block) => [block.height, block.timestamp]));
+
         const votersBalancePerForgedBlock: Map<
             number,
             Map<string, BigNumber>
@@ -551,11 +562,20 @@ export class TrueBlockWeightEngine {
                 if (previousHeight === null) {
                     previousHeight = height + 1;
                 }
+
+                const timestamp = timestampPerForgedBlock.get(height);
+
+                //todo
+                logger.info(`forgedBlock: ${height} - ${timestamp}`)
+
                 calculatedVoters = this.mutateVotersBalances(
                     height,
                     previousHeight,
+                    maxTimestamp,
+                    minTimestamp,
                     calculatedVoters,
                     transactions,
+                    voters,
                     votingDelegateBlocks
                 );
                 previousHeight = height;
@@ -585,15 +605,21 @@ export class TrueBlockWeightEngine {
      *
      * @param height
      * @param previousHeight
+     * @param maxTimestamp
+     * @param minTimestamp
      * @param votersBalancePerForgedBlock
      * @param transactions
+     * @param voters
      * @param votingDelegateBlocks
      */
     public mutateVotersBalances(
         height: number,
         previousHeight: number,
+        maxTimestamp: BigNumber,
+        minTimestamp: BigNumber,
         votersBalancePerForgedBlock: Map<string, BigNumber>,
         transactions: Transaction[],
+        voters: Voter[],
         votingDelegateBlocks
     ): Map<string, BigNumber> {
         // Only process mutations that are in range
@@ -655,6 +681,9 @@ export class TrueBlockWeightEngine {
                 votersBalancePerForgedBlock.set(senderId, balance);
             }
         }
+
+        //todo
+        logger.info(`timestamp limits for this block: ${minTimestamp} - ${maxTimestamp}`);
 
         const calculatedVotingDelegateBlocks = votingDelegateBlocks.filter(
             (block) => {
