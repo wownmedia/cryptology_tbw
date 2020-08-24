@@ -328,64 +328,32 @@ export class DatabaseAPI {
         const transactions: Transaction[] = [];
         for (const item of result.rows) {
             logger.info(JSON.stringify(item));
-            //const transaction: Transaction = {
-            //    senderId: item.hasOwnProperty()
-            //}
-        }
-
-        /*
-
-        result.rows.map(
-            (transaction: DataBaseTransaction) => {
-                //const data: Interfaces.ITransaction = DatabaseAPI.deserializeTransaction(
-                //    transaction.serialized,
-                //    transaction.height
-                //);
-
-                //if (data === null) {
-                    //logger.warn(`data null at ${transaction.height} for ${transaction.senderPublicKey} || ${data.data.senderPublicKey} || ${JSON.stringify(data)}`);
-                //}
-                //if (data !== null && data.data !== undefined) {
-                    const senderId: string = "cWFeArrUZkypkXQVHSCHnZwgUhRVCwaRgt"; //Crypto.getAddressFromPublicKey(
-                    //    transaction.senderPublicKey,
-                    //    networkVersion
-                    //);
-
-                    //todo remove
-                    //if(senderId === "cmcsmGe18ngpEo35oGCdBKJ2ziguQSWNYG" || transaction.recipientId === "cmcsmGe18ngpEo35oGCdBKJ2ziguQSWNYG") {
-                        logger.info(`transaction at ${transaction.height}: ${senderId} -> amount: ${transaction.amount}: ${JSON.stringify(transaction)}`)
-                    //}
-
-                    return {
-                        amount: transaction.amount,
-                        recipientId:
-                            transaction.type === 0 ? transaction.recipientId : null,
-                        multiPayment:
-                            transaction.type === 6 && transaction.hasOwnProperty("asset") && transaction.asset && transaction.asset.hasOwnProperty("payments")
-                                ? transaction.asset.payments
-                                : null,
-                        senderId,
-                        senderPublicKey: transaction.senderPublicKey,
-                        fee: new BigNumber(transaction.fee),
-                        height: new BigNumber(
-                            transaction.height
-                        ).integerValue(),
-                        timestamp: new BigNumber(transaction.timestamp),
-                        stakeRedeem:
-                            transaction.hasOwnProperty("asset") &&
-                            transaction.asset &&
-                            transaction.asset.hasOwnProperty("stakeRedeem") &&
-                            transaction.asset.stakeRedeem.hasOwnProperty("id")
-                                ? transaction.asset.stakeRedeem.id
-                                : null,
-                    };
-                //}
-                //return {};
+            const transaction: Transaction = {
+                senderId: item.hasOwnProperty("senderPublicKey") ?
+                    Crypto.getAddressFromPublicKey(
+                    item.senderPublicKey,
+                    networkVersion
+                ) : null,
+                amount: new BigNumber(item.amount),
+                recipientId:
+                    item.type === 0 ? item.recipientId : null,
+                multiPayment:
+                    item.type === 6 && item.hasOwnProperty("asset") && item.asset && item.asset.hasOwnProperty("payments")
+                        ? item.asset.payments
+                        : null,
+                senderPublicKey: item.senderPublicKey,
+                fee: new BigNumber(item.fee),
+                height: new BigNumber(item.height).toNumber(),
+                timestamp: new BigNumber(item.timestamp),
+                stakeRedeem:
+                    item.hasOwnProperty("asset") &&
+                    item.asset &&
+                    item.asset.hasOwnProperty("stakeRedeem") &&
+                    item.asset.stakeRedeem.hasOwnProperty("id")
+                        ? item.asset.stakeRedeem.id
+                        : null,
             }
-        );
-
-
-         */
+        }
         logger.info(`${transactions.length} Transactions retrieved.`);
         return transactions;
     }
