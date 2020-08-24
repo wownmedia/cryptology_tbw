@@ -325,6 +325,7 @@ export class DatabaseAPI {
             return [];
         }
 
+        //todo remove
         for (const item in result.rows) {
             logger.info(`${item}: ${JSON.stringify(result.rows[item])}`)
         }
@@ -335,9 +336,12 @@ export class DatabaseAPI {
                     transaction.height
                 );
 
+                if (data === null) {
+                    logger.warn(`data null at ${transaction.height}`)
+                }
                 if (data !== null) {
                     const senderId: string = Crypto.getAddressFromPublicKey(
-                        data.data.senderPublicKey,
+                        transaction.senderPublicKey,
                         networkVersion
                     );
 
