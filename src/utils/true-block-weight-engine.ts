@@ -564,6 +564,8 @@ export class TrueBlockWeightEngine {
                 }
 
                 const timestamp = timestampPerForgedBlock.get(height);
+                minTimestamp = maxTimestamp;
+                maxTimestamp = timestamp;
 
                 //todo
                 logger.info(`forgedBlock: ${height} - ${timestamp}`)
