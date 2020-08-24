@@ -339,7 +339,7 @@ export class DatabaseAPI {
                 //if (data === null) {
                     //logger.warn(`data null at ${transaction.height} for ${transaction.senderPublicKey} || ${data.data.senderPublicKey} || ${JSON.stringify(data)}`);
                 //}
-                if (data !== null) {
+                if (data !== null && data.data !== undefined) {
                     const senderId: string = Crypto.getAddressFromPublicKey(
                         data.data.senderPublicKey,
                         networkVersion
@@ -347,7 +347,7 @@ export class DatabaseAPI {
 
                     //todo remove
                     //if(senderId === "cmcsmGe18ngpEo35oGCdBKJ2ziguQSWNYG" || transaction.recipientId === "cmcsmGe18ngpEo35oGCdBKJ2ziguQSWNYG") {
-                        logger.info(`transaction at ${transaction.height}: ${senderId} -> amount: ${transaction.amount} || ${transaction.recipientId}: ${JSON.stringify(data)}`)
+                        logger.info(`transaction at ${transaction.height}: ${senderId} -> amount: ${transaction.amount}: ${JSON.stringify(data)}`)
                     //}
 
                     return {
