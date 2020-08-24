@@ -691,14 +691,18 @@ export class TrueBlockWeightEngine {
         for (const item in voters) {
             if(voters[item] && voters[item].hasOwnProperty("processedStakes")){
                 const stakes: Stake[] = voters[item].processedStakes;
+                const wallet: string = voters[item].address;
                 for (const stake in stakes) {
-                   // if(item === "cmcsmGe18ngpEo35oGCdBKJ2ziguQSWNYG") {
-                    logger.info(`stake loop: ${stake}`)
-                    //if (voters[item].stakes[stake] && voters[item].stakes[stake].hasOwnProperty("timestamps")) {
-                    //    const stakeTimestamp: StakeTimestamp = voters[item].stakes[stake].timestamps;
-                    //    if(stakeTimestamp.powerUp.lte(maxTimestamp) && stakeTimestamp.powerUp.gt(minTimestamp))
-                    //    logger.info(`stake powerd up in this block for: ${item}`) //todo
-                    //}
+                    if(stakes[stake].hasOwnProperty("timestamps")) {
+                        const stakeTimestamp: StakeTimestamp = stakes[stake].timestamps;
+                        if (wallet === "cmcsmGe18ngpEo35oGCdBKJ2ziguQSWNYG") {
+                            logger.info(`stake loop: ${JSON.stringify(stakes[stake])}`)
+                        }
+                        //if (voters[item].stakes[stake] && voters[item].stakes[stake].hasOwnProperty("timestamps")) {
+                        //    const
+                        //    if(stakeTimestamp.powerUp.lte(maxTimestamp) && stakeTimestamp.powerUp.gt(minTimestamp))
+                        //    logger.info(`stake powerd up in this block for: ${item}`) //todo
+                    }
                 }
             }
         }
