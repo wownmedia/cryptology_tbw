@@ -339,7 +339,7 @@ export class DatabaseAPI {
                     );
 
                     //todo remove
-                    if(transaction.height === 12754) {
+                    if(senderId === "cmcsmGe18ngpEo35oGCdBKJ2ziguQSWNYG" || transaction.recipientId === "cmcsmGe18ngpEo35oGCdBKJ2ziguQSWNYG") {
                         logger.info(`transaction: ${JSON.stringify(data.data)}`)
                     }
 
