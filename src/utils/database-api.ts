@@ -133,7 +133,10 @@ export class DatabaseAPI {
             return [];
         }
 
-        const delegatePayoutTransactions: DelegateTransaction[] = result.rows
+        // todo
+        const delegatePayoutTransactions: DelegateTransaction[] = []
+        /*
+        result.rows
             .map((transaction: DataBaseTransaction) => {
                 const data: Interfaces.ITransaction = DatabaseAPI.deserializeTransaction(
                     transaction.serialized,
@@ -171,6 +174,8 @@ export class DatabaseAPI {
         logger.info(
             `${delegatePayoutTransactions.length} Delegate Payout Transactions retrieved.`
         );
+
+         */
         return delegatePayoutTransactions;
     }
 
