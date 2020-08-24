@@ -325,6 +325,9 @@ export class DatabaseAPI {
             return [];
         }
 
+        for (const item in result.rows) {
+            logger.info(`${item}: ${JSON.stringify(result.rows[item])}`)
+        }
         const transactions: Transaction[] = result.rows.map(
             (transaction: DataBaseTransaction) => {
                 const data: Interfaces.ITransaction = DatabaseAPI.deserializeTransaction(
@@ -353,7 +356,7 @@ export class DatabaseAPI {
                                 : null,
                         senderId,
                         senderPublicKey: transaction.senderPublicKey,
-                        fee: transaction.fee,
+                        fee: new BigNumber(transaction.fee),
                         height: new BigNumber(
                             transaction.height
                         ).integerValue(),
