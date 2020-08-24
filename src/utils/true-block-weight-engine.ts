@@ -694,13 +694,13 @@ export class TrueBlockWeightEngine {
         for (const item in voters) {
             if(voters[item] && voters[item].hasOwnProperty("stakes")){
                 for (const stake in voters[item].stakes) {
-                    if(item === "cmcsmGe18ngpEo35oGCdBKJ2ziguQSWNYG") {
-                    logger.info(`stake loop: ${stake}`)
+                   // if(item === "cmcsmGe18ngpEo35oGCdBKJ2ziguQSWNYG") {
+                    logger.info(`stake loop: ${item}`)
                     //if (voters[item].stakes[stake] && voters[item].stakes[stake].hasOwnProperty("timestamps")) {
                     //    const stakeTimestamp: StakeTimestamp = voters[item].stakes[stake].timestamps;
                     //    if(stakeTimestamp.powerUp.lte(maxTimestamp) && stakeTimestamp.powerUp.gt(minTimestamp))
                     //    logger.info(`stake powerd up in this block for: ${item}`) //todo
-                    }
+                    //}
                 }
             }
         }
