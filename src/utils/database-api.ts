@@ -33,7 +33,7 @@ export class DatabaseAPI {
     private static deserializeTransaction(
         transaction: string,
         blockHeight: number
-    ): Interfaces.ITransaction {
+    ) {
         const buffer: Buffer = Buffer.from(transaction, "hex");
         const serialized: string = Buffer.from(buffer).toString("hex");
 
