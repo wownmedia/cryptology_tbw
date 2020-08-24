@@ -325,11 +325,17 @@ export class DatabaseAPI {
             return [];
         }
 
-        //todo remove
-        for (const item in result.rows) {
-            logger.info(`${item}: ${JSON.stringify(result.rows[item])}`)
+        const transactions: Transaction[] = [];
+        for (const item of result.rows) {
+            logger.info(JSON.stringify(item));
+            //const transaction: Transaction = {
+            //    senderId: item.hasOwnProperty()
+            //}
         }
-        const transactions: Transaction[] = result.rows.map(
+
+        /*
+
+        result.rows.map(
             (transaction: DataBaseTransaction) => {
                 //const data: Interfaces.ITransaction = DatabaseAPI.deserializeTransaction(
                 //    transaction.serialized,
@@ -378,6 +384,8 @@ export class DatabaseAPI {
             }
         );
 
+
+         */
         logger.info(`${transactions.length} Transactions retrieved.`);
         return transactions;
     }
