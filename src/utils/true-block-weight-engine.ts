@@ -144,8 +144,7 @@ export class TrueBlockWeightEngine {
                 forgedBlocks,
                 voterBalances.balances,
                 transactions,
-                votingDelegateBlocks,
-                voters.voterWallets
+                votingDelegateBlocks
             );
 
             const businessRevenue: Map<
@@ -526,14 +525,12 @@ export class TrueBlockWeightEngine {
      * @param voterBalances
      * @param transactions
      * @param votingDelegateBlocks
-     * @param voters
      */
     public processBalances(
         forgedBlocks: ForgedBlock[],
         voterBalances: Voter[],
         transactions: Transaction[],
-        votingDelegateBlocks: VoterBlock[],
-        voters: Voter[]
+        votingDelegateBlocks: VoterBlock[]
     ): VoterBalancesPerForgedBlock {
         const smallWallets: Map<string, boolean> = new Map(
             voterBalances.map((voterBalances) => [voterBalances.address, true])
@@ -582,7 +579,7 @@ export class TrueBlockWeightEngine {
                     minTimestamp,
                     calculatedVoters,
                     transactions,
-                    voters,
+                    voterBalances,
                     votingDelegateBlocks
                 );
                 previousHeight = height;
