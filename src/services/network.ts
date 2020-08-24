@@ -181,7 +181,7 @@ export class Network {
         if (voter.hasOwnProperty("stakes")) {
             const voterStakes: any[] = voter.stakes;
             for (const item in voterStakes) {
-                if (voterStakes.hasOwnProperty(item)) {
+                if (voterStakes.hasOwnProperty(item) && voterStakes[item].hasOwnProperty("status") && voterStakes[item].status !== "canceled") {
                     const stake: Stake = {
                         amount: voterStakes[item].hasOwnProperty("amount")
                             ? new BigNumber(voterStakes[item].amount)

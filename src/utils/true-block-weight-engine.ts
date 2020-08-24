@@ -693,12 +693,13 @@ export class TrueBlockWeightEngine {
                         //if (wallet === "cmcsmGe18ngpEo35oGCdBKJ2ziguQSWNYG") {
                         //    logger.info(`stake loop: ${JSON.stringify(stakes[stake])}`)
                         //}
-                        // todo
+                        // todo remove
                         if(stakeTimestamp.created.lte(maxTimestamp) && stakeTimestamp.created.gt(minTimestamp)) {
                             logger.info(`timestamp limits for this block: ${minTimestamp} - ${maxTimestamp}`);
                             logger.info(`Stake Created: ${JSON.stringify(stakes[stake])}`)
                         }
 
+                        //todo remove
                         if(stakeTimestamp.graceEnd.lte(maxTimestamp) && stakeTimestamp.graceEnd.gt(minTimestamp)) {
                             logger.info(`timestamp limits for this block: ${minTimestamp} - ${maxTimestamp}`);
                             logger.info(`Powering Up: ${JSON.stringify(stakes[stake])}`)
