@@ -331,7 +331,7 @@ export class DatabaseAPI {
         //}
         const transactions: Transaction[] = result.rows.map(
             (transaction: DataBaseTransaction) => {
-                const data: Interfaces.ITransaction = DatabaseAPI.deserializeTransaction(
+                const data = DatabaseAPI.deserializeTransaction(
                     transaction.serialized,
                     transaction.height
                 );
