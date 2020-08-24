@@ -660,6 +660,7 @@ export class TrueBlockWeightEngine {
                     if (
                         votersBalancePerForgedBlock.has(transaction.recipientId)
                     ) {
+                        logger.info(`RECEIVE MULTI Transaction at ${height} to ${transaction.recipientId}: ${JSON.stringify(item)}`);
                         let balance: BigNumber = votersBalancePerForgedBlock.get(
                             transaction.recipientId
                         );
