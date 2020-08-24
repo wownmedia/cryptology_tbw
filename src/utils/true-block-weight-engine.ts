@@ -372,9 +372,9 @@ export class TrueBlockWeightEngine {
             return {
                 address: row.address,
                 publicKey: row.publicKey,
-                balance: new BigNumber(row.power), //TODO
+                balance: new BigNumber(row.power), // TODO
                 power: new BigNumber(row.power),
-                processedStakes: this.network.processStakes(row)
+                processedStakes: this.network.processStakes(row),
             };
         });
         voterBalances = voterBalances.filter((wallet) => {
@@ -416,7 +416,11 @@ export class TrueBlockWeightEngine {
                     );
                 }
             } else if (transaction.multiPayment !== null) {
-                logger.info(`transaction.multiPayment: ${JSON.stringify(transaction.multiPayment)}`);
+                logger.info(
+                    `transaction.multiPayment: ${JSON.stringify(
+                        transaction.multiPayment
+                    )}`
+                );
                 for (const receiver of transaction.multiPayment) {
                     const height: BigNumber = new BigNumber(
                         latestPayouts.get(receiver.recipientId)

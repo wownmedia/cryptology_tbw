@@ -48,7 +48,7 @@ export interface Voter {
     secondPublicKey?: string;
     balance: BigNumber;
     power: BigNumber;
-    stakes?:any;
+    stakes?: any;
     processedStakes?: Stake[];
     isDelegate?: boolean;
     vote?: string;
@@ -94,8 +94,8 @@ export interface ForgedBlock {
 export interface Block {
     height: number;
     totalFee: number;
-    removedFee: number,
-    reward: number,
+    removedFee: number;
+    reward: number;
     timestamp: BigNumber;
 }
 
