@@ -129,7 +129,7 @@ export interface Transaction {
     multiPayment: Interfaces.IMultiPaymentItem[];
     fee: BigNumber;
     timestamp: BigNumber;
-    stakeRedeem: boolean;
+    stakeRedeem: string;
 }
 
 export interface MutatedVotersPerRound {

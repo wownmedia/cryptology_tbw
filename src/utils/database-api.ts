@@ -352,7 +352,12 @@ export class DatabaseAPI {
                             transaction.height
                         ).integerValue(),
                         timestamp: new BigNumber(transaction.timestamp),
-                        stakeRedeem: false //todo
+                        stakeRedeem:
+                            data.data.asset &&
+                            data.data.asset.hasOwnProperty("stakeRedeem") &&
+                            data.data.asset.stakeRedeem.hasOwnProperty("id")
+                                ? data.data.asset.stakeRedeem.id
+                                : null,
                     };
                 }
                 return {};
