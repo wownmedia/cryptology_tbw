@@ -676,8 +676,11 @@ export class TrueBlockWeightEngine {
             votersBalancePerForgedBlock.set(delegateAddress, balance);
         }
 
+        //todo remove this
         votersBalancePerForgedBlock.forEach((balance, wallet) => {
-            logger.info(`Balance at ${height} for ${wallet}: ${balance}`);
+            if(wallet === "cmcsmGe18ngpEo35oGCdBKJ2ziguQSWNYG") {
+                logger.info(`Balance at ${height} for ${wallet}: ${balance}`);
+            }
         });
 
         return votersBalancePerForgedBlock;
