@@ -638,7 +638,7 @@ export class TrueBlockWeightEngine {
             const senderId: string = item.senderId;
             let amount: BigNumber = item.amount;
             const fee: BigNumber = item.fee;
-            const isStakeRedeem = item.stakeRedeem;
+            const stakeRedeemID = item.stakeRedeem;
 
             if (item.multiPayment) {
                 for (const transaction of item.multiPayment) {
@@ -681,8 +681,8 @@ export class TrueBlockWeightEngine {
                     senderId
                 );
 
-                if(isStakeRedeem) {
-
+                if(stakeRedeemID !== null) {
+                    // todo process redeem
                 }
                 else {
                     balance = balance.plus(amount);
