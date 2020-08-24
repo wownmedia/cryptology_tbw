@@ -337,7 +337,8 @@ export class DatabaseAPI {
                         networkVersion
                     );
 
-                    if(data.data.id === 'f2942da43b3003ee7081ed2db0a6c28d61a647a598221278670f181b3a706d8f') {
+                    //todo remove
+                    if(transaction.height === 12754) {
                         logger.info(`transaction: ${JSON.stringify(data.data)}`)
                     }
 
