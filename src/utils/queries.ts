@@ -91,7 +91,7 @@ export const getTransactions = (
         .join(",");
 
     let query = `SELECT transactions."serialized", transactions."amount", transactions."fee", transactions."recipient_id" AS "recipientId", \
-          transactions."timestamp", transactions."sender_public_key" AS senderPublicKey, blocks."height" \
+          transactions."timestamp", transactions."sender_public_key" AS senderPublicKey, transactions."asset", blocks."height" \
           FROM transactions INNER JOIN blocks ON blocks."id" = transactions."block_id"  
           WHERE blocks."height" >= ${startBlockHeight}`;
 
