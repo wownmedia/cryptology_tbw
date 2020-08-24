@@ -694,9 +694,24 @@ export class TrueBlockWeightEngine {
                         //    logger.info(`stake loop: ${JSON.stringify(stakes[stake])}`)
                         //}
                         // todo
+                        if(stakeTimestamp.created.lte(maxTimestamp) && stakeTimestamp.created.gt(minTimestamp)) {
+                            logger.info(`timestamp limits for this block: ${minTimestamp} - ${maxTimestamp}`);
+                            logger.info(`Stake Created: ${JSON.stringify(stakes[stake])}`)
+                        }
+
+                        if(stakeTimestamp.graceEnd.lte(maxTimestamp) && stakeTimestamp.graceEnd.gt(minTimestamp)) {
+                            logger.info(`timestamp limits for this block: ${minTimestamp} - ${maxTimestamp}`);
+                            logger.info(`Powering Up: ${JSON.stringify(stakes[stake])}`)
+                        }
+
                         if(stakeTimestamp.powerUp.lte(maxTimestamp) && stakeTimestamp.powerUp.gt(minTimestamp)) {
                             logger.info(`timestamp limits for this block: ${minTimestamp} - ${maxTimestamp}`);
-                            logger.info(`Powered UP: ${JSON.stringify(stakes[stake])}`)
+                            logger.info(`Stake Powered UP: ${JSON.stringify(stakes[stake])}`)
+                        }
+
+                        if(stakeTimestamp.redeemable.lte(maxTimestamp) && stakeTimestamp.redeemable.gt(minTimestamp)) {
+                            logger.info(`timestamp limits for this block: ${minTimestamp} - ${maxTimestamp}`);
+                            logger.info(`Stake Redeemable: ${JSON.stringify(stakes[stake])}`)
                         }
                     }
                 }
