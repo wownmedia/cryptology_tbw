@@ -218,7 +218,8 @@ export class TrueBlockWeightEngine {
         const voterWallets: Voter[] = await this.network.addMutatedVoters(
             voterMutations,
             currentVotersFromAPI,
-            currentVoters
+            currentVoters,
+            this.config.epochTimestamp
         );
 
         return {
@@ -375,7 +376,7 @@ export class TrueBlockWeightEngine {
                 publicKey: row.publicKey,
                 balance: new BigNumber(row.power), // TODO
                 power: new BigNumber(row.power),
-                processedStakes: this.network.processStakes(row),
+                processedStakes: this.network.processStakes(row, this.config.epochTimestamp),
             };
         });
         voterBalances = voterBalances.filter((wallet) => {

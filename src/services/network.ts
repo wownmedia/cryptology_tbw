@@ -176,7 +176,7 @@ export class Network {
         return voters;
     }
 
-    public processStakes(voter: Voter): Stake[] {
+    public processStakes(voter: Voter, epochTimestamp: BigNumber): Stake[] {
         const stakes: Stake[] = [];
         if (voter.hasOwnProperty("stakes")) {
             logger.info(`Stakes found for ${voter.address}`);
@@ -203,7 +203,7 @@ export class Network {
                                 )
                                     ? new BigNumber(
                                           voterStakes[item].timestamps.created
-                                      )
+                                      ).minus(epochTimestamp)
                                     : new BigNumber(0),
                             graceEnd:
                                 voterStakes[item].hasOwnProperty(
@@ -214,7 +214,7 @@ export class Network {
                                 )
                                     ? new BigNumber(
                                           voterStakes[item].timestamps.graceEnd
-                                      )
+                                      ).minus(epochTimestamp)
                                     : new BigNumber(0),
                             powerUp:
                                 voterStakes[item].hasOwnProperty(
@@ -225,7 +225,7 @@ export class Network {
                                 )
                                     ? new BigNumber(
                                           voterStakes[item].timestamps.powerUp
-                                      )
+                                      ).minus(epochTimestamp)
                                     : new BigNumber(0),
                             redeemable:
                                 voterStakes[item].hasOwnProperty(
@@ -238,7 +238,7 @@ export class Network {
                                           voterStakes[
                                               item
                                           ].timestamps.redeemable
-                                      )
+                                      ).minus(epochTimestamp)
                                     : new BigNumber(0),
                         },
                     };
@@ -257,7 +257,8 @@ export class Network {
     public async addMutatedVoters(
         voterMutations: VoterMutation[],
         currentVotersFromAPI: Voter[],
-        currentVoters: string[]
+        currentVoters: string[],
+        epochTimestamp: BigNumber
     ): Promise<Voter[]> {
         const allVotersFromAPI: Voter[] = currentVotersFromAPI.slice(0);
         const voterCache: string[] = [];
@@ -292,7 +293,7 @@ export class Network {
                             power: new BigNumber(walletAPIResult.data.power),
                             isDelegate: walletAPIResult.data.isDelegate,
                             processedStakes: this.processStakes(
-                                walletAPIResult.data
+                                walletAPIResult.data, epochTimestamp
                             ),
                         };
                         allVotersFromAPI.push(voter);
