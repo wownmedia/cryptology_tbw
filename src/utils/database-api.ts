@@ -352,8 +352,8 @@ export class DatabaseAPI {
                                 ? data.data.asset && data.data.asset.payments
                                 : null,
                         senderId,
-                        senderPublicKey: data.data.senderPublicKey,
-                        fee: data.data.fee,
+                        senderPublicKey: transaction.senderPublicKey,
+                        fee: transaction.fee,
                         height: new BigNumber(
                             transaction.height
                         ).integerValue(),
