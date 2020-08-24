@@ -7,7 +7,7 @@ import {
     LatestPayouts,
     MutatedVotersPerRound,
     PayoutBalances,
-    Payouts,
+    Payouts, StakeTimestamp,
     Transaction,
     Voter,
     VoterBalances,
@@ -691,6 +691,17 @@ export class TrueBlockWeightEngine {
 
         //todo
         logger.info(`timestamp limits for this block: ${minTimestamp} - ${maxTimestamp}`);
+        for (const item in voters) {
+            if(voters[item] && voters[item].hasOwnProperty("stakes")){
+                for (const stake in voters[item].stakes) {
+                    if (voters[item].stakes[stake]) {
+                        const stakeTimestamp: StakeTimestamp = voters[item].stakes[stake].timestamps;
+                        if(stakeTimestamp.powerUp.lte(maxTimestamp) && stakeTimestamp.powerUp.gt(minTimestamp))
+                        logger.info(`stake powerd up in this block for: ${item}`) //todo
+                    }
+                }
+            }
+        }
 
         const calculatedVotingDelegateBlocks = votingDelegateBlocks.filter(
             (block) => {
@@ -715,7 +726,7 @@ export class TrueBlockWeightEngine {
         //todo remove this
         votersBalancePerForgedBlock.forEach((balance, wallet) => {
             if(wallet === "cmcsmGe18ngpEo35oGCdBKJ2ziguQSWNYG") {
-                logger.info(`Balance at ${height} for ${wallet}: ${balance}`);
+                //logger.info(`Balance at ${height} for ${wallet}: ${balance}`);
             }
         });
 
