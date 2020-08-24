@@ -66,7 +66,7 @@ export class Crypto {
         transaction.data.senderPublicKey = buffer.readBytes(33).toString("hex");
         transaction.data.fee = BigNumber.make(buffer.readUint64().toString());
         transaction.data.amount = BigNumber.ZERO;
-        return transaction.data.fee.isGreaterThan(0) ? transaction : null;
+        return transaction;
     }
 
     public static getPublicKeyFromSeed(seed: string): string {
