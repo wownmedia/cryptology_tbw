@@ -731,10 +731,10 @@ export class TrueBlockWeightEngine {
                             stakeTimestamp.powerUp.gt(minTimestamp)
                         ) {
                             //todo logging
-                            logger.info(`Powered Up balance for ${wallet}.`);
+                            logger.info(`Powered Up balance for ${wallet} = ${balance}.`);
                             balance = balance.minus(stakes[stake].power).plus(stakes[stake].amount);
                             votersBalancePerForgedBlock.set(wallet, balance);
-                            logger.info(`Graced Stake balance for ${wallet}.`);
+                            logger.info(`Graced Stake balance for ${wallet} = ${balance}`);
                             logger.info(
                                 `timestamp limits for this block: ${minTimestamp} - ${maxTimestamp}`
                             );
