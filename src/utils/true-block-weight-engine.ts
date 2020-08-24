@@ -7,7 +7,9 @@ import {
     LatestPayouts,
     MutatedVotersPerRound,
     PayoutBalances,
-    Payouts, Stake, StakeTimestamp,
+    Payouts,
+    Stake,
+    StakeTimestamp,
     Transaction,
     Voter,
     VoterBalances,
@@ -375,7 +377,10 @@ export class TrueBlockWeightEngine {
                 publicKey: row.publicKey,
                 balance: new BigNumber(row.power), // TODO
                 power: new BigNumber(row.power),
-                processedStakes: this.network.processStakes(row, this.config.epochTimestamp),
+                processedStakes: this.network.processStakes(
+                    row,
+                    this.config.epochTimestamp
+                ),
             };
         });
         voterBalances = voterBalances.filter((wallet) => {
@@ -545,10 +550,9 @@ export class TrueBlockWeightEngine {
         let minTimestamp: BigNumber = new BigNumber(0);
         let maxTimestamp: BigNumber = new BigNumber(0);
 
-        const timestampPerForgedBlock: Map<
-            number,
-            BigNumber
-        > = new Map(forgedBlocks.map((block) => [block.height, block.timestamp]));
+        const timestampPerForgedBlock: Map<number, BigNumber> = new Map(
+            forgedBlocks.map((block) => [block.height, block.timestamp])
+        );
 
         const votersBalancePerForgedBlock: Map<
             number,
@@ -565,7 +569,7 @@ export class TrueBlockWeightEngine {
                 maxTimestamp = minTimestamp;
                 minTimestamp = timestamp.minus(1);
 
-                if(maxTimestamp.eq(0)) {
+                if (maxTimestamp.eq(0)) {
                     maxTimestamp = timestamp;
                 }
 
@@ -681,10 +685,20 @@ export class TrueBlockWeightEngine {
                     senderId
                 );
 
-                if(stakeRedeemID !== null) {
-                    // todo process redeem
-                }
-                else {
+                if (stakeRedeemID !== null) {
+                    let processedStakes: Stake[] = [];
+                    for(const item in voters) {
+                        if(voters[item] && voters[item].address === senderId) {
+                            processedStakes = voters[item].processedStakes;
+                            break;
+                        }
+                    }
+                    const redeemValue: BigNumber = TrueBlockWeightEngine.getStakeRedeemValue(
+                        processedStakes,
+                        stakeRedeemID
+                    );
+                    balance = balance.plus(redeemValue);
+                } else {
                     balance = balance.plus(amount);
                     balance = balance.plus(fee);
                 }
@@ -693,37 +707,55 @@ export class TrueBlockWeightEngine {
         }
 
         for (const item in voters) {
-            if(voters[item] && voters[item].hasOwnProperty("processedStakes")){
+            if (
+                voters[item] &&
+                voters[item].hasOwnProperty("processedStakes")
+            ) {
                 const stakes: Stake[] = voters[item].processedStakes;
                 const wallet: string = voters[item].address;
                 for (const stake in stakes) {
-                    if(stakes[stake].hasOwnProperty("timestamps")) {
-                        const stakeTimestamp: StakeTimestamp = stakes[stake].timestamps;
+                    if (stakes[stake].hasOwnProperty("timestamps")) {
+                        const stakeTimestamp: StakeTimestamp =
+                            stakes[stake].timestamps;
                         //if (wallet === "cmcsmGe18ngpEo35oGCdBKJ2ziguQSWNYG") {
                         //    logger.info(`stake loop: ${JSON.stringify(stakes[stake])}`)
                         //}
                         // todo remove
-                        if(stakeTimestamp.created.lte(maxTimestamp) && stakeTimestamp.created.gt(minTimestamp)) {
-                            logger.info(`timestamp limits for this block: ${minTimestamp} - ${maxTimestamp}`);
-                            logger.info(`Stake Created: ${JSON.stringify(stakes[stake])}`)
+
+                        let balance: BigNumber = votersBalancePerForgedBlock.get(
+                            wallet
+                        );
+
+                        if (
+                            stakeTimestamp.powerUp.lte(maxTimestamp) &&
+                            stakeTimestamp.powerUp.gt(minTimestamp)
+                        ) {
+                            //todo logging
+                            logger.info(`Powered Up balance for ${wallet}.`);
+                            balance = balance.minus(stakes[stake].power).plus(stakes[stake].amount);
+                            votersBalancePerForgedBlock.set(wallet, balance);
+                            logger.info(`Graced Stake balance for ${wallet}.`);
+                            logger.info(
+                                `timestamp limits for this block: ${minTimestamp} - ${maxTimestamp}`
+                            );
+                            logger.info(
+                                `Stake Powered UP: ${JSON.stringify(
+                                    stakes[stake]
+                                )}`
+                            );
                         }
 
-                        //todo remove
-                        if(stakeTimestamp.graceEnd.lte(maxTimestamp) && stakeTimestamp.graceEnd.gt(minTimestamp)) {
-                            logger.info(`timestamp limits for this block: ${minTimestamp} - ${maxTimestamp}`);
-                            logger.info(`Powering Up: ${JSON.stringify(stakes[stake])}`)
-                        }
+                        if (
+                            stakeTimestamp.redeemable.lte(maxTimestamp) &&
+                            stakeTimestamp.redeemable.gt(minTimestamp)
+                        ) {
 
-                        if(stakeTimestamp.powerUp.lte(maxTimestamp) && stakeTimestamp.powerUp.gt(minTimestamp)) {
-                            // TODO: remove power from balance
-                            logger.info(`timestamp limits for this block: ${minTimestamp} - ${maxTimestamp}`);
-                            logger.info(`Stake Powered UP: ${JSON.stringify(stakes[stake])}`)
-                        }
-
-                        if(stakeTimestamp.redeemable.lte(maxTimestamp) && stakeTimestamp.redeemable.gt(minTimestamp)) {
-                            // TODO: add 50% power to balance
-                            logger.info(`timestamp limits for this block: ${minTimestamp} - ${maxTimestamp}`);
-                            logger.info(`Stake Redeemable: ${JSON.stringify(stakes[stake])}`)
+                            const redeemValue: BigNumber = TrueBlockWeightEngine.getStakeRedeemValue(
+                                stakes,
+                                stakes[stake].id
+                            );
+                            balance = balance.plus(redeemValue);
+                            votersBalancePerForgedBlock.set(wallet, balance);
                         }
                     }
                 }
@@ -752,12 +784,31 @@ export class TrueBlockWeightEngine {
 
         //todo remove this
         votersBalancePerForgedBlock.forEach((balance, wallet) => {
-            if(wallet === "cmcsmGe18ngpEo35oGCdBKJ2ziguQSWNYG") {
+            if (wallet === "cmcsmGe18ngpEo35oGCdBKJ2ziguQSWNYG") {
                 //logger.info(`Balance at ${height} for ${wallet}: ${balance}`);
             }
         });
 
         return votersBalancePerForgedBlock;
+    }
+
+    private static getStakeRedeemValue(
+        processedStakes: Stake[],
+        stakeID: string
+    ): BigNumber {
+        let stakeRedeemAmount: BigNumber = new BigNumber(0);
+        for (const stake in processedStakes) {
+            if (
+                processedStakes[stake] &&
+                processedStakes[stake].hasOwnProperty("id") &&
+                processedStakes[stake].id === stakeID
+            ) {
+                stakeRedeemAmount = processedStakes[stake].power.minus(
+                    processedStakes[stake].amount
+                );
+            }
+        }
+        return stakeRedeemAmount.div(2);
     }
 
     /**
