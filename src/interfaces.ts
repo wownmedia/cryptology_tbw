@@ -114,6 +114,7 @@ export interface DataBaseTransaction {
     recipientId: string;
     senderPublicKey: string;
     timestamp: BigNumber;
+    asset:any;
 }
 
 export interface DelegateTransaction {

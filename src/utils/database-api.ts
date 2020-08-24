@@ -341,7 +341,7 @@ export class DatabaseAPI {
                 //}
                 if (data !== null && data.data !== undefined) {
                     const senderId: string = Crypto.getAddressFromPublicKey(
-                        data.data.senderPublicKey,
+                        transaction.senderPublicKey,
                         networkVersion
                     );
 
