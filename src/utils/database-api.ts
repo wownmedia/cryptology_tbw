@@ -353,6 +353,7 @@ export class DatabaseAPI {
                         ? item.asset.stakeRedeem.id
                         : null,
             }
+            transactions.push(transaction);
         }
         logger.info(`${transactions.length} Transactions retrieved.`);
         return transactions;
