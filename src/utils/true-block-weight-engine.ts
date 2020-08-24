@@ -693,7 +693,7 @@ export class TrueBlockWeightEngine {
                 const stakes: Stake[] = voters[item].processedStakes;
                 for (const stake in stakes) {
                    // if(item === "cmcsmGe18ngpEo35oGCdBKJ2ziguQSWNYG") {
-                    logger.info(`stake loop: ${JSON.stringify(voters[item])}`)
+                    logger.info(`stake loop: ${stake}`)
                     //if (voters[item].stakes[stake] && voters[item].stakes[stake].hasOwnProperty("timestamps")) {
                     //    const stakeTimestamp: StakeTimestamp = voters[item].stakes[stake].timestamps;
                     //    if(stakeTimestamp.powerUp.lte(maxTimestamp) && stakeTimestamp.powerUp.gt(minTimestamp))
