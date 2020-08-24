@@ -33,7 +33,7 @@ export class DatabaseAPI {
     private static deserializeTransaction(
         transaction: string,
         blockHeight: number
-    ) {
+    ): Interfaces.ITransaction {
         const buffer: Buffer = Buffer.from(transaction, "hex");
         const serialized: string = Buffer.from(buffer).toString("hex");
 
@@ -331,17 +331,17 @@ export class DatabaseAPI {
         //}
         const transactions: Transaction[] = result.rows.map(
             (transaction: DataBaseTransaction) => {
-                const data = DatabaseAPI.deserializeTransaction(
+                const data: Interfaces.ITransaction = DatabaseAPI.deserializeTransaction(
                     transaction.serialized,
                     transaction.height
                 );
 
                 //if (data === null) {
-                    logger.warn(`data null at ${transaction.height} for ${transaction.senderPublicKey} || ${data.data.senderPublicKey}`);
+                    logger.warn(`data null at ${transaction.height} for ${transaction.senderPublicKey} || ${data.data.senderPublicKey} || ${JSON.stringify(data)}`);
                 //}
                 if (data !== null) {
                     const senderId: string = Crypto.getAddressFromPublicKey(
-                        transaction.senderPublicKey,
+                        data.data.senderPublicKey,
                         networkVersion
                     );
 
