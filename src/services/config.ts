@@ -50,6 +50,7 @@ export class Config {
     public readonly businessSecondPassphrase: string;
     public transactionsPerRequest: number;
     public transactionsPerMultitransfer: number;
+    public readonly epochTimestamp: BigNumber = new BigNumber(1598025600);
 
     constructor() {
         this.delegate = process.env.DELEGATE

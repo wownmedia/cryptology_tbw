@@ -568,7 +568,7 @@ export class TrueBlockWeightEngine {
                 maxTimestamp = timestamp;
 
                 //todo
-                logger.info(`forgedBlock: ${height} - ${timestamp}`)
+                logger.info(`forgedBlock: ${height} - ${timestamp.plus(this.config.epochTimestamp)}`)
 
                 calculatedVoters = this.mutateVotersBalances(
                     height,
