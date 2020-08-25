@@ -146,7 +146,7 @@ export class DatabaseAPI {
             delegatePayoutTransactions.push(transaction);
         }
 
-        logger.info(
+        logger.info(``
             `${delegatePayoutTransactions.length} Delegate Payout Transactions retrieved.`
         );
 
