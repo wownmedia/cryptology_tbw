@@ -4,21 +4,15 @@
  * @param startBlockHeight
  * @param endBlockHeight
  * @param limit
- * @param removeFee
  */
 export const getForgedBlocks = (
     publicKey: string,
     startBlockHeight: number,
     endBlockHeight: number,
     limit: number,
-    removeFee: boolean
 ): string => {
     let query = `SELECT blocks.height, blocks.timestamp, blocks.reward, \
-                        blocks.total_fee AS "totalFee"`;
-    if (removeFee) {
-        query = `${query}, blocks.removed_fee AS "removedFee"  `;
-    }
-    query = `${query}             
+                        blocks.total_fee AS "totalFee" \
           FROM public.blocks \
           WHERE blocks."generator_public_key" = '${publicKey}' \
           AND blocks.height >= ${startBlockHeight}`;

@@ -7,8 +7,6 @@ dotenv.config();
 
 export class Config {
     public readonly delegate: string;
-    //public readonly blockReward: BigNumber;
-    public readonly removeFee: boolean;
     public readonly transferFee: BigNumber;
     public readonly noSignature: boolean;
     public readonly multiTransferFee: BigNumber;
@@ -57,13 +55,9 @@ export class Config {
             throw new TypeError("Invalid DELEGATE configuration");
         }
 
-        this.removeFee = process.env.REMOVE_FEE
-            ? parseInt(process.env.REMOVE_FEE, 10) > 0
-            : false;
-
         this.noSignature = process.env.NO_SIGNATURE
-            ? parseInt(process.env.NO_SIGNATURE, 10) === 0
-            : true;
+            ? parseInt(process.env.NO_SIGNATURE, 10) > 0
+            : false;
 
         this.transferFee = process.env.FEE
             ? new BigNumber(process.env.FEE).times(ARKTOSHI)

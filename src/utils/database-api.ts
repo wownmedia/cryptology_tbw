@@ -49,7 +49,6 @@ export class DatabaseAPI {
             startBlockHeight,
             endBlockHeight,
             historyAmountBlocks,
-            removeFee
         );
         const result: Result = await this.psql.query(getForgedBlocksQuery);
         await this.psql.close();
@@ -61,9 +60,7 @@ export class DatabaseAPI {
         const forgedBlocks: ForgedBlock[] = result.rows.map((block: Block) => {
             return {
                 height: new BigNumber(block.height).integerValue(),
-                fees: new BigNumber(block.totalFee).minus(
-                    new BigNumber(block.removedFee)
-                ),
+                fees: new BigNumber(block.totalFee),
                 timestamp: new BigNumber(block.timestamp),
                 business: new BigNumber(0),
                 reward: new BigNumber(block.reward),
