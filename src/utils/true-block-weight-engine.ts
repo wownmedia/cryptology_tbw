@@ -780,9 +780,9 @@ export class TrueBlockWeightEngine {
             const delegateAddress: string = item.address;
             const gains: BigNumber = item.fees.plus(item.reward);
 
-            //todo
-            logger.info(`VOTER WHO IS VALIDATOR: ${delegateAddress} - ${item.reward} - ${item.fees} `);
             if(gains.gt(0)) {
+                //todo
+                logger.info(`VOTER WHO IS VALIDATOR: ${delegateAddress} - ${item.reward} - ${item.fees} `);
                 let balance = new BigNumber(
                     votersBalancePerForgedBlock.get(delegateAddress)
                 );
