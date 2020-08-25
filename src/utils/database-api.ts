@@ -34,19 +34,22 @@ export class DatabaseAPI {
      * @param startBlockHeight
      * @param endBlockHeight
      * @param historyAmountBlocks
+     * @param removeFee
      */
     public async getForgedBlocks(
         delegatePublicKey: string,
         startBlockHeight: number,
         endBlockHeight: number,
-        historyAmountBlocks: number
+        historyAmountBlocks: number,
+        removeFee: boolean
     ): Promise<ForgedBlock[]> {
         await this.psql.connect();
         const getForgedBlocksQuery: string = getForgedBlocks(
             delegatePublicKey,
             startBlockHeight,
             endBlockHeight,
-            historyAmountBlocks
+            historyAmountBlocks,
+            removeFee
         );
         const result: Result = await this.psql.query(getForgedBlocksQuery);
         await this.psql.close();
