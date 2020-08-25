@@ -344,11 +344,11 @@ export class DatabaseAPI {
                 transaction.senderId != transaction.recipientId
             ) {
                 // Received staked amount from other wallet, like the 10% bonus
-                transaction.amount = new BigNumber(
-                    item.asset.stakeCreate.amount
-                );
+                //transaction.amount = new BigNumber(
+                //    item.asset.stakeCreate.amount
+                //);
                 //todo
-                logger.info(
+                logger.warn(
                     `Received 3rd party stake: ${transaction.senderId} -> ${transaction.recipientId}: ${transaction.amount}`
                 );
             }
