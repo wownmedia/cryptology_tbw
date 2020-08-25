@@ -131,18 +131,20 @@ export class DatabaseAPI {
             logger.info("No Delegate payouts retrieved.");
             return [];
         }
-        const delegatePayoutTransactions: DelegateTransaction[] = []
+        const delegatePayoutTransactions: DelegateTransaction[] = [];
         for (const item of result.rows) {
             const transaction: DelegateTransaction = {
-                recipientId:
-                    item.type === 0 ? item.recipientId : null,
+                recipientId: item.type === 0 ? item.recipientId : null,
                 multiPayment:
-                    item.type === 6 && item.hasOwnProperty("asset") && item.asset && item.asset.hasOwnProperty("payments")
+                    item.type === 6 &&
+                    item.hasOwnProperty("asset") &&
+                    item.asset &&
+                    item.asset.hasOwnProperty("payments")
                         ? item.asset.payments
                         : null,
                 height: new BigNumber(item.height).toNumber(),
                 timestamp: new BigNumber(item.timestamp),
-            }
+            };
             delegatePayoutTransactions.push(transaction);
         }
 
@@ -308,16 +310,19 @@ export class DatabaseAPI {
         for (const item of result.rows) {
             logger.info(JSON.stringify(item)); //todo
             const transaction: Transaction = {
-                senderId: item.hasOwnProperty("senderPublicKey") ?
-                    Crypto.getAddressFromPublicKey(
-                    item.senderPublicKey,
-                    networkVersion
-                ) : null,
+                senderId: item.hasOwnProperty("senderPublicKey")
+                    ? Crypto.getAddressFromPublicKey(
+                          item.senderPublicKey,
+                          networkVersion
+                      )
+                    : null,
                 amount: new BigNumber(item.amount),
-                recipientId:
-                    item.type === 0 ? item.recipientId : null,
+                recipientId: item.type === 0 ? item.recipientId : null,
                 multiPayment:
-                    item.type === 6 && item.hasOwnProperty("asset") && item.asset && item.asset.hasOwnProperty("payments")
+                    item.type === 6 &&
+                    item.hasOwnProperty("asset") &&
+                    item.asset &&
+                    item.asset.hasOwnProperty("payments")
                         ? item.asset.payments
                         : null,
                 senderPublicKey: item.senderPublicKey,
@@ -331,6 +336,21 @@ export class DatabaseAPI {
                     item.asset.stakeRedeem.hasOwnProperty("id")
                         ? item.asset.stakeRedeem.id
                         : null,
+            };
+
+            if (
+                item.hasOwnProperty("asset") &&
+                item.asset.hasOwnProperty("stakeCreate") &&
+                transaction.senderId != transaction.recipientId
+            ) {
+                // Received staked amount from other wallet, like the 10% bonus
+                transaction.amount = new BigNumber(
+                    item.asset.stakeCreate.amount
+                );
+                //todo
+                logger.info(
+                    `Received 3rd party stake: ${transaction.senderId} -> ${transaction.recipientId}: ${transaction.amount}`
+                );
             }
             transactions.push(transaction);
         }
