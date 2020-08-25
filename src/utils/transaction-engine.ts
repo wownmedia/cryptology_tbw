@@ -81,6 +81,11 @@ export class TransactionEngine {
                 let transaction: MultiPaymentBuilder = Transactions.BuilderFactory.multiPayment()
                     .fee(this.config.multiTransferFee.toFixed(0))
                     .nonce(nonce);
+
+                if (!this.config.noSignature) {
+                    transaction = transaction.vendorField(vendorField);
+                }
+
                 for (const receiver of chunk) {
                     transaction.addPayment(
                         receiver.wallet,
@@ -129,6 +134,16 @@ export class TransactionEngine {
             .recipientId(receiver.wallet)
             .fee(this.config.transferFee.toFixed(0))
             .nonce(nonce);
+
+        if (!this.config.noSignature) {
+            transaction = transaction.vendorField(receiver.vendorField);
+            if (
+                Buffer.from(receiver.vendorField).length > 64 &&
+                Buffer.from(receiver.vendorField).length <= 255
+            ) {
+                transaction.data.vendorField = this.config.vendorField;
+            }
+        }
 
         if (timestamp) {
             transaction.data.timestamp = timestamp;
