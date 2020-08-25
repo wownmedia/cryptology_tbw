@@ -92,6 +92,7 @@ export class TrueBlockWeightEngine {
         try {
             this.networkConfig = await this.network.getNetworkConfig();
             this.epochTimestamp = TrueBlockWeightEngine.calculateTimestamp(this.networkConfig.milestones[0].block.epoch)
+            logger.info(`Epoch: ${this.epochTimestamp}`); //todo
             const delegatePublicKey: string = await this.network.getDelegatePublicKey(
                 this.config.delegate
             );
