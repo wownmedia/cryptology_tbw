@@ -267,7 +267,7 @@ export class DatabaseAPI {
                     address,
                     height: parseInt(item.height, 10),
                     fees: new BigNumber(item.total_fee),
-                    reward: new BigNumber(item.reward)
+                    reward: new BigNumber(item.reward),
                 };
                 votingDelegateBlocks.push(block);
             }
@@ -341,7 +341,7 @@ export class DatabaseAPI {
                 item.hasOwnProperty("asset") &&
                 item.asset &&
                 item.asset.hasOwnProperty("stakeCreate") &&
-                transaction.senderId != transaction.recipientId
+                transaction.senderId !== transaction.recipientId
             ) {
                 // Received staked amount from other wallet, like the 10% bonus
                 transaction.amount = new BigNumber(

@@ -683,8 +683,8 @@ export class TrueBlockWeightEngine {
 
                 if (stakeRedeemID !== null) {
                     let processedStakes: Stake[] = [];
-                    for(const item in voters) {
-                        if(voters[item] && voters[item].address === senderId) {
+                    for (const item in voters) {
+                        if (voters[item] && voters[item].address === senderId) {
                             processedStakes = voters[item].processedStakes;
                             break;
                         }
@@ -722,17 +722,16 @@ export class TrueBlockWeightEngine {
                             stakeTimestamp.powerUp.lte(maxTimestamp) &&
                             stakeTimestamp.powerUp.gt(minTimestamp)
                         ) {
-
-                            balance = balance.minus(stakes[stake].power).plus(stakes[stake].amount);
+                            balance = balance
+                                .minus(stakes[stake].power)
+                                .plus(stakes[stake].amount);
                             votersBalancePerForgedBlock.set(wallet, balance);
-
                         }
 
                         if (
                             stakeTimestamp.redeemable.lte(maxTimestamp) &&
                             stakeTimestamp.redeemable.gt(minTimestamp)
                         ) {
-
                             const redeemValue: BigNumber = TrueBlockWeightEngine.getStakeRedeemValue(
                                 stakes,
                                 stakes[stake].id
@@ -755,7 +754,10 @@ export class TrueBlockWeightEngine {
             const delegateAddress: string = item.address;
             const gains: BigNumber = item.fees.plus(item.reward);
 
-            if(gains.gt(0) && votersBalancePerForgedBlock.has(delegateAddress)) {
+            if (
+                gains.gt(0) &&
+                votersBalancePerForgedBlock.has(delegateAddress)
+            ) {
                 let balance = new BigNumber(
                     votersBalancePerForgedBlock.get(delegateAddress)
                 );

@@ -115,7 +115,7 @@ export interface DataBaseTransaction {
     recipientId: string;
     senderPublicKey: string;
     timestamp: BigNumber;
-    asset:any;
+    asset: any;
     type: number;
 }
 
