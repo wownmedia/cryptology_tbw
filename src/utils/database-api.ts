@@ -347,7 +347,6 @@ export class DatabaseAPI {
                 transaction.amount = new BigNumber(
                     item.asset.stakeCreate.amount
                 );
-                logger.warn(`3rd Part STake: ${transaction.senderId} -> ${transaction.recipientId}`) //todo
             }
             transactions.push(transaction);
         }
