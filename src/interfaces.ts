@@ -122,7 +122,6 @@ export interface DelegateTransaction {
     height: number;
     recipientId: string;
     multiPayment: Interfaces.IMultiPaymentItem[];
-    vendorField: string;
     timestamp: BigNumber;
 }
 

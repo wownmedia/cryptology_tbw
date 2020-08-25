@@ -118,7 +118,8 @@ export const getDelegateTransactions = (
     endBlockHeight: number,
     delegatePublicKey: string
 ): string => {
-    let query = `SELECT transactions."serialized", transactions."timestamp", blocks."height" \
+    let query = `SELECT transactions."asset", transactions."recipient_id" AS "recipientId", transactions."timestamp", \
+          blocks."height" \
           FROM transactions INNER JOIN blocks ON blocks."id" = transactions."block_id"  
           WHERE blocks."height" >= ${startBlockHeight}`;
 

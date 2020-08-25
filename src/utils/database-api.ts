@@ -132,9 +132,20 @@ export class DatabaseAPI {
             logger.info("No Delegate payouts retrieved.");
             return [];
         }
-
-        // todo
         const delegatePayoutTransactions: DelegateTransaction[] = []
+        for (const item of result.rows) {
+            const transaction: DelegateTransaction = {
+                recipientId:
+                    item.type === 0 ? item.recipientId : null,
+                multiPayment:
+                    item.type === 6 && item.hasOwnProperty("asset") && item.asset && item.asset.hasOwnProperty("payments")
+                        ? item.asset.payments
+                        : null,
+                height: new BigNumber(item.height).toNumber(),
+                timestamp: new BigNumber(item.timestamp),
+            }
+            delegatePayoutTransactions.push(transaction);
+        }
         /*
         result.rows
             .map((transaction: DataBaseTransaction) => {
@@ -171,11 +182,11 @@ export class DatabaseAPI {
                         transaction.vendorField.includes(payoutSignature))
                 );
             });
+            */
         logger.info(
             `${delegatePayoutTransactions.length} Delegate Payout Transactions retrieved.`
         );
 
-         */
         return delegatePayoutTransactions;
     }
 
@@ -332,7 +343,7 @@ export class DatabaseAPI {
 
         const transactions: Transaction[] = [];
         for (const item of result.rows) {
-            logger.info(JSON.stringify(item));
+            logger.info(JSON.stringify(item)); //todo
             const transaction: Transaction = {
                 senderId: item.hasOwnProperty("senderPublicKey") ?
                     Crypto.getAddressFromPublicKey(
