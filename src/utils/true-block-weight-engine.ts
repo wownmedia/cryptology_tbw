@@ -103,7 +103,6 @@ export class TrueBlockWeightEngine {
                 this.startBlockHeight,
                 this.endBlockHeight,
                 this.config.historyAmountBlocks,
-                this.config.removeFee
             );
 
             if (forgedBlocks.length === 0) {
