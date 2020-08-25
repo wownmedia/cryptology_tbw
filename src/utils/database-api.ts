@@ -348,10 +348,6 @@ export class DatabaseAPI {
                 transaction.amount = new BigNumber(
                     item.asset.stakeCreate.amount
                 );
-                //todo
-                logger.warn(
-                    `Received 3rd party stake: ${transaction.senderId} -> ${transaction.recipientId}: ${transaction.amount}`
-                );
             }
             transactions.push(transaction);
         }

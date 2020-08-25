@@ -375,7 +375,7 @@ export class TrueBlockWeightEngine {
             return {
                 address: row.address,
                 publicKey: row.publicKey,
-                balance: new BigNumber(row.power), // TODO
+                balance: new BigNumber(row.power),
                 power: new BigNumber(row.power),
                 processedStakes: this.network.processStakes(
                     row,
@@ -422,6 +422,7 @@ export class TrueBlockWeightEngine {
                     );
                 }
             } else if (transaction.multiPayment !== null) {
+                //todo
                 logger.error(
                     `transaction.multiPayment: ${JSON.stringify(
                         transaction.multiPayment
@@ -725,10 +726,6 @@ export class TrueBlockWeightEngine {
                     if (stakes[stake].hasOwnProperty("timestamps")) {
                         const stakeTimestamp: StakeTimestamp =
                             stakes[stake].timestamps;
-                        //if (wallet === "cmcsmGe18ngpEo35oGCdBKJ2ziguQSWNYG") {
-                        //    logger.info(`stake loop: ${JSON.stringify(stakes[stake])}`)
-                        //}
-                        // todo remove
 
                         let balance: BigNumber = votersBalancePerForgedBlock.get(
                             wallet
@@ -738,19 +735,10 @@ export class TrueBlockWeightEngine {
                             stakeTimestamp.powerUp.lte(maxTimestamp) &&
                             stakeTimestamp.powerUp.gt(minTimestamp)
                         ) {
-                            //todo logging
-                            logger.info(`Powered Up balance for ${wallet} = ${balance}.`);
+
                             balance = balance.minus(stakes[stake].power).plus(stakes[stake].amount);
                             votersBalancePerForgedBlock.set(wallet, balance);
-                            logger.info(`Graced Stake balance for ${wallet} = ${balance}`);
-                            logger.info(
-                                `timestamp limits for this block: ${minTimestamp} - ${maxTimestamp}`
-                            );
-                            logger.info(
-                                `Stake Powered UP: ${JSON.stringify(
-                                    stakes[stake]
-                                )}`
-                            );
+
                         }
 
                         if (
@@ -781,8 +769,6 @@ export class TrueBlockWeightEngine {
             const gains: BigNumber = item.fees.plus(item.reward);
 
             if(gains.gt(0) && votersBalancePerForgedBlock.has(delegateAddress)) {
-                //todo
-                logger.info(`VOTER WHO IS VALIDATOR: ${delegateAddress} - ${item.reward} - ${item.fees} `);
                 let balance = new BigNumber(
                     votersBalancePerForgedBlock.get(delegateAddress)
                 );
@@ -797,7 +783,7 @@ export class TrueBlockWeightEngine {
         //todo remove this
         votersBalancePerForgedBlock.forEach((balance, wallet) => {
             if (wallet === "cmcsmGe18ngpEo35oGCdBKJ2ziguQSWNYG") {
-                logger.info(`Balance at ${height} for ${wallet}: ${balance}`);
+                //logger.info(`Balance at ${height} for ${wallet}: ${balance}`);
             }
         });
 
