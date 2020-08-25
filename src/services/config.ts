@@ -58,7 +58,7 @@ export class Config {
         }
 
         this.removeFee = process.env.REMOVE_FEE
-            ? parseInt(process.env.NO_SIGNATURE, 10) > 0
+            ? parseInt(process.env.REMOVE_FEE, 10) > 0
             : false;
 
         this.noSignature = process.env.NO_SIGNATURE
