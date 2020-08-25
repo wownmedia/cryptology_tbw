@@ -29,6 +29,7 @@ export class DatabaseAPI {
      * @param {number} blockHeight
      * @static
      */
+    /*
     private static deserializeTransaction(
         transaction: string,
         blockHeight: number
@@ -47,6 +48,8 @@ export class DatabaseAPI {
             }
         }
     }
+    
+     */
 
     private readonly psql: Postgres;
 
@@ -183,25 +186,17 @@ export class DatabaseAPI {
         try {
             const voterMutations: VoterMutation[] = result.rows
                 .map((transaction: VoteTransaction) => {
-                    const data: Interfaces.ITransaction = DatabaseAPI.deserializeTransaction(
-                        transaction.serialized,
-                        transaction.height
+                    const address: string = Crypto.getAddressFromPublicKey(
+                        transaction.senderPublicKey,
+                        networkVersion
                     );
-
-                    if (data !== null) {
-                        const address: string = Crypto.getAddressFromPublicKey(
-                            data.data.senderPublicKey,
-                            networkVersion
-                        );
-                        return {
-                            height: new BigNumber(
-                                transaction.height
-                            ).integerValue(),
-                            address,
-                            vote: data.data.asset.votes[0],
-                        };
-                    }
-                    return {};
+                    return {
+                        height: new BigNumber(
+                            transaction.height
+                        ).integerValue(),
+                        address,
+                        vote: transaction.asset.votes[0],
+                    };
                 })
                 .filter((transaction: VoterMutation) => {
                     return (

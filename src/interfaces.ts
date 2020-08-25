@@ -103,7 +103,7 @@ export interface Block {
 
 export interface VoteTransaction {
     height: number;
-    serialized: string;
+    asset: any;
     senderPublicKey: string;
 }
 
