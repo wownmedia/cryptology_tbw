@@ -102,7 +102,7 @@ export class TrueBlockWeightEngine {
                 delegatePublicKey,
                 this.startBlockHeight,
                 this.endBlockHeight,
-                this.config.historyAmountBlocks,
+                this.config.historyAmountBlocks
             );
 
             if (forgedBlocks.length === 0) {
@@ -393,10 +393,14 @@ export class TrueBlockWeightEngine {
         voterWallets: Voter[]
     ): Promise<VoterBalances> {
         let voterBalances: Voter[] = voterWallets.map((row) => {
+            const balance: BigNumber =
+                row.power && row.power.gt(row.balance)
+                    ? row.power
+                    : row.balance;
             return {
                 address: row.address,
                 publicKey: row.publicKey,
-                balance: new BigNumber(row.power),
+                balance,
                 power: new BigNumber(row.power),
                 processedStakes: this.network.processStakes(
                     row,
