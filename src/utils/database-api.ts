@@ -22,33 +22,6 @@ import {
 } from "./queries";
 
 export class DatabaseAPI {
-    /**
-     * Convert to a Buffer and then deserialize a transaction
-     * @param {string} transaction
-     * @param {number} blockHeight
-     * @static
-     */
-    /*
-    private static deserializeTransaction(
-        transaction: string,
-        blockHeight: number
-    ): Interfaces.ITransaction {
-        const buffer: Buffer = Buffer.from(transaction, "hex");
-        const serialized: string = Buffer.from(buffer).toString("hex");
-
-        try {
-            return Crypto.deserializeTransaction(serialized, blockHeight);
-        } catch (error) {
-            // Try to deserialize with a lower blockHeight
-            try {
-                return Crypto.deserializeTransaction(serialized, 1);
-            } catch (error) {
-                return Crypto.deserializeMagistrateTransaction(serialized);
-            }
-        }
-    }
-    
-     */
 
     private readonly psql: Postgres;
 
