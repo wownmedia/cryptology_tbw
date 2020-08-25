@@ -393,10 +393,12 @@ export class TrueBlockWeightEngine {
         voterWallets: Voter[]
     ): Promise<VoterBalances> {
         let voterBalances: Voter[] = voterWallets.map((row) => {
-            const balance: BigNumber =
-                row.power && row.power.gt(row.balance)
-                    ? row.power
-                    : row.balance;
+            const power: BigNumber = row.power
+                ? new BigNumber(row.power)
+                : new BigNumber(0);
+            const balance: BigNumber = power.gt(new BigNumber(row.balance))
+                ? power
+                : new BigNumber(row.balance);
             return {
                 address: row.address,
                 publicKey: row.publicKey,
