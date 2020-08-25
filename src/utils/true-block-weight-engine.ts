@@ -422,7 +422,7 @@ export class TrueBlockWeightEngine {
                     );
                 }
             } else if (transaction.multiPayment !== null) {
-                logger.info(
+                logger.error(
                     `transaction.multiPayment: ${JSON.stringify(
                         transaction.multiPayment
                     )}`
