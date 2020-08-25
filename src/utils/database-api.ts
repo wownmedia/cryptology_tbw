@@ -340,7 +340,7 @@ export class DatabaseAPI {
 
             if (
                 item.hasOwnProperty("asset") &&
-                item.asset.hasOwnProperty("stakeCreate") &&
+                //item.asset.hasOwnProperty("stakeCreate") &&
                 transaction.senderId != transaction.recipientId
             ) {
                 // Received staked amount from other wallet, like the 10% bonus
