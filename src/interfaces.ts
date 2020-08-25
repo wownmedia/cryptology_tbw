@@ -78,6 +78,7 @@ export interface VoterBlock {
     height: number;
     address: string;
     fees: BigNumber;
+    reward: BigNumber;
 }
 
 export interface VoterBalances {

@@ -36,7 +36,7 @@ export const getVotingDelegates = (
     startBlockHeight: number,
     endBlockHeight: number
 ): string => {
-    let query = `SELECT blocks."generator_public_key", blocks."height", blocks."total_fee" \
+    let query = `SELECT blocks."generator_public_key", blocks."height", blocks."total_fee", blocks."reward" \
           FROM blocks \
           WHERE blocks.height >= ${startBlockHeight}`;
 

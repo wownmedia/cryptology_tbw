@@ -268,6 +268,7 @@ export class DatabaseAPI {
                     address,
                     height: parseInt(item.height, 10),
                     fees: new BigNumber(item.total_fee),
+                    reward: new BigNumber(item.reward)
                 };
                 votingDelegateBlocks.push(block);
             }
@@ -308,7 +309,6 @@ export class DatabaseAPI {
 
         const transactions: Transaction[] = [];
         for (const item of result.rows) {
-            logger.info(JSON.stringify(item)); //todo
             const transaction: Transaction = {
                 senderId: item.hasOwnProperty("senderPublicKey")
                     ? Crypto.getAddressFromPublicKey(
