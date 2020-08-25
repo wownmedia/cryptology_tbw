@@ -91,7 +91,7 @@ export class TrueBlockWeightEngine {
     public async generatePayouts(): Promise<Payouts> {
         try {
             this.networkConfig = await this.network.getNetworkConfig();
-            this.epochTimestamp = TrueBlockWeightEngine.calculateTimestamp(this.networkConfig.milestones[0].block.epoch)
+            this.epochTimestamp = TrueBlockWeightEngine.calculateTimestamp(this.networkConfig.milestones[0].epoch)
             logger.info(`Epoch: ${this.epochTimestamp} ${JSON.stringify(this.networkConfig.milestones[0])}`); //todo
             const delegatePublicKey: string = await this.network.getDelegatePublicKey(
                 this.config.delegate
