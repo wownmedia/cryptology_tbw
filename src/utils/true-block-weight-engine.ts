@@ -767,13 +767,6 @@ export class TrueBlockWeightEngine {
             }
         }
 
-        //todo remove this
-        votersBalancePerForgedBlock.forEach((balance, wallet) => {
-            if (wallet === "caYtjrmWdarQArk8xQCBNoHoA8C11NzMn3") {
-                logger.info(`Balance at ${height} for ${wallet}: ${balance}`);
-            }
-        });
-
         return votersBalancePerForgedBlock;
     }
 
