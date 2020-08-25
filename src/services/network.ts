@@ -283,7 +283,6 @@ export class Network {
                         walletAPIResult.data.hasOwnProperty("address") &&
                         walletAPIResult.data.hasOwnProperty("publicKey") &&
                         walletAPIResult.data.hasOwnProperty("balance") &&
-                        walletAPIResult.data.hasOwnProperty("power") &&
                         walletAPIResult.data.hasOwnProperty("isDelegate")
                     ) {
                         const voter: Voter = {
@@ -292,7 +291,9 @@ export class Network {
                             balance: new BigNumber(
                                 walletAPIResult.data.balance
                             ),
-                            power: new BigNumber(walletAPIResult.data.power),
+                            power: walletAPIResult.data.hasOwnProperty("power")
+                                ? new BigNumber(walletAPIResult.data.power)
+                                : new BigNumber(0),
                             isDelegate: walletAPIResult.data.isDelegate,
                             processedStakes: this.processStakes(
                                 walletAPIResult.data,
