@@ -41,7 +41,6 @@ export class Config {
     public readonly vendorFieldAdmin: string;
     public readonly vendorFieldDonation: string;
     public readonly admins: Receiver[];
-    // public readonly licenseWallet: string;
     public readonly seed: string;
     public readonly secondPassphrase: string;
     public readonly businessSeed: string;
