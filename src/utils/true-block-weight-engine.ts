@@ -652,7 +652,6 @@ export class TrueBlockWeightEngine {
 
             if (item.multiPayment) {
                 for (const transaction of item.multiPayment) {
-                    logger.info(JSON.stringify(transaction))
                     const transactionAmount: BigNumber = new BigNumber(
                         transaction.amount.toString()
                     );
@@ -688,6 +687,7 @@ export class TrueBlockWeightEngine {
                     votersBalancePerForgedBlock.set(recipientId, balance);
                 }
             }
+
             if (votersBalancePerForgedBlock.has(senderId)) {
                 let balance: BigNumber = votersBalancePerForgedBlock.get(
                     senderId
