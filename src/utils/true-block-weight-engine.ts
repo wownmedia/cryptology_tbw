@@ -81,8 +81,7 @@ export class TrueBlockWeightEngine {
         const epochTime = moment(epoch)
             .utc()
             .valueOf();
-        const now = moment().valueOf();
-        return new BigNumber(Math.floor((now - epochTime) / 1000));
+        return new BigNumber(Math.floor(epochTime / 1000));
     }
 
     /**

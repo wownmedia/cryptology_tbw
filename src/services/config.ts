@@ -1,7 +1,6 @@
-import { Identities, Interfaces } from "@arkecosystem/crypto";
+import { Identities } from "@arkecosystem/crypto";
 import BigNumber from "bignumber.js";
 import dotenv from "dotenv";
-import moment from "moment";
 import { ARKTOSHI, PUBLICKEY } from "../constants";
 import { Node, Receiver, SmallWalletBonus } from "../interfaces";
 
@@ -51,6 +50,7 @@ export class Config {
     public readonly businessSecondPassphrase: string;
     public transactionsPerRequest: number;
     public transactionsPerMultitransfer: number;
+    //public readonly epochTimestamp: BigNumber = new BigNumber(1598025600);
 
     constructor() {
         this.delegate = process.env.DELEGATE
