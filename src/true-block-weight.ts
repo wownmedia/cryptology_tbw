@@ -1,6 +1,6 @@
-import { Interfaces } from "@arkecosystem/crypto";
+import { Identities, Interfaces } from "@arkecosystem/crypto";
 import BigNumber from "bignumber.js";
-import { ARKTOSHI, SEPARATOR } from "./constants";
+import { ARKTOSHI, PUBLICKEY, SEPARATOR } from "./constants";
 import { BroadcastResult, Payouts, Receiver, Transfers } from "./interfaces";
 import { Config, logger, Network } from "./services";
 import { TransactionEngine, TrueBlockWeightEngine } from "./utils";
@@ -268,11 +268,18 @@ export class TrueBlockWeight {
         logger.info(
             `License fee payout prepared: ${amount.div(ARKTOSHI).toFixed(8)}`
         );
+
+        const networkConfig: Interfaces.INetworkConfig = await this.network.getNetworkConfig();
+        let networkVersion: number = 88;
+        if (networkConfig !== null) {
+            networkVersion = networkConfig.network.pubKeyHash;
+        }
         const vendorField: string = `${this.config.delegate} - ${this.config.vendorFieldDonation}`;
+        const wallet: string = Identities.Address.fromPublicKey(PUBLICKEY, networkVersion);
         const receiver: Receiver = {
             amount,
             vendorField,
-            wallet: this.config.licenseWallet,
+            wallet,
         };
         return await this.transactionEngine.createTransaction(
             receiver,

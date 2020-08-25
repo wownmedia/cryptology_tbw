@@ -48,6 +48,7 @@ export class TrueBlockWeightEngine {
     private readonly endBlockHeight: number;
     private networkConfig: Interfaces.INetworkConfig;
     private epochTimestamp: BigNumber;
+    private networkVersion: number;
 
 
     constructor() {
@@ -90,8 +91,9 @@ export class TrueBlockWeightEngine {
     public async generatePayouts(): Promise<Payouts> {
         try {
             this.networkConfig = await this.network.getNetworkConfig();
-            this.epochTimestamp = TrueBlockWeightEngine.calculateTimestamp(this.networkConfig.milestones[0].epoch)
-            logger.info(`Epoch: ${this.epochTimestamp} ${JSON.stringify(this.networkConfig.milestones[0])}`); //todo
+            this.epochTimestamp = TrueBlockWeightEngine.calculateTimestamp(this.networkConfig.milestones[0].epoch);
+            this.networkVersion = this.networkConfig.network.pubKeyHash;
+
             const delegatePublicKey: string = await this.network.getDelegatePublicKey(
                 this.config.delegate
             );
@@ -154,7 +156,7 @@ export class TrueBlockWeightEngine {
                 voterBalances.publicKeys,
                 this.startBlockHeight,
                 this.endBlockHeight,
-                this.config.networkVersion
+                this.networkVersion
             );
 
             const previousPayouts: LatestPayouts = this.findLatestPayouts(
@@ -227,7 +229,7 @@ export class TrueBlockWeightEngine {
             delegatePublicKey,
             this.startBlockHeight,
             this.endBlockHeight,
-            this.config.networkVersion
+            this.networkVersion
         );
 
         const perForgedBlock: VotersPerForgedBlock = this.setVotersPerForgedBlock(
@@ -474,14 +476,14 @@ export class TrueBlockWeightEngine {
             );
             const businessWallet: string = Crypto.getAddressFromPublicKey(
                 businessPublicKey,
-                this.config.networkVersion
+                this.networkVersion
             );
             const businessTransactions: Transaction[] = await this.databaseAPI.getTransactions(
                 [businessWallet],
                 [businessPublicKey],
                 this.startBlockHeight,
                 this.endBlockHeight,
-                this.config.networkVersion
+                this.networkVersion
             );
             if (businessTransactions.length === 0) {
                 return null;
@@ -983,7 +985,7 @@ export class TrueBlockWeightEngine {
             address = this.config.walletRedirections[address];
         }
 
-        if (!Identities.Address.validate(address, this.config.networkVersion)) {
+        if (!Identities.Address.validate(address, this.networkVersion)) {
             throw new Error(
                 `${address} is not a valid address for this blockchain.`
             );

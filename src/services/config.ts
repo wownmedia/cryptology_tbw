@@ -1,14 +1,12 @@
-import { Identities } from "@arkecosystem/crypto";
 import BigNumber from "bignumber.js";
 import dotenv from "dotenv";
-import { ARKTOSHI, PUBLICKEY } from "../constants";
+import { ARKTOSHI } from "../constants";
 import { Node, Receiver, SmallWalletBonus } from "../interfaces";
 
 dotenv.config();
 
 export class Config {
     public readonly delegate: string;
-    public readonly networkVersion: number;
     public readonly blockReward: BigNumber;
     public readonly transferFee: BigNumber;
     public readonly noSignature: boolean;
@@ -43,14 +41,13 @@ export class Config {
     public readonly vendorFieldAdmin: string;
     public readonly vendorFieldDonation: string;
     public readonly admins: Receiver[];
-    public readonly licenseWallet: string;
+    //public readonly licenseWallet: string;
     public readonly seed: string;
     public readonly secondPassphrase: string;
     public readonly businessSeed: string;
     public readonly businessSecondPassphrase: string;
     public transactionsPerRequest: number;
     public transactionsPerMultitransfer: number;
-    //public readonly epochTimestamp: BigNumber = new BigNumber(1598025600);
 
     constructor() {
         this.delegate = process.env.DELEGATE
@@ -58,13 +55,6 @@ export class Config {
             : null;
         if (this.delegate === null || this.delegate === "") {
             throw new TypeError("Invalid DELEGATE configuration");
-        }
-
-        this.networkVersion = process.env.NETWORK_VERSION
-            ? parseInt(process.env.NETWORK_VERSION, 10)
-            : 88;
-        if (this.networkVersion <= 0) {
-            throw new TypeError("Invalid NETWORK_VERSION configuration");
         }
 
         this.noSignature = true;
@@ -226,9 +216,6 @@ export class Config {
             ? this.processAdmins(JSON.parse(process.env.ADMIN_PAYOUT_LIST))
             : [];
 
-        this.licenseWallet = process.env.LICENSE
-            ? process.env.LICENSE
-            : Identities.Address.fromPublicKey(PUBLICKEY, this.networkVersion);
         this.seed = process.env.SECRET ? process.env.SECRET : null;
         this.secondPassphrase = process.env.SECOND_SECRET
             ? process.env.SECOND_SECRET
@@ -281,11 +268,6 @@ export class Config {
         let totalPercentage = new BigNumber(0);
         for (const wallet in admins) {
             if (admins.hasOwnProperty(wallet)) {
-                if (!Identities.Address.validate(wallet, this.networkVersion)) {
-                    throw new TypeError(
-                        `Admin ${wallet} is not a valid address for this blockchain.`
-                    );
-                }
                 const receiver: Receiver = {
                     percentage: admins[wallet].hasOwnProperty("percentage")
                         ? new BigNumber(admins[wallet].percentage)

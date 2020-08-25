@@ -4,7 +4,7 @@ import { logger } from "./";
 
 export class Postgres {
     private client: Client;
-    private databaseConfig: DatabaseConfig;
+    private readonly databaseConfig: DatabaseConfig;
 
     constructor(databaseConfig: DatabaseConfig) {
         this.databaseConfig = databaseConfig;

@@ -148,8 +148,10 @@ export class TransactionEngine {
      */
     private async setupNetwork() {
         const networkConfig: Interfaces.INetworkConfig = await this.network.getNetworkConfig();
+        let networkVersion: number = 88;
         if (networkConfig !== null) {
             Managers.configManager.setConfig(networkConfig);
+            networkVersion = networkConfig.network.pubKeyHash;
         }
 
         let height: number = await this.network.getCurrentHeight();
@@ -176,7 +178,7 @@ export class TransactionEngine {
             );
             const businessWallet: string = Crypto.getAddressFromPublicKey(
                 businessPublicKey,
-                this.config.networkVersion
+                networkVersion
             );
             this.businessNonce = await this.network.getNonceForWallet(
                 businessWallet
