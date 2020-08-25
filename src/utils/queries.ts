@@ -121,7 +121,8 @@ export const getDelegateTransactions = (
     let query = `SELECT transactions."asset", transactions."recipient_id" AS "recipientId", transactions."timestamp", \
           blocks."height" \
           FROM transactions INNER JOIN blocks ON blocks."id" = transactions."block_id"  
-          WHERE blocks."height" >= ${startBlockHeight}`;
+          WHERE blocks."height" >= ${startBlockHeight} \
+          AND (transactions."type" = 6 OR transactions."type" = 1)`;
 
     if (endBlockHeight) {
         query = `${query} AND blocks.height <= ${endBlockHeight}`;
