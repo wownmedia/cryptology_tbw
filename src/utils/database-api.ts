@@ -137,7 +137,6 @@ export class DatabaseAPI {
             const transaction: DelegateTransaction = {
                 recipientId: item.type === 0 ? item.recipientId : null,
                 multiPayment:
-                    item.type === 6 &&
                     item.hasOwnProperty("asset") &&
                     item.asset &&
                     item.asset.hasOwnProperty("payments")
