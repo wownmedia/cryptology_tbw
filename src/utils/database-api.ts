@@ -4,7 +4,6 @@ import { Result } from "pg";
 import {
     Block,
     DatabaseConfig,
-    DataBaseTransaction,
     DelegateTransaction,
     ForgedBlock,
     Transaction,
@@ -146,43 +145,7 @@ export class DatabaseAPI {
             }
             delegatePayoutTransactions.push(transaction);
         }
-        /*
-        result.rows
-            .map((transaction: DataBaseTransaction) => {
-                const data: Interfaces.ITransaction = DatabaseAPI.deserializeTransaction(
-                    transaction.serialized,
-                    transaction.height
-                );
 
-                if (data !== null) {
-                    return {
-                        amount: new BigNumber(transaction.amount),
-                        height: new BigNumber(
-                            transaction.height
-                        ).integerValue(),
-                        recipientId:
-                            data.data.type === 0 ? data.data.recipientId : null,
-                        multiPayment:
-                            data.data.type === 6
-                                ? data.data.asset.payments
-                                : null,
-                        vendorField:
-                            data && data.hasVendorField()
-                                ? data.data.vendorField
-                                : "",
-                        timestamp: new BigNumber(transaction.timestamp),
-                    };
-                }
-                return {};
-            })
-            .filter((transaction: DelegateTransaction) => {
-                return (
-                    noSignature ||
-                    (transaction.vendorField &&
-                        transaction.vendorField.includes(payoutSignature))
-                );
-            });
-            */
         logger.info(
             `${delegatePayoutTransactions.length} Delegate Payout Transactions retrieved.`
         );
