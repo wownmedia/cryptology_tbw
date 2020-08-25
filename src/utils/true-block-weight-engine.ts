@@ -1,4 +1,4 @@
-import { Identities } from "@arkecosystem/crypto";
+import { Identities, Interfaces } from "@arkecosystem/crypto";
 import BigNumber from "bignumber.js";
 import {
     DatabaseConfig,
@@ -23,6 +23,7 @@ import { Config, logger, Network } from "../services";
 import { Crypto } from "./crypto";
 import { DatabaseAPI } from "./database-api";
 import { ProposalEngine } from "./proposal-engine";
+import moment from "moment";
 
 export class TrueBlockWeightEngine {
     /**
@@ -45,6 +46,9 @@ export class TrueBlockWeightEngine {
     private readonly payoutSignature: string;
     private startBlockHeight: number;
     private readonly endBlockHeight: number;
+    private networkConfig: Interfaces.INetworkConfig;
+    private epochTimestamp: BigNumber;
+
 
     constructor() {
         BigNumber.config({
@@ -68,10 +72,26 @@ export class TrueBlockWeightEngine {
     }
 
     /**
+     * @dev Calculate a timestamp based on an epoch
+     * @param epoch {string} Epoch (e.g. "2019-05-24T11:48:58.165Z")
+     * @returns {number}    The calculated timestamp
+     * @private
+     */
+    private static calculateTimestamp(epoch: string): BigNumber {
+        const epochTime = moment(epoch)
+            .utc()
+            .valueOf();
+        const now = moment().valueOf();
+        return new BigNumber(Math.floor((now - epochTime) / 1000));
+    }
+
+    /**
      *
      */
     public async generatePayouts(): Promise<Payouts> {
         try {
+            this.networkConfig = await this.network.getNetworkConfig();
+            this.epochTimestamp = TrueBlockWeightEngine.calculateTimestamp(this.networkConfig.milestones[0].block.epoch)
             const delegatePublicKey: string = await this.network.getDelegatePublicKey(
                 this.config.delegate
             );
@@ -220,7 +240,7 @@ export class TrueBlockWeightEngine {
             voterMutations,
             currentVotersFromAPI,
             currentVoters,
-            this.config.epochTimestamp
+            this.epochTimestamp
         );
 
         return {
@@ -379,7 +399,7 @@ export class TrueBlockWeightEngine {
                 power: new BigNumber(row.power),
                 processedStakes: this.network.processStakes(
                     row,
-                    this.config.epochTimestamp
+                    this.epochTimestamp
                 ),
             };
         });
