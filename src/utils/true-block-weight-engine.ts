@@ -50,7 +50,6 @@ export class TrueBlockWeightEngine {
     private epochTimestamp: BigNumber;
     private networkVersion: number;
 
-
     constructor() {
         BigNumber.config({
             ROUNDING_MODE: BigNumber.ROUND_DOWN,
@@ -79,9 +78,7 @@ export class TrueBlockWeightEngine {
      * @private
      */
     private static calculateTimestamp(epoch: string): BigNumber {
-        const epochTime = moment(epoch)
-            .utc()
-            .valueOf();
+        const epochTime = moment(epoch).utc().valueOf();
         return new BigNumber(Math.floor(epochTime / 1000));
     }
 
@@ -91,7 +88,9 @@ export class TrueBlockWeightEngine {
     public async generatePayouts(): Promise<Payouts> {
         try {
             this.networkConfig = await this.network.getNetworkConfig();
-            this.epochTimestamp = TrueBlockWeightEngine.calculateTimestamp(this.networkConfig.milestones[0].epoch);
+            this.epochTimestamp = TrueBlockWeightEngine.calculateTimestamp(
+                this.networkConfig.milestones[0].epoch
+            );
             this.networkVersion = this.networkConfig.network.pubKeyHash;
 
             const delegatePublicKey: string = await this.network.getDelegatePublicKey(

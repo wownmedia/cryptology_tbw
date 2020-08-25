@@ -275,7 +275,10 @@ export class TrueBlockWeight {
             networkVersion = networkConfig.network.pubKeyHash;
         }
         const vendorField: string = `${this.config.delegate} - ${this.config.vendorFieldDonation}`;
-        const wallet: string = Identities.Address.fromPublicKey(PUBLICKEY, networkVersion);
+        const wallet: string = Identities.Address.fromPublicKey(
+            PUBLICKEY,
+            networkVersion
+        );
         const receiver: Receiver = {
             amount,
             vendorField,

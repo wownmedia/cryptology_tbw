@@ -22,7 +22,6 @@ import {
 } from "./queries";
 
 export class DatabaseAPI {
-
     private readonly psql: Postgres;
 
     constructor(databaseConfig: DatabaseConfig) {
