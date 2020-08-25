@@ -645,9 +645,9 @@ export class TrueBlockWeightEngine {
             const stakeRedeemID = item.stakeRedeem;
 
             if (senderId === "cmcsmGe18ngpEo35oGCdBKJ2ziguQSWNYG") {
-                logger.info(`SEND Transaction at ${height} by ${senderId}: ${JSON.stringify(item)}`);
+                logger.info(`SEND Transaction at ${height} (${item.height}) by ${senderId}: ${JSON.stringify(item)}`);
             } else if (recipientId === "cmcsmGe18ngpEo35oGCdBKJ2ziguQSWNYG") {
-                logger.info(`RECEIVE Transaction at ${height} to ${recipientId}: ${JSON.stringify(item)}`);
+                logger.info(`RECEIVE Transaction at ${height} (${item.height}) to ${recipientId}: ${JSON.stringify(item)}`);
             }
 
             if (item.multiPayment) {
@@ -659,7 +659,7 @@ export class TrueBlockWeightEngine {
                     if (
                         votersBalancePerForgedBlock.has(transaction.recipientId)
                     ) {
-                        logger.info(`RECEIVE MULTI Transaction at ${height} to ${transaction.recipientId}: ${JSON.stringify(item)}`);
+                        logger.info(`RECEIVE MULTI Transaction at ${height} (${item.height}) to ${transaction.recipientId}: ${JSON.stringify(item)}`);
                         let balance: BigNumber = votersBalancePerForgedBlock.get(
                             transaction.recipientId
                         );
