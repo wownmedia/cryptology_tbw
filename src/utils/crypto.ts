@@ -37,6 +37,7 @@ export class Crypto {
         return Transactions.Deserializer.deserialize(serialized);
     }
 
+    /*
     public static deserializeMagistrateTransaction(
         serialized: string
     ): Interfaces.ITransaction {
@@ -69,6 +70,8 @@ export class Crypto {
         return transaction;
     }
 
+
+     */
     public static getPublicKeyFromSeed(seed: string): string {
         return Identities.PublicKey.fromPassphrase(seed);
     }
