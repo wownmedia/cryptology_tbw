@@ -7,7 +7,8 @@ dotenv.config();
 
 export class Config {
     public readonly delegate: string;
-    public readonly blockReward: BigNumber;
+    //public readonly blockReward: BigNumber;
+    public readonly removeFee: boolean;
     public readonly transferFee: BigNumber;
     public readonly noSignature: boolean;
     public readonly multiTransferFee: BigNumber;
@@ -56,7 +57,13 @@ export class Config {
             throw new TypeError("Invalid DELEGATE configuration");
         }
 
-        this.noSignature = true;
+        this.removeFee = process.env.REMOVE_FEE
+            ? parseInt(process.env.NO_SIGNATURE, 10) > 0
+            : false;
+
+        this.noSignature = process.env.NO_SIGNATURE
+            ? parseInt(process.env.NO_SIGNATURE, 10) === 0
+            : true;
 
         this.transferFee = process.env.FEE
             ? new BigNumber(process.env.FEE).times(ARKTOSHI)
@@ -112,16 +119,7 @@ export class Config {
             throw new TypeError("Invalid MIN_PAYOUT_VALUE configuration");
         }
 
-        this.donationShare = process.env.LICENSE_FEE
-            ? new BigNumber(process.env.LICENSE_FEE)
-            : new BigNumber(0.01);
-        if (
-            this.donationShare.isNaN() ||
-            this.donationShare.gt(1) ||
-            this.donationShare.lt(0.01)
-        ) {
-            throw new TypeError("Invalid LICENSE_FEE configuration");
-        }
+        this.donationShare = new BigNumber(0.01);
 
         this.minimalBalance = process.env.MIN_BALANCE
             ? new BigNumber(process.env.MIN_BALANCE).times(ARKTOSHI)
