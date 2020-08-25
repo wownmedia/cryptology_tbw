@@ -422,12 +422,6 @@ export class TrueBlockWeightEngine {
                     );
                 }
             } else if (transaction.multiPayment !== null) {
-                //todo
-                logger.error(
-                    `transaction.multiPayment: ${JSON.stringify(
-                        transaction.multiPayment
-                    )}`
-                );
                 for (const receiver of transaction.multiPayment) {
                     const height: BigNumber = new BigNumber(
                         latestPayouts.get(receiver.recipientId)
@@ -775,8 +769,8 @@ export class TrueBlockWeightEngine {
 
         //todo remove this
         votersBalancePerForgedBlock.forEach((balance, wallet) => {
-            if (wallet === "cmcsmGe18ngpEo35oGCdBKJ2ziguQSWNYG") {
-                //logger.info(`Balance at ${height} for ${wallet}: ${balance}`);
+            if (wallet === "caYtjrmWdarQArk8xQCBNoHoA8C11NzMn3") {
+                logger.info(`Balance at ${height} for ${wallet}: ${balance}`);
             }
         });
 

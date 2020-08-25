@@ -133,7 +133,6 @@ export class DatabaseAPI {
         }
         const delegatePayoutTransactions: DelegateTransaction[] = [];
         for (const item of result.rows) {
-            logger.info(`DELEGATE PAYMENT: ${JSON.stringify(item)}`);
             const transaction: DelegateTransaction = {
                 recipientId: item.type === 0 ? item.recipientId : null,
                 multiPayment:
