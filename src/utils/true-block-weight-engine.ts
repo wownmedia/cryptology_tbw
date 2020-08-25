@@ -645,12 +645,6 @@ export class TrueBlockWeightEngine {
             const fee: BigNumber = item.fee;
             const stakeRedeemID = item.stakeRedeem;
 
-            if (senderId === "cmcsmGe18ngpEo35oGCdBKJ2ziguQSWNYG") {
-                logger.info(`SEND Transaction at ${height} (${item.height}) by ${senderId}: ${JSON.stringify(item)}`);
-            } else if (recipientId === "cmcsmGe18ngpEo35oGCdBKJ2ziguQSWNYG") {
-                logger.info(`RECEIVE Transaction at ${height} (${item.height}) to ${recipientId}: ${JSON.stringify(item)}`);
-            }
-
             if (item.multiPayment) {
                 for (const transaction of item.multiPayment) {
                     const transactionAmount: BigNumber = new BigNumber(
