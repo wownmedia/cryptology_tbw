@@ -770,7 +770,7 @@ export class TrueBlockWeightEngine {
             }
         }
 
-        const calculatedVotingDelegateBlocks = votingDelegateBlocks.filter(
+        const calculatedVotingDelegateBlocks: VoterBlock[] = votingDelegateBlocks.filter(
             (block) => {
                 return block.height > height && block.height <= previousHeight;
             }
@@ -779,11 +779,12 @@ export class TrueBlockWeightEngine {
         for (const item of calculatedVotingDelegateBlocks) {
             const delegateAddress: string = item.address;
             const fees: BigNumber = item.fees;
+            const reward: BigNumber = item.reward;
 
             let balance = new BigNumber(
                 votersBalancePerForgedBlock.get(delegateAddress)
             );
-            balance = balance.minus(fees).minus(this.config.blockReward);
+            balance = balance.minus(fees).minus(reward);
             if (balance.lt(0)) {
                 balance = new BigNumber(0);
             }
