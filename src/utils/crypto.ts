@@ -1,6 +1,4 @@
-import {
-    Identities,
-} from "@arkecosystem/crypto";
+import { Identities } from "@arkecosystem/crypto";
 
 export class Crypto {
     /**
@@ -16,7 +14,6 @@ export class Crypto {
     ): string {
         return Identities.Address.fromPublicKey(publicKey, networkVersion);
     }
-
 
     public static getPublicKeyFromSeed(seed: string): string {
         return Identities.PublicKey.fromPassphrase(seed);
