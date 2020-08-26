@@ -950,7 +950,7 @@ export class TrueBlockWeightEngine {
         validVoters = validVoters.filter((address) => {
             const balance: BigNumber = currentBalances.get(address);
             const isCurrentVoter: boolean = currentVoters.indexOf(address) >= 0;
-            return isCurrentVoter && balance.gt(0);
+            return isCurrentVoter && balance && balance.gt(0);
         });
 
         return validVoters.slice(0);
