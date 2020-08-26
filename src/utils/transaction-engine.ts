@@ -79,9 +79,13 @@ export class TransactionEngine {
                     nonce = this.nonce.toString();
                 }
                 let transaction: MultiPaymentBuilder = Transactions.BuilderFactory.multiPayment()
-                    .vendorField(vendorField)
                     .fee(this.config.multiTransferFee.toFixed(0))
                     .nonce(nonce);
+
+                if (!this.config.noSignature) {
+                    transaction = transaction.vendorField(vendorField);
+                }
+
                 for (const receiver of chunk) {
                     transaction.addPayment(
                         receiver.wallet,
@@ -128,16 +132,17 @@ export class TransactionEngine {
         let transaction: TransferBuilder = Transactions.BuilderFactory.transfer()
             .amount(receiver.amount.toFixed(0))
             .recipientId(receiver.wallet)
-            .vendorField(receiver.vendorField)
             .fee(this.config.transferFee.toFixed(0))
             .nonce(nonce);
 
-        // todo somehow it doesn't take it as 255 from the setConfig with ARK mainnet
-        if (
-            Buffer.from(receiver.vendorField).length > 64 &&
-            Buffer.from(receiver.vendorField).length <= 255
-        ) {
-            transaction.data.vendorField = this.config.vendorField;
+        if (!this.config.noSignature) {
+            transaction = transaction.vendorField(receiver.vendorField);
+            if (
+                Buffer.from(receiver.vendorField).length > 64 &&
+                Buffer.from(receiver.vendorField).length <= 255
+            ) {
+                transaction.data.vendorField = this.config.vendorField;
+            }
         }
 
         if (timestamp) {
@@ -158,8 +163,10 @@ export class TransactionEngine {
      */
     private async setupNetwork() {
         const networkConfig: Interfaces.INetworkConfig = await this.network.getNetworkConfig();
+        let networkVersion: number = 88;
         if (networkConfig !== null) {
             Managers.configManager.setConfig(networkConfig);
+            networkVersion = networkConfig.network.pubKeyHash;
         }
 
         let height: number = await this.network.getCurrentHeight();
@@ -186,7 +193,7 @@ export class TransactionEngine {
             );
             const businessWallet: string = Crypto.getAddressFromPublicKey(
                 businessPublicKey,
-                this.config.networkVersion
+                networkVersion
             );
             this.businessNonce = await this.network.getNonceForWallet(
                 businessWallet

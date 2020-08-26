@@ -28,12 +28,29 @@ export interface BroadcastResult {
     node: string;
     response: any;
 }
+export interface StakeTimestamp {
+    created: BigNumber;
+    graceEnd: BigNumber;
+    powerUp: BigNumber;
+    redeemable: BigNumber;
+}
+
+export interface Stake {
+    id: string;
+    amount: BigNumber;
+    duration: BigNumber;
+    power: BigNumber;
+    timestamps: StakeTimestamp;
+}
 
 export interface Voter {
     address: string;
     publicKey: string;
     secondPublicKey?: string;
     balance: BigNumber;
+    power: BigNumber;
+    stakes?: any;
+    processedStakes?: Stake[];
     isDelegate?: boolean;
     vote?: string;
     username?: string;
@@ -61,6 +78,7 @@ export interface VoterBlock {
     height: number;
     address: string;
     fees: BigNumber;
+    reward: BigNumber;
 }
 
 export interface VoterBalances {
@@ -72,31 +90,27 @@ export interface ForgedBlock {
     height: number;
     timestamp: BigNumber;
     fees: BigNumber;
+    reward: BigNumber;
 }
 
 export interface Block {
     height: number;
     totalFee: number;
+    removedFee: number;
+    reward: number;
     timestamp: BigNumber;
 }
 
 export interface VoteTransaction {
     height: number;
-    serialized: string;
+    asset: any;
     senderPublicKey: string;
-}
-
-export interface DataBaseTransaction {
-    height: number;
-    serialized: string;
-    timestamp: BigNumber;
 }
 
 export interface DelegateTransaction {
     height: number;
     recipientId: string;
     multiPayment: Interfaces.IMultiPaymentItem[];
-    vendorField: string;
     timestamp: BigNumber;
 }
 
@@ -109,6 +123,7 @@ export interface Transaction {
     multiPayment: Interfaces.IMultiPaymentItem[];
     fee: BigNumber;
     timestamp: BigNumber;
+    stakeRedeem: string;
 }
 
 export interface MutatedVotersPerRound {

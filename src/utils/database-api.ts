@@ -1,10 +1,8 @@
-import { Interfaces } from "@arkecosystem/crypto";
 import BigNumber from "bignumber.js";
 import { Result } from "pg";
 import {
     Block,
     DatabaseConfig,
-    DataBaseTransaction,
     DelegateTransaction,
     ForgedBlock,
     Transaction,
@@ -24,31 +22,6 @@ import {
 } from "./queries";
 
 export class DatabaseAPI {
-    /**
-     * Convert to a Buffer and then deserialize a transaction
-     * @param {string} transaction
-     * @param {number} blockHeight
-     * @static
-     */
-    private static deserializeTransaction(
-        transaction: string,
-        blockHeight: number
-    ): Interfaces.ITransaction {
-        const buffer: Buffer = Buffer.from(transaction, "hex");
-        const serialized: string = Buffer.from(buffer).toString("hex");
-
-        try {
-            return Crypto.deserializeTransaction(serialized, blockHeight);
-        } catch (error) {
-            // Try to deserialize with a lower blockHeight
-            try {
-                return Crypto.deserializeTransaction(serialized, 1);
-            } catch (error) {
-                return Crypto.deserializeMagistrateTransaction(serialized);
-            }
-        }
-    }
-
     private readonly psql: Postgres;
 
     constructor(databaseConfig: DatabaseConfig) {
@@ -73,7 +46,7 @@ export class DatabaseAPI {
             delegatePublicKey,
             startBlockHeight,
             endBlockHeight,
-            historyAmountBlocks
+            historyAmountBlocks,
         );
         const result: Result = await this.psql.query(getForgedBlocksQuery);
         await this.psql.close();
@@ -88,6 +61,7 @@ export class DatabaseAPI {
                 fees: new BigNumber(block.totalFee),
                 timestamp: new BigNumber(block.timestamp),
                 business: new BigNumber(0),
+                reward: new BigNumber(block.reward),
             };
         });
 
@@ -129,44 +103,26 @@ export class DatabaseAPI {
             logger.info("No Delegate payouts retrieved.");
             return [];
         }
+        const delegatePayoutTransactions: DelegateTransaction[] = [];
+        for (const item of result.rows) {
+            const transaction: DelegateTransaction = {
+                recipientId: item.type === 0 ? item.recipientId : null,
+                multiPayment:
+                    item.hasOwnProperty("asset") &&
+                    item.asset &&
+                    item.asset.hasOwnProperty("payments")
+                        ? item.asset.payments
+                        : null,
+                height: new BigNumber(item.height).toNumber(),
+                timestamp: new BigNumber(item.timestamp),
+            };
+            delegatePayoutTransactions.push(transaction);
+        }
 
-        const delegatePayoutTransactions: DelegateTransaction[] = result.rows
-            .map((transaction: DataBaseTransaction) => {
-                const data: Interfaces.ITransaction = DatabaseAPI.deserializeTransaction(
-                    transaction.serialized,
-                    transaction.height
-                );
-
-                if (data !== null) {
-                    return {
-                        height: new BigNumber(
-                            transaction.height
-                        ).integerValue(),
-                        recipientId:
-                            data.data.type === 0 ? data.data.recipientId : null,
-                        multiPayment:
-                            data.data.type === 6
-                                ? data.data.asset.payments
-                                : null,
-                        vendorField:
-                            data && data.hasVendorField()
-                                ? data.data.vendorField
-                                : "",
-                        timestamp: new BigNumber(transaction.timestamp),
-                    };
-                }
-                return {};
-            })
-            .filter((transaction: DelegateTransaction) => {
-                return (
-                    noSignature ||
-                    (transaction.vendorField &&
-                        transaction.vendorField.includes(payoutSignature))
-                );
-            });
         logger.info(
             `${delegatePayoutTransactions.length} Delegate Payout Transactions retrieved.`
         );
+
         return delegatePayoutTransactions;
     }
 
@@ -199,25 +155,17 @@ export class DatabaseAPI {
         try {
             const voterMutations: VoterMutation[] = result.rows
                 .map((transaction: VoteTransaction) => {
-                    const data: Interfaces.ITransaction = DatabaseAPI.deserializeTransaction(
-                        transaction.serialized,
-                        transaction.height
+                    const address: string = Crypto.getAddressFromPublicKey(
+                        transaction.senderPublicKey,
+                        networkVersion
                     );
-
-                    if (data !== null) {
-                        const address: string = Crypto.getAddressFromPublicKey(
-                            data.data.senderPublicKey,
-                            networkVersion
-                        );
-                        return {
-                            height: new BigNumber(
-                                transaction.height
-                            ).integerValue(),
-                            address,
-                            vote: data.data.asset.votes[0],
-                        };
-                    }
-                    return {};
+                    return {
+                        height: new BigNumber(
+                            transaction.height
+                        ).integerValue(),
+                        address,
+                        vote: transaction.asset.votes[0],
+                    };
                 })
                 .filter((transaction: VoterMutation) => {
                     return (
@@ -283,6 +231,7 @@ export class DatabaseAPI {
                     address,
                     height: parseInt(item.height, 10),
                     fees: new BigNumber(item.total_fee),
+                    reward: new BigNumber(item.reward),
                 };
                 votingDelegateBlocks.push(block);
             }
@@ -321,39 +270,50 @@ export class DatabaseAPI {
             return [];
         }
 
-        const transactions: Transaction[] = result.rows.map(
-            (transaction: DataBaseTransaction) => {
-                const data: Interfaces.ITransaction = DatabaseAPI.deserializeTransaction(
-                    transaction.serialized,
-                    transaction.height
+        const transactions: Transaction[] = [];
+        for (const item of result.rows) {
+            const transaction: Transaction = {
+                senderId: item.hasOwnProperty("senderPublicKey")
+                    ? Crypto.getAddressFromPublicKey(
+                          item.senderPublicKey,
+                          networkVersion
+                      )
+                    : null,
+                amount: new BigNumber(item.amount),
+                recipientId: item.type === 0 ? item.recipientId : null,
+                multiPayment:
+                    item.type === 6 &&
+                    item.hasOwnProperty("asset") &&
+                    item.asset &&
+                    item.asset.hasOwnProperty("payments")
+                        ? item.asset.payments
+                        : null,
+                senderPublicKey: item.senderPublicKey,
+                fee: new BigNumber(item.fee),
+                height: new BigNumber(item.height).toNumber(),
+                timestamp: new BigNumber(item.timestamp),
+                stakeRedeem:
+                    item.hasOwnProperty("asset") &&
+                    item.asset &&
+                    item.asset.hasOwnProperty("stakeRedeem") &&
+                    item.asset.stakeRedeem.hasOwnProperty("id")
+                        ? item.asset.stakeRedeem.id
+                        : null,
+            };
+
+            if (
+                item.hasOwnProperty("asset") &&
+                item.asset &&
+                item.asset.hasOwnProperty("stakeCreate") &&
+                transaction.senderId !== transaction.recipientId
+            ) {
+                // Received staked amount from other wallet, like the 10% bonus
+                transaction.amount = new BigNumber(
+                    item.asset.stakeCreate.amount
                 );
-
-                if (data !== null) {
-                    const senderId: string = Crypto.getAddressFromPublicKey(
-                        data.data.senderPublicKey,
-                        networkVersion
-                    );
-                    return {
-                        amount: data.data.amount,
-                        recipientId:
-                            data.data.type === 0 ? data.data.recipientId : null,
-                        multiPayment:
-                            data.data.type === 6
-                                ? data.data.asset.payments
-                                : null,
-                        senderId,
-                        senderPublicKey: data.data.senderPublicKey,
-                        fee: data.data.fee,
-                        height: new BigNumber(
-                            transaction.height
-                        ).integerValue(),
-                        timestamp: new BigNumber(transaction.timestamp),
-                    };
-                }
-                return {};
             }
-        );
-
+            transactions.push(transaction);
+        }
         logger.info(`${transactions.length} Transactions retrieved.`);
         return transactions;
     }

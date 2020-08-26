@@ -9,9 +9,10 @@ export const getForgedBlocks = (
     publicKey: string,
     startBlockHeight: number,
     endBlockHeight: number,
-    limit: number
+    limit: number,
 ): string => {
-    let query = `SELECT blocks.height, blocks.timestamp, blocks.total_fee AS "totalFee" \
+    let query = `SELECT blocks.height, blocks.timestamp, blocks.reward, \
+                        blocks.total_fee AS "totalFee" \
           FROM public.blocks \
           WHERE blocks."generator_public_key" = '${publicKey}' \
           AND blocks.height >= ${startBlockHeight}`;
@@ -34,7 +35,7 @@ export const getVotingDelegates = (
     startBlockHeight: number,
     endBlockHeight: number
 ): string => {
-    let query = `SELECT blocks."generator_public_key", blocks."height", blocks."total_fee" \
+    let query = `SELECT blocks."generator_public_key", blocks."height", blocks."total_fee", blocks."reward" \
           FROM blocks \
           WHERE blocks.height >= ${startBlockHeight}`;
 
@@ -56,9 +57,9 @@ export const getVoterSinceHeight = (
     startBlockHeight: number,
     endBlockHeight: number
 ): string => {
-    let query = `SELECT transactions."serialized", transactions."recipient_id" AS "recipientId", blocks."height" \
+    let query = `SELECT transactions."asset", transactions."recipient_id" AS "recipientId", blocks."height" \
           FROM transactions INNER JOIN blocks ON blocks."id" = transactions."block_id"  
-          WHERE transactions."type" = 3 \
+          WHERE transactions."type" = 3 AND transactions."type_group" = 1 \
           AND blocks.height >= ${startBlockHeight}`;
 
     if (endBlockHeight) {
@@ -88,7 +89,9 @@ export const getTransactions = (
         .map((publicKey) => `'${publicKey}'`)
         .join(",");
 
-    let query = `SELECT transactions."serialized", transactions."timestamp", blocks."height" \
+    let query = `SELECT transactions."amount", transactions."fee", transactions."recipient_id" AS "recipientId", \
+          transactions."timestamp", transactions."sender_public_key" AS "senderPublicKey", \
+          transactions."type", transactions."asset", blocks."height" \
           FROM transactions INNER JOIN blocks ON blocks."id" = transactions."block_id"  
           WHERE blocks."height" >= ${startBlockHeight}`;
 
@@ -114,9 +117,12 @@ export const getDelegateTransactions = (
     endBlockHeight: number,
     delegatePublicKey: string
 ): string => {
-    let query = `SELECT transactions."serialized", transactions."timestamp", blocks."height" \
+    let query = `SELECT transactions."asset", transactions."recipient_id" AS "recipientId", transactions."timestamp", \
+          blocks."height" \
           FROM transactions INNER JOIN blocks ON blocks."id" = transactions."block_id"  
-          WHERE blocks."height" >= ${startBlockHeight}`;
+          WHERE blocks."height" >= ${startBlockHeight} \
+          AND transactions."type_group" = 1 \
+          AND (transactions."type" = 6 OR transactions."type" = 0)`;
 
     if (endBlockHeight) {
         query = `${query} AND blocks.height <= ${endBlockHeight}`;

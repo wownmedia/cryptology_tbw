@@ -92,14 +92,21 @@ export class ProposalEngine {
                     feesPayouts.get(address)
                 );
                 if (!feePayout.isNaN() && feePayout.gt(0)) {
+                    const acfFeesPayout: BigNumber = new BigNumber(
+                        feePayout.times(this.config.donationShare)
+                    );
+                    acfDonation = acfDonation.plus(acfFeesPayout);
+
                     voterFeePayout = new BigNumber(
                         feePayout
+                            .minus(acfFeesPayout)
                             .times(this.config.voterFeeShare)
                             .integerValue(BigNumber.ROUND_DOWN)
                     );
+
                     feesPayouts.set(address, voterFeePayout);
                     delegateProfit = delegateProfit.plus(
-                        feePayout.minus(voterFeePayout)
+                        feePayout.minus(voterFeePayout).minus(acfFeesPayout)
                     );
                 }
                 payouts.set(address, voterPayout.plus(voterFeePayout));

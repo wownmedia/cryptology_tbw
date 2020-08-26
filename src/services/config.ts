@@ -1,15 +1,12 @@
-import { Identities } from "@arkecosystem/crypto";
 import BigNumber from "bignumber.js";
 import dotenv from "dotenv";
-import { ARKTOSHI, PUBLICKEY } from "../constants";
+import { ARKTOSHI } from "../constants";
 import { Node, Receiver, SmallWalletBonus } from "../interfaces";
 
 dotenv.config();
 
 export class Config {
     public readonly delegate: string;
-    public readonly networkVersion: number;
-    public readonly blockReward: BigNumber;
     public readonly transferFee: BigNumber;
     public readonly noSignature: boolean;
     public readonly multiTransferFee: BigNumber;
@@ -43,7 +40,6 @@ export class Config {
     public readonly vendorFieldAdmin: string;
     public readonly vendorFieldDonation: string;
     public readonly admins: Receiver[];
-    public readonly licenseWallet: string;
     public readonly seed: string;
     public readonly secondPassphrase: string;
     public readonly businessSeed: string;
@@ -57,20 +53,6 @@ export class Config {
             : null;
         if (this.delegate === null || this.delegate === "") {
             throw new TypeError("Invalid DELEGATE configuration");
-        }
-
-        this.networkVersion = process.env.NETWORK_VERSION
-            ? parseInt(process.env.NETWORK_VERSION, 10)
-            : 23;
-        if (this.networkVersion <= 0) {
-            throw new TypeError("Invalid NETWORK_VERSION configuration");
-        }
-
-        this.blockReward = process.env.BLOCK_REWARD
-            ? new BigNumber(process.env.BLOCK_REWARD).times(ARKTOSHI)
-            : new BigNumber(2).times(ARKTOSHI);
-        if (this.blockReward.isNaN()) {
-            throw new TypeError("Invalid BLOCK_REWARD configuration");
         }
 
         this.noSignature = process.env.NO_SIGNATURE
@@ -131,16 +113,7 @@ export class Config {
             throw new TypeError("Invalid MIN_PAYOUT_VALUE configuration");
         }
 
-        this.donationShare = process.env.LICENSE_FEE
-            ? new BigNumber(process.env.LICENSE_FEE)
-            : new BigNumber(0.01);
-        if (
-            this.donationShare.isNaN() ||
-            this.donationShare.gt(1) ||
-            this.donationShare.lt(0.01)
-        ) {
-            throw new TypeError("Invalid LICENSE_FEE configuration");
-        }
+        this.donationShare = new BigNumber(0.01);
 
         this.minimalBalance = process.env.MIN_BALANCE
             ? new BigNumber(process.env.MIN_BALANCE).times(ARKTOSHI)
@@ -234,9 +207,6 @@ export class Config {
             ? this.processAdmins(JSON.parse(process.env.ADMIN_PAYOUT_LIST))
             : [];
 
-        this.licenseWallet = process.env.LICENSE
-            ? process.env.LICENSE
-            : Identities.Address.fromPublicKey(PUBLICKEY, this.networkVersion);
         this.seed = process.env.SECRET ? process.env.SECRET : null;
         this.secondPassphrase = process.env.SECOND_SECRET
             ? process.env.SECOND_SECRET
@@ -289,11 +259,6 @@ export class Config {
         let totalPercentage = new BigNumber(0);
         for (const wallet in admins) {
             if (admins.hasOwnProperty(wallet)) {
-                if (!Identities.Address.validate(wallet, this.networkVersion)) {
-                    throw new TypeError(
-                        `Admin ${wallet} is not a valid address for this blockchain.`
-                    );
-                }
                 const receiver: Receiver = {
                     percentage: admins[wallet].hasOwnProperty("percentage")
                         ? new BigNumber(admins[wallet].percentage)

@@ -5,6 +5,7 @@ import {
     APIResults,
     BroadcastResult,
     Node,
+    Stake,
     Voter,
     VoterMutation,
 } from "../interfaces";
@@ -175,13 +176,91 @@ export class Network {
         return voters;
     }
 
+    public processStakes(voter: Voter, epochTimestamp: BigNumber): Stake[] {
+        const stakes: Stake[] = [];
+        if (voter.hasOwnProperty("stakes")) {
+            const voterStakes: any[] = voter.stakes;
+            for (const item in voterStakes) {
+                if (
+                    voterStakes.hasOwnProperty(item) &&
+                    voterStakes[item].hasOwnProperty("status") &&
+                    voterStakes[item].status !== "canceled"
+                ) {
+                    const stake: Stake = {
+                        id: item,
+                        amount: voterStakes[item].hasOwnProperty("amount")
+                            ? new BigNumber(voterStakes[item].amount)
+                            : new BigNumber(0),
+                        duration: voterStakes[item].hasOwnProperty("duration")
+                            ? new BigNumber(voterStakes[item].duration)
+                            : new BigNumber(0),
+                        power: voterStakes[item].hasOwnProperty("power")
+                            ? new BigNumber(voterStakes[item].power)
+                            : new BigNumber(0),
+                        timestamps: {
+                            created:
+                                voterStakes[item].hasOwnProperty(
+                                    "timestamps"
+                                ) &&
+                                voterStakes[item].timestamps.hasOwnProperty(
+                                    "created"
+                                )
+                                    ? new BigNumber(
+                                          voterStakes[item].timestamps.created
+                                      ).minus(epochTimestamp)
+                                    : new BigNumber(0),
+                            graceEnd:
+                                voterStakes[item].hasOwnProperty(
+                                    "timestamps"
+                                ) &&
+                                voterStakes[item].timestamps.hasOwnProperty(
+                                    "graceEnd"
+                                )
+                                    ? new BigNumber(
+                                          voterStakes[item].timestamps.graceEnd
+                                      ).minus(epochTimestamp)
+                                    : new BigNumber(0),
+                            powerUp:
+                                voterStakes[item].hasOwnProperty(
+                                    "timestamps"
+                                ) &&
+                                voterStakes[item].timestamps.hasOwnProperty(
+                                    "powerUp"
+                                )
+                                    ? new BigNumber(
+                                          voterStakes[item].timestamps.powerUp
+                                      ).minus(epochTimestamp)
+                                    : new BigNumber(0),
+                            redeemable:
+                                voterStakes[item].hasOwnProperty(
+                                    "timestamps"
+                                ) &&
+                                voterStakes[item].timestamps.hasOwnProperty(
+                                    "redeemable"
+                                )
+                                    ? new BigNumber(
+                                          voterStakes[
+                                              item
+                                          ].timestamps.redeemable
+                                      ).minus(epochTimestamp)
+                                    : new BigNumber(0),
+                        },
+                    };
+                    stakes.push(stake);
+                }
+            }
+        }
+        return stakes;
+    }
+
     /**
      * @dev  Add wallets for voters that unvoted
      */
     public async addMutatedVoters(
         voterMutations: VoterMutation[],
         currentVotersFromAPI: Voter[],
-        currentVoters: string[]
+        currentVoters: string[],
+        epochTimestamp: BigNumber
     ): Promise<Voter[]> {
         const allVotersFromAPI: Voter[] = currentVotersFromAPI.slice(0);
         const voterCache: string[] = [];
@@ -212,7 +291,14 @@ export class Network {
                             balance: new BigNumber(
                                 walletAPIResult.data.balance
                             ),
+                            power: walletAPIResult.data.hasOwnProperty("power")
+                                ? new BigNumber(walletAPIResult.data.power)
+                                : new BigNumber(0),
                             isDelegate: walletAPIResult.data.isDelegate,
+                            processedStakes: this.processStakes(
+                                walletAPIResult.data,
+                                epochTimestamp
+                            ),
                         };
                         allVotersFromAPI.push(voter);
                         voterCache.push(address);
