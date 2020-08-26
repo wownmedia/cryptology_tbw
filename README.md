@@ -15,6 +15,9 @@ This script now charges a license fee for 2 reasons; firstly I want to stimulate
 Secondly I think a payout script is an essential tool for a delegate, similar to the need of a server and voters.
 Part of a delegate skillset would be the ability to create such a script, in case you lack this skillset (or to prevent double work) you can invest in the usage of a 3rd party script such as this one. Nobody questions the need to spend money on their server(s), nor the need to invest in voters (% share and other contributions); so why should the, essential tool, payout script be any different?
 
+# Upgrade from V2.6
+
+Version 3.0 no longer looks for a payment signature in the VendorField. Any transfer from a delegate/validator to a voter is interpreted as a payout.
 # Installation
 
 -   Clone the repository to your server;
