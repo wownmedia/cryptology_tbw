@@ -55,8 +55,8 @@ export class Config {
             throw new TypeError("Invalid DELEGATE configuration");
         }
 
-        this.noSignature = process.env.NO_SIGNATURE
-            ? parseInt(process.env.NO_SIGNATURE, 10) > 0
+        this.noSignature = process.env.NO_VENDORFIELD
+            ? parseInt(process.env.NO_VENDORFIELD, 10) > 0
             : false;
 
         this.transferFee = process.env.FEE
