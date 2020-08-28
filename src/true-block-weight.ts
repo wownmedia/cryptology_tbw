@@ -79,7 +79,8 @@ export class TrueBlockWeight {
             logger.info(SEPARATOR);
             return transfers;
         } catch (error) {
-            throw error;
+            logger.error(error.message);
+            return null;
         }
     }
 
@@ -88,24 +89,26 @@ export class TrueBlockWeight {
      */
     public async payout() {
         const transfers: Transfers = await this.calculate();
-        logger.info(`${transfers.transactions.length} Payouts initiated`);
-        for (
-            let i = 0;
-            i < transfers.transactions.length;
-            i += this.config.transactionsPerRequest
-        ) {
-            const transactionsChunk: Interfaces.ITransactionData[] = transfers.transactions.slice(
-                i,
-                i + this.config.transactionsPerRequest
-            );
-
-            try {
-                const response: BroadcastResult[] = await this.network.broadcastTransactions(
-                    transactionsChunk
+        if(transfers) {
+            logger.info(`${transfers.transactions.length} Payouts initiated`);
+            for (
+                let i = 0;
+                i < transfers.transactions.length;
+                i += this.config.transactionsPerRequest
+            ) {
+                const transactionsChunk: Interfaces.ITransactionData[] = transfers.transactions.slice(
+                    i,
+                    i + this.config.transactionsPerRequest
                 );
-                logger.info(JSON.stringify(response));
-            } catch (error) {
-                logger.error(error.message);
+
+                try {
+                    const response: BroadcastResult[] = await this.network.broadcastTransactions(
+                        transactionsChunk
+                    );
+                    logger.info(JSON.stringify(response));
+                } catch (error) {
+                    logger.error(error.message);
+                }
             }
         }
     }
@@ -115,9 +118,11 @@ export class TrueBlockWeight {
      */
     public async check() {
         const transfers: Transfers = await this.calculate();
-        logger.info("Transactions Generated");
-        for (const transaction of transfers.transactions) {
-            console.log(JSON.stringify(transaction));
+        if (transfers) {
+            logger.info("Transactions Generated");
+            for (const transaction of transfers.transactions) {
+                console.log(JSON.stringify(transaction));
+            }
         }
     }
 
