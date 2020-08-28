@@ -89,7 +89,8 @@ export class TrueBlockWeight {
      */
     public async payout() {
         const transfers: Transfers = await this.calculate();
-        if(transfers) {
+      
+        if (transfers) {
             logger.info(`${transfers.transactions.length} Payouts initiated`);
             for (
                 let i = 0;

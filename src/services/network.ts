@@ -30,7 +30,9 @@ export class Network {
             );
             return config.data;
         } catch (e) {
-            return null;
+            throw new Error(
+                "Can't load network config. Please check your node(s) configuration."
+            );
         }
     }
 
@@ -42,7 +44,9 @@ export class Network {
             const config: APIResults = await this.getFromAPI("/api/blockchain");
             return config.data.block.height;
         } catch (e) {
-            return null;
+            throw new Error(
+                "Can't load current network block-height. Please check your node(s) configuration."
+            );
         }
     }
 
@@ -57,7 +61,9 @@ export class Network {
             );
             return this.getNonceForWallet(delegateWallet);
         } catch (e) {
-            return null;
+            throw new Error(
+                `Can't load nonce for ${delegate}. Please check your node(s) configuration.`
+            );
         }
     }
 
@@ -74,7 +80,9 @@ export class Network {
             logger.info(`Nonce loaded for ${wallet}: ${nonce}`);
             return nonce;
         } catch (e) {
-            return null;
+            throw new Error(
+                `Can't load nonce for ${wallet}. Please check your node(s) configuration.`
+            );
         }
     }
 
@@ -87,28 +95,33 @@ export class Network {
         endPoint: string,
         params = {}
     ): Promise<APIResults> {
-        try {
+        for (const APINode of this.nodes) {
             const node: string =
-                typeof this.nodes[0] !== "undefined" &&
-                this.nodes[0].hasOwnProperty("host") &&
-                this.nodes[0].hasOwnProperty("port")
-                    ? `http://${this.nodes[0].host}:${this.nodes[0].port}`
+                typeof APINode !== "undefined" &&
+                APINode.hasOwnProperty("host") &&
+                APINode.hasOwnProperty("port")
+                    ? `http://${APINode.host}:${APINode.port}`
                     : this.server;
-            const response = await axios.get(`${node}${endPoint}`, {
-                params,
-                headers: { "API-Version": 2 },
-            });
 
-            if (
-                typeof response !== "undefined" &&
-                response.hasOwnProperty("data")
-            ) {
-                return response.data;
+            try {
+                const response = await axios.get(`${node}${endPoint}`, {
+                    params,
+                    headers: { "API-Version": 2 },
+                    timeout: 1000,
+                });
+
+                if (
+                    typeof response !== "undefined" &&
+                    response.hasOwnProperty("data")
+                ) {
+                    return response.data;
+                }
+            } catch (error) {
+                logger.warn(`${error} for URL: ${node}${endPoint}`);
             }
-        } catch (error) {
-            logger.error(`${error} for URL: ${endPoint}`);
         }
-        return null;
+
+        throw new Error("Could not connect to any of the configured nodes.");
     }
 
     /**
@@ -155,29 +168,39 @@ export class Network {
      * @param delegate
      */
     public async getVoters(delegate: string): Promise<Voter[]> {
-        const getVotersEndpoint: string = `/api/delegates/${delegate}/voters`;
-        const params = {
-            page: 1,
-            limit: 100,
-        };
+        try {
+            const getVotersEndpoint: string = `/api/delegates/${delegate}/voters`;
+            const params = {
+                page: 1,
+                limit: 100,
+            };
 
-        let votersAPIResults: APIResults;
-        let voters: Voter[] = [];
-        do {
-            votersAPIResults = await this.getFromAPI(getVotersEndpoint, params);
-            if (
+            let votersAPIResults: APIResults;
+            let voters: Voter[] = [];
+            do {
+                votersAPIResults = await this.getFromAPI(
+                    getVotersEndpoint,
+                    params
+                );
+                if (
+                    votersAPIResults.hasOwnProperty("data") &&
+                    votersAPIResults.data.length > 0
+                ) {
+                    voters = voters.concat(votersAPIResults.data);
+                }
+                params.page++;
+            } while (
                 votersAPIResults.hasOwnProperty("data") &&
                 votersAPIResults.data.length > 0
-            ) {
-                voters = voters.concat(votersAPIResults.data);
-            }
-            params.page++;
-        } while (
-            votersAPIResults.hasOwnProperty("data") &&
-            votersAPIResults.data.length > 0
-        );
+            );
 
-        return voters;
+            if (voters.length === 0) {
+                logger.warn(`There are no current voters for ${delegate!}`);
+            }
+            return voters;
+        } catch (e) {
+            throw e;
+        }
     }
 
     public processStakes(voter: Voter, epochTimestamp: BigNumber): Stake[] {

@@ -144,6 +144,11 @@ export class TrueBlockWeightEngine {
                 this.endBlockHeight
             );
 
+            if(voters.voterWallets.length === 0) {
+                logger.error("There are no voters to be calculated.");
+                return null;
+            }
+
             logger.info("Retrieving Voter Transactions.");
             const transactions: Transaction[] = await this.databaseAPI.getTransactions(
                 voters.voters,
