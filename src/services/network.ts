@@ -95,6 +95,7 @@ export class Network {
         endPoint: string,
         params = {}
     ): Promise<APIResults> {
+        let iterations: number = this.nodes.length;
         for (const APINode of this.nodes) {
             const node: string =
                 typeof APINode !== "undefined" &&
@@ -107,6 +108,7 @@ export class Network {
                 const response = await axios.get(`${node}${endPoint}`, {
                     params,
                     headers: { "API-Version": 2 },
+                    timeout: 1000,
                 });
 
                 if (
@@ -118,7 +120,9 @@ export class Network {
             } catch (error) {
                 logger.warn(`${error} for URL: ${node}${endPoint}`);
             }
-            logger.info("Trying next node");
+            if (!--iterations) {
+                logger.info("Trying next node");
+            }
         }
 
         throw new Error("Could not connect to any of the configured nodes.");
