@@ -168,29 +168,34 @@ export class Network {
      * @param delegate
      */
     public async getVoters(delegate: string): Promise<Voter[]> {
-        const getVotersEndpoint: string = `/api/delegates/${delegate}/voters`;
-        const params = {
-            page: 1,
-            limit: 100,
-        };
+        try {
+            delegate="marc"
+            const getVotersEndpoint: string = `/api/delegates/${delegate}/voters`;
+            const params = {
+                page: 1,
+                limit: 100,
+            };
 
-        let votersAPIResults: APIResults;
-        let voters: Voter[] = [];
-        do {
-            votersAPIResults = await this.getFromAPI(getVotersEndpoint, params);
-            if (
+            let votersAPIResults: APIResults;
+            let voters: Voter[] = [];
+            do {
+                votersAPIResults = await this.getFromAPI(getVotersEndpoint, params);
+                if (
+                    votersAPIResults.hasOwnProperty("data") &&
+                    votersAPIResults.data.length > 0
+                ) {
+                    voters = voters.concat(votersAPIResults.data);
+                }
+                params.page++;
+            } while (
                 votersAPIResults.hasOwnProperty("data") &&
                 votersAPIResults.data.length > 0
-            ) {
-                voters = voters.concat(votersAPIResults.data);
-            }
-            params.page++;
-        } while (
-            votersAPIResults.hasOwnProperty("data") &&
-            votersAPIResults.data.length > 0
-        );
+                );
 
-        return voters;
+            return voters;
+        } catch (e) {
+            throw e;
+        }
     }
 
     public processStakes(voter: Voter, epochTimestamp: BigNumber): Stake[] {
