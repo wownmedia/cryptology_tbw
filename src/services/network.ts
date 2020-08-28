@@ -122,7 +122,8 @@ export class Network {
 
         if (
             delegateAPIResults.hasOwnProperty("data") &&
-            delegateAPIResults.data.hasOwnProperty("publicKey")
+            delegateAPIResults.data.hasOwnProperty("publicKey") &&
+            delegateAPIResults.data.publicKey
         ) {
             return delegateAPIResults.data.publicKey;
         }
