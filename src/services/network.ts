@@ -26,11 +26,11 @@ export class Network {
     public async getNetworkConfig(): Promise<Interfaces.INetworkConfig> {
         try {
             const config: APIResults = await this.getFromAPI(
-                "/api/node/configuration/crypto"
+                "/api/node/configuration/cryptox"
             );
             return config.data;
         } catch (e) {
-            return null;
+            throw e;
         }
     }
 
