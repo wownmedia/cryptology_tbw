@@ -107,7 +107,7 @@ export class TrueBlockWeightEngine {
 
             if (forgedBlocks.length === 0) {
                 logger.error("No forged blocks retrieved!");
-                return null;
+                throw new Error("Did this delegate already forge blocks ");
             }
 
             const currentBlock: number = forgedBlocks[0].height;
