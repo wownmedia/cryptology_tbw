@@ -42,7 +42,7 @@ export class Network {
             const config: APIResults = await this.getFromAPI("/api/blockchain");
             return config.data.block.height;
         } catch (e) {
-            return null;
+            throw new Error("Can't load current network block-height. Please check your node(s) configuration.");
         }
     }
 
