@@ -115,10 +115,10 @@ export class Network {
                 ) {
                     return response.data;
                 }
-                logger.info("Trying next node");
             } catch (error) {
                 logger.warn(`${error} for URL: ${node}${endPoint}`);
             }
+            logger.info("Trying next node");
         }
 
         throw new Error("Could not connect to any of the configured nodes.");
