@@ -169,7 +169,7 @@ export class Network {
      */
     public async getVoters(delegate: string): Promise<Voter[]> {
         try {
-            delegate="marc"
+            delegate="bind"
             const getVotersEndpoint: string = `/api/delegates/${delegate}/voters`;
             const params = {
                 page: 1,
