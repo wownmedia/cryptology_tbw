@@ -23,7 +23,9 @@ export class TrueBlockWeight {
         try {
             const trueBlockWeightEngine: TrueBlockWeightEngine = new TrueBlockWeightEngine();
             const payouts: Payouts = await trueBlockWeightEngine.generatePayouts();
-            const transfers: Transfers = await this.generateTransactions(payouts);
+            const transfers: Transfers = await this.generateTransactions(
+                payouts
+            );
             const adminTransactions: Interfaces.ITransactionData[] = await this.generateAdminPayouts(
                 payouts.delegateProfit,
                 payouts.timestamp.toNumber()

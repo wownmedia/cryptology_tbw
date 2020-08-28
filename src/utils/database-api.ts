@@ -46,7 +46,7 @@ export class DatabaseAPI {
             delegatePublicKey,
             startBlockHeight,
             endBlockHeight,
-            historyAmountBlocks,
+            historyAmountBlocks
         );
         const result: Result = await this.psql.query(getForgedBlocksQuery);
         await this.psql.close();
