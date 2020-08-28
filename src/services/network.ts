@@ -95,7 +95,6 @@ export class Network {
         endPoint: string,
         params = {}
     ): Promise<APIResults> {
-        let iterations: number = this.nodes.length;
         for (const APINode of this.nodes) {
             const node: string =
                 typeof APINode !== "undefined" &&
@@ -119,9 +118,6 @@ export class Network {
                 }
             } catch (error) {
                 logger.warn(`${error} for URL: ${node}${endPoint}`);
-            }
-            if (!--iterations) {
-                logger.info("Trying next node");
             }
         }
 
