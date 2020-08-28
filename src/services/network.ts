@@ -30,7 +30,7 @@ export class Network {
             );
             return config.data;
         } catch (e) {
-            throw e;
+            throw new Error("Can't load network config. Please check your node(s) configuration.");
         }
     }
 
