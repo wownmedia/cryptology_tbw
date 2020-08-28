@@ -169,7 +169,6 @@ export class Network {
      */
     public async getVoters(delegate: string): Promise<Voter[]> {
         try {
-            delegate="bind"
             const getVotersEndpoint: string = `/api/delegates/${delegate}/voters`;
             const params = {
                 page: 1,
@@ -179,7 +178,10 @@ export class Network {
             let votersAPIResults: APIResults;
             let voters: Voter[] = [];
             do {
-                votersAPIResults = await this.getFromAPI(getVotersEndpoint, params);
+                votersAPIResults = await this.getFromAPI(
+                    getVotersEndpoint,
+                    params
+                );
                 if (
                     votersAPIResults.hasOwnProperty("data") &&
                     votersAPIResults.data.length > 0
@@ -190,8 +192,11 @@ export class Network {
             } while (
                 votersAPIResults.hasOwnProperty("data") &&
                 votersAPIResults.data.length > 0
-                );
+            );
 
+            if (voters.length === 0) {
+                logger.warn(`There are no current voters for ${delegate!}`);
+            }
             return voters;
         } catch (e) {
             throw e;
