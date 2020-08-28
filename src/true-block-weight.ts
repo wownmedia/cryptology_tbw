@@ -78,6 +78,7 @@ export class TrueBlockWeight {
             return transfers;
         } catch (error) {
             logger.error(error.message);
+            return null;
         }
     }
 
