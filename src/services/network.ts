@@ -116,7 +116,7 @@ export class Network {
                     return response.data;
                 }
             } catch (error) {
-                logger.error(`${error} for URL: ${node}${endPoint}`);
+                logger.warn(`${error} for URL: ${node}${endPoint}`);
             }
         }
 
