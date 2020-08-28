@@ -197,8 +197,7 @@ export class TrueBlockWeightEngine {
 
             return proposal;
         } catch (error) {
-            logger.error(error);
-            return null;
+            throw error;
         }
     }
 
