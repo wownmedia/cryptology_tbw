@@ -30,7 +30,9 @@ export class Network {
             );
             return config.data;
         } catch (e) {
-            throw new Error("Can't load network config. Please check your node(s) configuration.");
+            throw new Error(
+                "Can't load network config. Please check your node(s) configuration."
+            );
         }
     }
 
@@ -42,7 +44,9 @@ export class Network {
             const config: APIResults = await this.getFromAPI("/api/blockchain");
             return config.data.block.height;
         } catch (e) {
-            throw new Error("Can't load current network block-height. Please check your node(s) configuration.");
+            throw new Error(
+                "Can't load current network block-height. Please check your node(s) configuration."
+            );
         }
     }
 
@@ -57,7 +61,9 @@ export class Network {
             );
             return this.getNonceForWallet(delegateWallet);
         } catch (e) {
-            throw new Error(`Can't load nonce for ${delegate}. Please check your node(s) configuration.`);
+            throw new Error(
+                `Can't load nonce for ${delegate}. Please check your node(s) configuration.`
+            );
         }
     }
 
@@ -74,7 +80,9 @@ export class Network {
             logger.info(`Nonce loaded for ${wallet}: ${nonce}`);
             return nonce;
         } catch (e) {
-            throw new Error(`Can't load nonce for ${wallet}. Please check your node(s) configuration.`);
+            throw new Error(
+                `Can't load nonce for ${wallet}. Please check your node(s) configuration.`
+            );
         }
     }
 
@@ -87,14 +95,15 @@ export class Network {
         endPoint: string,
         params = {}
     ): Promise<APIResults> {
-        try {
-            for(const APINode of this.nodes) {
-                const node: string =
-                    typeof APINode !== "undefined" &&
-                    APINode.hasOwnProperty("host") &&
-                    APINode.hasOwnProperty("port")
-                        ? `http://${APINode.host}:${APINode.port}`
-                        : this.server;
+        for (const APINode of this.nodes) {
+            const node: string =
+                typeof APINode !== "undefined" &&
+                APINode.hasOwnProperty("host") &&
+                APINode.hasOwnProperty("port")
+                    ? `http://${APINode.host}:${APINode.port}`
+                    : this.server;
+
+            try {
                 const response = await axios.get(`${node}${endPoint}`, {
                     params,
                     headers: { "API-Version": 2 },
@@ -106,9 +115,9 @@ export class Network {
                 ) {
                     return response.data;
                 }
+            } catch (error) {
+                logger.error(`${error} for URL: ${node}${endPoint}`);
             }
-        } catch (error) {
-            logger.error(`${error} for URL: ${endPoint}`);
         }
 
         throw new Error("Could not connect to any of the configured nodes.");
