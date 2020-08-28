@@ -57,7 +57,7 @@ export class Network {
             );
             return this.getNonceForWallet(delegateWallet);
         } catch (e) {
-            return null;
+            throw new Error(`Can't load nonce for ${delegate}. Please check your node(s) configuration.`);
         }
     }
 
@@ -74,7 +74,7 @@ export class Network {
             logger.info(`Nonce loaded for ${wallet}: ${nonce}`);
             return nonce;
         } catch (e) {
-            return null;
+            throw new Error(`Can't load nonce for ${wallet}. Please check your node(s) configuration.`);
         }
     }
 
@@ -88,27 +88,30 @@ export class Network {
         params = {}
     ): Promise<APIResults> {
         try {
-            const node: string =
-                typeof this.nodes[0] !== "undefined" &&
-                this.nodes[0].hasOwnProperty("host") &&
-                this.nodes[0].hasOwnProperty("port")
-                    ? `http://${this.nodes[0].host}:${this.nodes[0].port}`
-                    : this.server;
-            const response = await axios.get(`${node}${endPoint}`, {
-                params,
-                headers: { "API-Version": 2 },
-            });
+            for(const APINode of this.nodes) {
+                const node: string =
+                    typeof APINode !== "undefined" &&
+                    APINode.hasOwnProperty("host") &&
+                    APINode.hasOwnProperty("port")
+                        ? `http://${APINode.host}:${APINode.port}`
+                        : this.server;
+                const response = await axios.get(`${node}${endPoint}`, {
+                    params,
+                    headers: { "API-Version": 2 },
+                });
 
-            if (
-                typeof response !== "undefined" &&
-                response.hasOwnProperty("data")
-            ) {
-                return response.data;
+                if (
+                    typeof response !== "undefined" &&
+                    response.hasOwnProperty("data")
+                ) {
+                    return response.data;
+                }
             }
         } catch (error) {
             logger.error(`${error} for URL: ${endPoint}`);
         }
-        return null;
+
+        throw new Error("Could not connect to any of the configured nodes.");
     }
 
     /**
