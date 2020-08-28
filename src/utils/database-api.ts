@@ -46,13 +46,13 @@ export class DatabaseAPI {
             delegatePublicKey,
             startBlockHeight,
             endBlockHeight,
-            historyAmountBlocks,
+            historyAmountBlocks
         );
         const result: Result = await this.psql.query(getForgedBlocksQuery);
         await this.psql.close();
 
         if (result.rows.length === 0) {
-            return [];
+            throw new Error("Could not retrieve forged blocks: did this delegate forge blocks? Is the configured Start Height in the future?");
         }
 
         const forgedBlocks: ForgedBlock[] = result.rows.map((block: Block) => {

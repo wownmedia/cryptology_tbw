@@ -9,7 +9,7 @@ export const getForgedBlocks = (
     publicKey: string,
     startBlockHeight: number,
     endBlockHeight: number,
-    limit: number,
+    limit: number
 ): string => {
     let query = `SELECT blocks.height, blocks.timestamp, blocks.reward, \
                         blocks.total_fee AS "totalFee" \

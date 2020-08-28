@@ -121,13 +121,17 @@ export class Network {
         );
 
         if (
+            delegateAPIResults &&
             delegateAPIResults.hasOwnProperty("data") &&
-            delegateAPIResults.data.hasOwnProperty("publicKey")
+            delegateAPIResults.data.hasOwnProperty("publicKey") &&
+            delegateAPIResults.data.publicKey
         ) {
             return delegateAPIResults.data.publicKey;
         }
 
-        throw new Error("Could not retrieve delegate data.");
+        throw new Error(
+            "Could not retrieve delegate data: is the configured delegate registered?"
+        );
     }
 
     public async getDelegateAddress(delegate: string): Promise<string> {

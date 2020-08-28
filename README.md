@@ -18,6 +18,7 @@ Part of a delegate skillset would be the ability to create such a script, in cas
 # Upgrade from V2.6
 
 Version 3.0 no longer looks for a payment signature in the VendorField. Any transfer from a delegate/validator to a voter is interpreted as a payout.
+
 # Installation
 
 -   Clone the repository to your server;

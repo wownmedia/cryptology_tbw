@@ -20,61 +20,68 @@ export class TrueBlockWeight {
      *
      */
     public async calculate(): Promise<Transfers> {
-        const trueBlockWeightEngine: TrueBlockWeightEngine = new TrueBlockWeightEngine();
-        const payouts: Payouts = await trueBlockWeightEngine.generatePayouts();
-        const transfers: Transfers = await this.generateTransactions(payouts);
-        const adminTransactions: Interfaces.ITransactionData[] = await this.generateAdminPayouts(
-            payouts.delegateProfit,
-            payouts.timestamp.toNumber()
-        );
-        if (adminTransactions.length) {
-            transfers.totalAmount = transfers.totalAmount.plus(
-                payouts.delegateProfit.toFixed(0)
+        try {
+            const trueBlockWeightEngine: TrueBlockWeightEngine = new TrueBlockWeightEngine();
+            const payouts: Payouts = await trueBlockWeightEngine.generatePayouts();
+            const transfers: Transfers = await this.generateTransactions(
+                payouts
             );
-            transfers.totalFees = transfers.totalFees.plus(
-                this.config.transferFee.times(adminTransactions.length)
+            const adminTransactions: Interfaces.ITransactionData[] = await this.generateAdminPayouts(
+                payouts.delegateProfit,
+                payouts.timestamp.toNumber()
             );
-            transfers.transactions = transfers.transactions.concat(
-                adminTransactions
-            );
-        }
-
-        const acfDonationTransaction: Interfaces.ITransactionData = await this.generateDonationPayout(
-            payouts.acfDonation,
-            payouts.timestamp.toNumber()
-        );
-        if (acfDonationTransaction !== null) {
-            transfers.transactions.push(acfDonationTransaction);
-            transfers.totalAmount = transfers.totalAmount.plus(
-                payouts.acfDonation.toFixed(0)
-            );
-            transfers.totalFees = transfers.totalFees.plus(
-                this.config.transferFee
-            );
-        }
-
-        logger.info(SEPARATOR);
-        logger.info(
-            `Ready to Payout from Delegate Account: ${transfers.totalAmount
-                .div(ARKTOSHI)
-                .toFixed(8)} + ${transfers.totalFees
-                .div(ARKTOSHI)
-                .toFixed(8)} fees.`
-        );
-        if (transfers.businessTransactions.length > 0) {
-            for (const item of transfers.businessTransactions) {
-                transfers.transactions.push(item);
+            if (adminTransactions.length) {
+                transfers.totalAmount = transfers.totalAmount.plus(
+                    payouts.delegateProfit.toFixed(0)
+                );
+                transfers.totalFees = transfers.totalFees.plus(
+                    this.config.transferFee.times(adminTransactions.length)
+                );
+                transfers.transactions = transfers.transactions.concat(
+                    adminTransactions
+                );
             }
+
+            const acfDonationTransaction: Interfaces.ITransactionData = await this.generateDonationPayout(
+                payouts.acfDonation,
+                payouts.timestamp.toNumber()
+            );
+            if (acfDonationTransaction !== null) {
+                transfers.transactions.push(acfDonationTransaction);
+                transfers.totalAmount = transfers.totalAmount.plus(
+                    payouts.acfDonation.toFixed(0)
+                );
+                transfers.totalFees = transfers.totalFees.plus(
+                    this.config.transferFee
+                );
+            }
+
+            logger.info(SEPARATOR);
             logger.info(
-                `Ready to payout from Business Account: ${transfers.totalBusinessAmount
+                `Ready to Payout from Delegate Account: ${transfers.totalAmount
                     .div(ARKTOSHI)
-                    .toFixed(8)} + ${transfers.totalBusinessFees
+                    .toFixed(8)} + ${transfers.totalFees
                     .div(ARKTOSHI)
                     .toFixed(8)} fees.`
             );
+            if (transfers.businessTransactions.length > 0) {
+                for (const item of transfers.businessTransactions) {
+                    transfers.transactions.push(item);
+                }
+                logger.info(
+                    `Ready to payout from Business Account: ${transfers.totalBusinessAmount
+                        .div(ARKTOSHI)
+                        .toFixed(8)} + ${transfers.totalBusinessFees
+                        .div(ARKTOSHI)
+                        .toFixed(8)} fees.`
+                );
+            }
+            logger.info(SEPARATOR);
+            return transfers;
+        } catch (error) {
+            logger.error(error.message);
+            return null;
         }
-        logger.info(SEPARATOR);
-        return transfers;
     }
 
     /**
@@ -82,24 +89,26 @@ export class TrueBlockWeight {
      */
     public async payout() {
         const transfers: Transfers = await this.calculate();
-        logger.info(`${transfers.transactions.length} Payouts initiated`);
-        for (
-            let i = 0;
-            i < transfers.transactions.length;
-            i += this.config.transactionsPerRequest
-        ) {
-            const transactionsChunk: Interfaces.ITransactionData[] = transfers.transactions.slice(
-                i,
-                i + this.config.transactionsPerRequest
-            );
-
-            try {
-                const response: BroadcastResult[] = await this.network.broadcastTransactions(
-                    transactionsChunk
+        if(transfers) {
+            logger.info(`${transfers.transactions.length} Payouts initiated`);
+            for (
+                let i = 0;
+                i < transfers.transactions.length;
+                i += this.config.transactionsPerRequest
+            ) {
+                const transactionsChunk: Interfaces.ITransactionData[] = transfers.transactions.slice(
+                    i,
+                    i + this.config.transactionsPerRequest
                 );
-                logger.info(JSON.stringify(response));
-            } catch (error) {
-                logger.error(error.message);
+
+                try {
+                    const response: BroadcastResult[] = await this.network.broadcastTransactions(
+                        transactionsChunk
+                    );
+                    logger.info(JSON.stringify(response));
+                } catch (error) {
+                    logger.error(error.message);
+                }
             }
         }
     }
@@ -109,9 +118,11 @@ export class TrueBlockWeight {
      */
     public async check() {
         const transfers: Transfers = await this.calculate();
-        logger.info("Transactions Generated");
-        for (const transaction of transfers.transactions) {
-            console.log(JSON.stringify(transaction));
+        if (transfers) {
+            logger.info("Transactions Generated");
+            for (const transaction of transfers.transactions) {
+                console.log(JSON.stringify(transaction));
+            }
         }
     }
 

@@ -3,10 +3,14 @@ const {TrueBlockWeight} = require("../dist");
 const args = process.argv.slice(2);
 const trueBlockWeight = new TrueBlockWeight();
 
-if (args.length >= 1 && args[0] === "payout") {
-  trueBlockWeight.payout();
-} else if (args.length >= 1 && args[0] === "check") {
-  trueBlockWeight.check();
-} else {
-  trueBlockWeight.calculate();
+try {
+  if (args.length >= 1 && args[0] === "payout") {
+    trueBlockWeight.payout();
+  } else if (args.length >= 1 && args[0] === "check") {
+    trueBlockWeight.check();
+  } else {
+    trueBlockWeight.calculate();
+  }
+} catch (error) {
+
 }

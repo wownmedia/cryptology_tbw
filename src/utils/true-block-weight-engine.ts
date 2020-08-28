@@ -105,11 +105,6 @@ export class TrueBlockWeightEngine {
                 this.config.historyAmountBlocks
             );
 
-            if (forgedBlocks.length === 0) {
-                logger.error("No forged blocks retrieved!");
-                return null;
-            }
-
             const currentBlock: number = forgedBlocks[0].height;
             const timestamp: BigNumber = forgedBlocks[0].timestamp.plus(1);
             const oldestBlock: number =
@@ -197,8 +192,7 @@ export class TrueBlockWeightEngine {
 
             return proposal;
         } catch (error) {
-            logger.error(error);
-            return null;
+            throw error;
         }
     }
 
