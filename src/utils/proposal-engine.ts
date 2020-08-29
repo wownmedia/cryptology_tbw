@@ -159,9 +159,9 @@ export class ProposalEngine {
                     .div(ARKTOSHI)
                     .toFixed(
                         8
-                    )} will be deducted from Admin share: ${delegateProfit
+                    )} Transfer Fees will be deducted from Admin share (${delegateProfit
                     .div(ARKTOSHI)
-                    .toFixed(8)}.`
+                    .toFixed(8)}).`
             );
             delegateProfit = delegateProfit.minus(totalFees);
         }
