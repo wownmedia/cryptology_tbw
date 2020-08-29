@@ -9,6 +9,7 @@ export class Config {
     public readonly delegate: string;
     public readonly transferFee: BigNumber;
     public readonly noSignature: boolean;
+    public adminFees: boolean;
     public readonly multiTransferFee: BigNumber;
     public readonly voterShare: BigNumber;
     public readonly voterFeeShare: BigNumber;
@@ -57,6 +58,10 @@ export class Config {
 
         this.noSignature = process.env.NO_VENDORFIELD
             ? parseInt(process.env.NO_VENDORFIELD, 10) > 0
+            : false;
+
+        this.adminFees = process.env.ADMIN_PAYS_FEES
+            ? parseInt(process.env.ADMIN_PAYS_FEES, 10) > 0
             : false;
 
         this.transferFee = process.env.FEE

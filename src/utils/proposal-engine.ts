@@ -145,11 +145,35 @@ export class ProposalEngine {
         const totalFees: BigNumber = this.config.transferFee
             .times(this.getAdminFeeCount() + this.getACFFeeCount())
             .plus(multiPaymentFees);
+
+        if (this.config.adminFees && delegateProfit.lt(totalFees)) {
+            this.config.adminFees = false;
+            logger.warn(
+                "Admin share not large enough to cover fees: Fair Fees will be applied."
+            );
+        }
+
+        if (this.config.adminFees) {
+            logger.info(
+                `${totalFees
+                    .div(ARKTOSHI)
+                    .toFixed(
+                        8
+                    )} Transfer Fees will be deducted from Admin share (${delegateProfit
+                    .div(ARKTOSHI)
+                    .toFixed(8)}).`
+            );
+            delegateProfit = delegateProfit.minus(totalFees);
+        }
+
         for (const [address, balance] of payouts) {
             const fairFees: BigNumber = balance
                 .div(totalPayout)
                 .times(totalFees);
-            payouts.set(address, balance.minus(fairFees));
+            if (!this.config.adminFees) {
+                payouts.set(address, balance.minus(fairFees));
+                totalPayout = totalPayout.minus(fairFees);
+            }
             businessPayouts.set(
                 address,
                 businessPayouts.get(address).minus(fairFees)
