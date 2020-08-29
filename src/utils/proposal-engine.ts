@@ -145,11 +145,19 @@ export class ProposalEngine {
         const totalFees: BigNumber = this.config.transferFee
             .times(this.getAdminFeeCount() + this.getACFFeeCount())
             .plus(multiPaymentFees);
+
+        if(delegateProfit.gt(totalFees) && this.config.adminFees) {
+            this.config.adminFees = true;
+            delegateProfit = delegateProfit.minus(totalFees);
+        }
+
         for (const [address, balance] of payouts) {
             const fairFees: BigNumber = balance
                 .div(totalPayout)
                 .times(totalFees);
-            payouts.set(address, balance.minus(fairFees));
+            if(this.config.adminFees) {
+                payouts.set(address, balance.minus(fairFees));
+            }
             businessPayouts.set(
                 address,
                 businessPayouts.get(address).minus(fairFees)
