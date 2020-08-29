@@ -170,7 +170,7 @@ export class ProposalEngine {
             const fairFees: BigNumber = balance
                 .div(totalPayout)
                 .times(totalFees);
-            if (this.config.adminFees) {
+            if (!this.config.adminFees) {
                 payouts.set(address, balance.minus(fairFees));
             }
             businessPayouts.set(
