@@ -5,7 +5,8 @@ const trueBlockWeight = new TrueBlockWeight();
 
 try {
   if (args.length >= 1 && args[0] === "payout") {
-    trueBlockWeight.payout();
+    const check = args.length >=2 && args[1] === "check"
+    trueBlockWeight.payout(check);
   } else if (args.length >= 1 && args[0] === "check") {
     trueBlockWeight.check();
   } else {

@@ -87,9 +87,9 @@ export class TrueBlockWeight {
     /**
      *
      */
-    public async payout() {
+    public async payout(check: boolean) {
         const transfers: Transfers = await this.calculate();
-      
+
         if (transfers) {
             logger.info(`${transfers.transactions.length} Payouts initiated`);
             for (
@@ -111,6 +111,10 @@ export class TrueBlockWeight {
                     logger.error(error.message);
                 }
             }
+
+            if (check) {
+                TrueBlockWeight.printTransferJSON(transfers);
+            }
         }
     }
 
@@ -119,11 +123,13 @@ export class TrueBlockWeight {
      */
     public async check() {
         const transfers: Transfers = await this.calculate();
-        if (transfers) {
-            logger.info("Transactions Generated");
-            for (const transaction of transfers.transactions) {
-                console.log(JSON.stringify(transaction));
-            }
+        TrueBlockWeight.printTransferJSON(transfers);
+    }
+
+    private static printTransferJSON(transfers: Transfers) {
+        logger.info("Transactions Generated");
+        for (const transaction of transfers.transactions) {
+            console.log(JSON.stringify(transaction));
         }
     }
 

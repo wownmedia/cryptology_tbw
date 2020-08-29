@@ -144,7 +144,7 @@ export class TrueBlockWeightEngine {
                 this.endBlockHeight
             );
 
-            if(voters.voterWallets.length === 0) {
+            if (voters.voterWallets.length === 0) {
                 logger.error("There are no voters to be calculated.");
                 return null;
             }
