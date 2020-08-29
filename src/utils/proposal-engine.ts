@@ -172,6 +172,7 @@ export class ProposalEngine {
                 .times(totalFees);
             if (!this.config.adminFees) {
                 payouts.set(address, balance.minus(fairFees));
+                totalPayout = totalPayout.minus(fairFees);
             }
             businessPayouts.set(
                 address,
