@@ -31,7 +31,7 @@ Version 3.0 no longer looks for a payment signature in the VendorField. Any tran
 
 # Usage
 
-You can use the script in 3 ways:
+You can use the script in 4 ways:
 
 1. To calculate the amounts that would be paid out: `bin/app`
 2. To check the transactions that will be generated: `bin/app check`
