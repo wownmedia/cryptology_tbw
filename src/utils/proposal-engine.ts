@@ -146,8 +146,8 @@ export class ProposalEngine {
             .times(this.getAdminFeeCount() + this.getACFFeeCount())
             .plus(multiPaymentFees);
 
-        if(delegateProfit.gt(totalFees) && this.config.adminFees) {
-            this.config.adminFees = true;
+        if(this.config.adminFees && delegateProfit.lt(totalFees)) {
+            this.config.adminFees = false;
             delegateProfit = delegateProfit.minus(totalFees);
         }
 
