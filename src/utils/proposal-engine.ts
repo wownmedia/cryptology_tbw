@@ -49,8 +49,6 @@ export class ProposalEngine {
                     latestPayouts
                 )
             ) {
-                //todo
-                logger.warn(`paypout: ${address} - ${balance}`);
                 // Percentages
                 const percentage: BigNumber = this.getSharePercentage(
                     address,
@@ -140,7 +138,9 @@ export class ProposalEngine {
         }
 
         // FairFees
-        const multiPaymentFees: BigNumber = this.getMultiFeesTotal(payouts.size);
+        const multiPaymentFees: BigNumber = this.getMultiFeesTotal(
+            payouts.size
+        );
         const totalFees: BigNumber = this.config.transferFee
             .times(this.getACFFeeCount())
             .plus(multiPaymentFees)

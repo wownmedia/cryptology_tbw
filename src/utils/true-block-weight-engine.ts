@@ -725,8 +725,6 @@ export class TrueBlockWeightEngine {
                     balance = balance.plus(fee);
                 }
                 votersBalancePerForgedBlock.set(senderId, balance);
-                //todo
-                logger.warn(`${height} ${senderId} ${balance}`);
             }
         }
 
@@ -913,9 +911,6 @@ export class TrueBlockWeightEngine {
                             feesPayouts.set(address, pendingFeesPayout);
                         }
 
-                        //todo
-                        logger.warn(`pending: ${address}  : ${voterBalance} / ${pendingPayout}`);
-
                         if (totalBusinessIncomeThisBlock.gt(0)) {
                             let pendingBusinessPayout: BigNumber =
                                 typeof businessPayouts.get(address) !==
@@ -937,10 +932,6 @@ export class TrueBlockWeightEngine {
             }
         }
 
-        //todo
-        payouts.forEach((amount, wallet) => {
-            logger.warn(`${wallet} => ${amount}`);
-        })
         logger.info("Finished calculating shares...");
         return { payouts, feesPayouts, businessPayouts };
     }

@@ -125,7 +125,7 @@ export class TrueBlockWeight {
      */
     public async check() {
         const transfers: Transfers = await this.calculate();
-        if(transfers) {
+        if (transfers) {
             TrueBlockWeight.printTransferJSON(transfers);
         }
     }
@@ -252,16 +252,16 @@ export class TrueBlockWeight {
                 wallet: admin.wallet,
             };
             adminReceivers.push(receiver);
-            //const transaction: Interfaces.ITransactionData = await this.transactionEngine.createTransaction(
+            // const transaction: Interfaces.ITransactionData = await this.transactionEngine.createTransaction(
             //    receiver,
             //    timestamp
-            //);
-            //adminTransactions.push(transaction);
+            // );
+            // adminTransactions.push(transaction);
             payoutAmount = payoutAmount.plus(amount);
             logger.info(
-                `Administrative Payout to ${admin.wallet} prepared: ${amount
-                    .div(ARKTOSHI)
-                    .toFixed(8)}`
+                `Administrative Payout to ${
+                    admin.wallet
+                } prepared: ${amount.div(ARKTOSHI).toFixed(8)}`
             );
         }
 
@@ -279,10 +279,10 @@ export class TrueBlockWeight {
             return [];
         }
 
-        //for (const item of adminTransactions) {
+        // for (const item of adminTransactions) {
         //    const admin: string = item.recipientId;
         //    const amount: BigNumber = new BigNumber(item.amount.toString());
-        //}
+        // }
         return adminTransactions;
     }
 
