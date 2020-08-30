@@ -166,24 +166,28 @@ export class TrueBlockWeight {
                 amount,
                 wallet,
             };
-            totalAmount = totalAmount.plus(amount);
-            receivers.push(receiver);
+            if(amount.gt(0)) {
+                totalAmount = totalAmount.plus(amount);
+                receivers.push(receiver);
 
-            const businessAmount: BigNumber = payouts.businessPayouts.get(
-                address
-            );
-            if (businessAmount.gt(0)) {
-                totalBusinessAmount = totalBusinessAmount.plus(businessAmount);
-                const receiver: Receiver = {
-                    amount: businessAmount,
-                    wallet,
-                };
-                businessReceivers.push(receiver);
-                logger.info(
-                    `Business Share to ${wallet} prepared: ${businessAmount
-                        .div(ARKTOSHI)
-                        .toFixed(8)}`
+                const businessAmount: BigNumber = payouts.businessPayouts.get(
+                    address
                 );
+                if (businessAmount.gt(0)) {
+                    totalBusinessAmount = totalBusinessAmount.plus(businessAmount);
+                    const receiver: Receiver = {
+                        amount: businessAmount,
+                        wallet,
+                    };
+                    if(businessAmount.gt(0)) {
+                        businessReceivers.push(receiver);
+                        logger.info(
+                            `Business Share to ${wallet} prepared: ${businessAmount
+                                .div(ARKTOSHI)
+                                .toFixed(8)}`
+                        );
+                    }
+                }
             }
         }
 
@@ -256,18 +260,15 @@ export class TrueBlockWeight {
                 vendorField,
                 wallet: admin.wallet,
             };
-            adminReceivers.push(receiver);
-            // const transaction: Interfaces.ITransactionData = await this.transactionEngine.createTransaction(
-            //    receiver,
-            //    timestamp
-            // );
-            // adminTransactions.push(transaction);
-            payoutAmount = payoutAmount.plus(amount);
-            logger.info(
-                `Administrative Payout to ${
-                    admin.wallet
-                } prepared: ${amount.div(ARKTOSHI).toFixed(8)}`
-            );
+            if(receiver.amount.gt(0)) {
+                adminReceivers.push(receiver);
+                payoutAmount = payoutAmount.plus(amount);
+                logger.info(
+                    `Administrative Payout to ${
+                        admin.wallet
+                    } prepared: ${amount.div(ARKTOSHI).toFixed(8)}`
+                );
+            }
         }
 
         const adminTransactions: Interfaces.ITransactionData[] = await this.transactionEngine.createMultiPayment(
