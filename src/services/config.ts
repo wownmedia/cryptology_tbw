@@ -91,7 +91,7 @@ export class Config {
 
         this.voterFeeShare = process.env.PAYOUT_FEES
             ? new BigNumber(process.env.PAYOUT_FEES)
-            : new BigNumber(0);
+            : this.voterShare;
         if (
             this.voterFeeShare.isNaN() ||
             this.voterFeeShare.gt(1) ||
