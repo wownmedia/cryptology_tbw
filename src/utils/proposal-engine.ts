@@ -143,8 +143,9 @@ export class ProposalEngine {
             .integerValue(BigNumber.ROUND_CEIL)
             .times(this.config.multiTransferFee);
         const totalFees: BigNumber = this.config.transferFee
-            .times(this.getAdminFeeCount() + this.getACFFeeCount())
-            .plus(multiPaymentFees);
+            .times(this.getACFFeeCount())
+            .plus(multiPaymentFees)
+            .plus(this.getAdminFeeCount());
 
         if (this.config.adminFees && delegateProfit.lt(totalFees)) {
             this.config.adminFees = false;
@@ -293,11 +294,15 @@ export class ProposalEngine {
     /**
      *
      */
-    public getAdminFeeCount(): number {
+    public getAdminFeeCount(): BigNumber {
         const ADMIN_PAYOUT_LIST = process.env.ADMIN_PAYOUT_LIST
             ? JSON.parse(process.env.ADMIN_PAYOUT_LIST)
             : {};
-        return Object.keys(ADMIN_PAYOUT_LIST).length;
+
+        return new BigNumber(Object.keys(ADMIN_PAYOUT_LIST).length)
+            .div(this.config.transactionsPerMultitransfer)
+            .integerValue(BigNumber.ROUND_CEIL)
+            .times(this.config.multiTransferFee);
     }
 
     /**
