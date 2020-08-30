@@ -49,6 +49,8 @@ export class ProposalEngine {
                     latestPayouts
                 )
             ) {
+                //todo
+                logger.warn(`paypout: ${address} - ${balance}`);
                 // Percentages
                 const percentage: BigNumber = this.getSharePercentage(
                     address,
