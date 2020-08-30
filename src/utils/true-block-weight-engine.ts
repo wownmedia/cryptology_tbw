@@ -889,6 +889,9 @@ export class TrueBlockWeightEngine {
                         walletBalances.get(address)
                     );
 
+                    //todo
+                    logger.warn(`pemnding: ${address}  : ${pendingPayout}`);
+
                     // Only payout voters that had a balance that exceeds or equals the configured minimum balance.
                     if (voterBalance.gte(this.config.minimalBalance)) {
                         const voterShare: BigNumber = voterBalance.div(balance);
