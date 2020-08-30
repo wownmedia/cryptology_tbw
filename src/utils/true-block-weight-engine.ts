@@ -877,9 +877,6 @@ export class TrueBlockWeightEngine {
                     payoutAddress
                 );
 
-                //todo
-                logger.warn(`${payoutAddress} latest payout at ${latestPayout}`);
-
                 if (
                     typeof latestPayout === "undefined" ||
                     latestPayout.lte(timestamp)
@@ -936,6 +933,11 @@ export class TrueBlockWeightEngine {
                 }
             }
         }
+
+        //todo
+        payouts.forEach((amount, wallet) => {
+            logger.warn(`${wallet} => ${amount}`);
+        })
         logger.info("Finished calculating shares...");
         return { payouts, feesPayouts, businessPayouts };
     }
