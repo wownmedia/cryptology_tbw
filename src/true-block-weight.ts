@@ -4,6 +4,7 @@ import { ARKTOSHI, PUBLICKEY, SEPARATOR } from "./constants";
 import { BroadcastResult, Payouts, Receiver, Transfers } from "./interfaces";
 import { Config, logger, Network } from "./services";
 import { TransactionEngine, TrueBlockWeightEngine } from "./utils";
+import { ProposalEngine } from "./utils/proposal-engine";
 
 export class TrueBlockWeight {
     private readonly config: Config;
@@ -31,11 +32,12 @@ export class TrueBlockWeight {
                 payouts.timestamp.toNumber()
             );
             if (adminTransactions.length) {
+                const proposalEngine: ProposalEngine = new ProposalEngine();
                 transfers.totalAmount = transfers.totalAmount.plus(
                     payouts.delegateProfit.toFixed(0)
                 );
                 transfers.totalFees = transfers.totalFees.plus(
-                    this.config.transferFee.times(adminTransactions.length)
+                    proposalEngine.getAdminFeeCount()
                 );
                 transfers.transactions = transfers.transactions.concat(
                     adminTransactions
