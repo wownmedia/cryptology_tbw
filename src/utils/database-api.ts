@@ -119,6 +119,9 @@ export class DatabaseAPI {
                 timestamp: new BigNumber(item.timestamp),
             };
             delegatePayoutTransactions.push(transaction);
+
+            //todo
+            logger.warn(`Delegate Payout: ${item.recipientId} (${item.type}) ${item.height}`)
         }
 
         logger.info(
