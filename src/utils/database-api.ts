@@ -265,8 +265,7 @@ export class DatabaseAPI {
         );
 
         if(voters.length === 0) {
-            logger.warn("There are no voters, please check blacklist/whitelist in your configuration.");
-            return [];
+            throw new Error("There are no voters, please check blacklist/whitelist in your configuration.");
         }
 
         await this.psql.connect();
