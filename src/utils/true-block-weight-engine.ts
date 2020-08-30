@@ -875,11 +875,6 @@ export class TrueBlockWeightEngine {
                     payoutAddress
                 );
 
-                //todo
-                if(address === "caYtjrmWdarQArk8xQCBNoHoA8C11NzMn3") {
-                    logger.warn(`latest payout: ${latestPayout}, ${timestamp}`)
-                }
-
                 if (
                     typeof latestPayout === "undefined" ||
                     latestPayout.lte(timestamp)

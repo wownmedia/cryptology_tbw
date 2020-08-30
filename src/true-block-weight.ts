@@ -200,7 +200,7 @@ export class TrueBlockWeight {
             this.config.multiTransferFee.times(transactions.length)
         );
 
-        vendorField = `${this.config.delegate} - Business Revenue Share.`; // todo config
+        vendorField = `${this.config.delegate} - Business Revenue Share.`;
         const businessTransactions: Interfaces.ITransactionData[] = await this.transactionEngine.createMultiPayment(
             businessReceivers,
             payouts.timestamp.toNumber(),
