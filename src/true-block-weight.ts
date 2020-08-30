@@ -18,7 +18,7 @@ export class TrueBlockWeight {
             this.transactionEngine = new TransactionEngine();
         } catch (error) {
             logger.error(error);
-            process.abort();
+            process.exit(1);
         }
     }
 
