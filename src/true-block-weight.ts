@@ -12,9 +12,13 @@ export class TrueBlockWeight {
     private transactionEngine: TransactionEngine;
 
     constructor() {
-        this.config = new Config();
-        this.network = new Network(this.config.server, this.config.nodes);
-        this.transactionEngine = new TransactionEngine();
+        try {
+            this.config = new Config();
+            this.network = new Network(this.config.server, this.config.nodes);
+            this.transactionEngine = new TransactionEngine();
+        } catch (error) {
+            logger.error(error);
+        }
     }
 
     /**
