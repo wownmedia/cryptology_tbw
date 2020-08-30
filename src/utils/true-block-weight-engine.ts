@@ -890,7 +890,7 @@ export class TrueBlockWeightEngine {
                     );
 
                     //todo
-                    logger.warn(`pemnding: ${address}  : ${pendingPayout}`);
+                    logger.warn(`pending: ${address}  : ${voterBalance}`);
 
                     // Only payout voters that had a balance that exceeds or equals the configured minimum balance.
                     if (voterBalance.gte(this.config.minimalBalance)) {
