@@ -17,7 +17,7 @@ export class TrueBlockWeight {
             this.network = new Network(this.config.server, this.config.nodes);
             this.transactionEngine = new TransactionEngine();
         } catch (error) {
-            throw error;
+            logger.error(error);
         }
     }
 
