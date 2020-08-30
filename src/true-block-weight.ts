@@ -136,7 +136,7 @@ export class TrueBlockWeight {
     }
 
     private static printTransferJSON(transfers: Transfers) {
-        logger.info("Transactions Generated");
+        logger.info(`${transfers.transactions.length} Transactions have been generated.`);
         for (const transaction of transfers.transactions) {
             console.log(JSON.stringify(transaction));
         }
