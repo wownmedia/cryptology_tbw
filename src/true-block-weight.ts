@@ -81,7 +81,8 @@ export class TrueBlockWeight {
             logger.info(SEPARATOR);
             return transfers;
         } catch (error) {
-            throw error;
+            logger.error(error.message);
+            return null;
         }
     }
 
@@ -124,7 +125,9 @@ export class TrueBlockWeight {
      */
     public async check() {
         const transfers: Transfers = await this.calculate();
-        TrueBlockWeight.printTransferJSON(transfers);
+        if(transfers) {
+            TrueBlockWeight.printTransferJSON(transfers);
+        }
     }
 
     private static printTransferJSON(transfers: Transfers) {
