@@ -931,6 +931,7 @@ export class TrueBlockWeightEngine {
                 }
             }
         }
+
         logger.info("Finished calculating shares...");
         return { payouts, feesPayouts, businessPayouts };
     }
