@@ -392,8 +392,6 @@ export class TrueBlockWeightEngine {
         voterWallets: Voter[]
     ): Promise<VoterBalances> {
         let voterBalances: Voter[] = voterWallets.map((row) => {
-            //todo
-            logger.warn(`voter balance: ${row.address} - ${row.power}`);
             const power: BigNumber = row.power
                 ? new BigNumber(row.power)
                 : new BigNumber(0);
@@ -727,6 +725,8 @@ export class TrueBlockWeightEngine {
                     balance = balance.plus(fee);
                 }
                 votersBalancePerForgedBlock.set(senderId, balance);
+                //todo
+                logger.warn(`${height} ${senderId} ${balance}`);
             }
         }
 
