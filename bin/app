@@ -1,9 +1,9 @@
 #!/usr/bin/env node
 const {TrueBlockWeight} = require("../dist");
 const args = process.argv.slice(2);
-const trueBlockWeight = new TrueBlockWeight();
 
 try {
+  const trueBlockWeight = new TrueBlockWeight();
   if (args.length >= 1 && args[0] === "payout") {
     const check = args.length >=2 && args[1] === "check"
     trueBlockWeight.payout(check);
