@@ -138,13 +138,11 @@ export class ProposalEngine {
         }
 
         // FairFees
-        const multiPaymentFees: BigNumber = new BigNumber(payouts.size)
-            .div(this.config.transactionsPerMultitransfer)
-            .integerValue(BigNumber.ROUND_CEIL)
-            .times(this.config.multiTransferFee);
+        const multiPaymentFees: BigNumber = this.getMultiFeesTotal(payouts.size);
         const totalFees: BigNumber = this.config.transferFee
-            .times(this.getAdminFeeCount() + this.getACFFeeCount())
-            .plus(multiPaymentFees);
+            .times(this.getACFFeeCount())
+            .plus(multiPaymentFees)
+            .plus(this.getAdminFeeCount());
 
         if (this.config.adminFees && delegateProfit.lt(totalFees)) {
             this.config.adminFees = false;
@@ -290,14 +288,31 @@ export class ProposalEngine {
         return this.config.voterShare;
     }
 
-    /**
-     *
-     */
-    public getAdminFeeCount(): number {
+    public getAdminFeeCount(): BigNumber {
         const ADMIN_PAYOUT_LIST = process.env.ADMIN_PAYOUT_LIST
             ? JSON.parse(process.env.ADMIN_PAYOUT_LIST)
             : {};
-        return Object.keys(ADMIN_PAYOUT_LIST).length;
+
+        return this.getMultiFeesTotal(Object.keys(ADMIN_PAYOUT_LIST).length);
+    }
+
+    /**
+     *
+     */
+    public getMultiFeesTotal(amount: number): BigNumber {
+        const singleTransactionFee: BigNumber = new BigNumber(amount)
+            .mod(this.config.transactionsPerMultitransfer)
+            .eq(1)
+            ? new BigNumber(this.config.transferFee).minus(
+                  this.config.multiTransferFee
+              )
+            : new BigNumber(0);
+
+        return new BigNumber(amount)
+            .div(this.config.transactionsPerMultitransfer)
+            .integerValue(BigNumber.ROUND_CEIL)
+            .times(this.config.multiTransferFee)
+            .plus(singleTransactionFee);
     }
 
     /**

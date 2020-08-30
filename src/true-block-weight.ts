@@ -4,6 +4,7 @@ import { ARKTOSHI, PUBLICKEY, SEPARATOR } from "./constants";
 import { BroadcastResult, Payouts, Receiver, Transfers } from "./interfaces";
 import { Config, logger, Network } from "./services";
 import { TransactionEngine, TrueBlockWeightEngine } from "./utils";
+import { ProposalEngine } from "./utils/proposal-engine";
 
 export class TrueBlockWeight {
     private readonly config: Config;
@@ -31,11 +32,12 @@ export class TrueBlockWeight {
                 payouts.timestamp.toNumber()
             );
             if (adminTransactions.length) {
+                const proposalEngine: ProposalEngine = new ProposalEngine();
                 transfers.totalAmount = transfers.totalAmount.plus(
                     payouts.delegateProfit.toFixed(0)
                 );
                 transfers.totalFees = transfers.totalFees.plus(
-                    this.config.transferFee.times(adminTransactions.length)
+                    proposalEngine.getAdminFeeCount()
                 );
                 transfers.transactions = transfers.transactions.concat(
                     adminTransactions
@@ -123,7 +125,9 @@ export class TrueBlockWeight {
      */
     public async check() {
         const transfers: Transfers = await this.calculate();
-        TrueBlockWeight.printTransferJSON(transfers);
+        if(transfers) {
+            TrueBlockWeight.printTransferJSON(transfers);
+        }
     }
 
     private static printTransferJSON(transfers: Transfers) {
@@ -237,7 +241,8 @@ export class TrueBlockWeight {
         timestamp: number
     ): Promise<Interfaces.ITransactionData[]> {
         let payoutAmount: BigNumber = new BigNumber(0);
-        const adminTransactions: Interfaces.ITransactionData[] = [];
+        const adminReceivers: Receiver[] = [];
+
         for (const admin of this.config.admins) {
             const amount: BigNumber = totalAmount.times(admin.percentage);
             const vendorField: string = `${this.config.delegate} - ${admin.vendorField}`;
@@ -246,28 +251,38 @@ export class TrueBlockWeight {
                 vendorField,
                 wallet: admin.wallet,
             };
-            const transaction: Interfaces.ITransactionData = await this.transactionEngine.createTransaction(
-                receiver,
-                timestamp
-            );
-            adminTransactions.push(transaction);
+            adminReceivers.push(receiver);
+            //const transaction: Interfaces.ITransactionData = await this.transactionEngine.createTransaction(
+            //    receiver,
+            //    timestamp
+            //);
+            //adminTransactions.push(transaction);
             payoutAmount = payoutAmount.plus(amount);
+            logger.info(
+                `Administrative Payout to ${admin.wallet} prepared: ${amount
+                    .div(ARKTOSHI)
+                    .toFixed(8)}`
+            );
         }
+
+        const adminTransactions: Interfaces.ITransactionData[] = await this.transactionEngine.createMultiPayment(
+            adminReceivers,
+            timestamp,
+            this.config.vendorFieldAdmin,
+            this.config.seed,
+            this.config.secondPassphrase,
+            false
+        );
 
         if (payoutAmount.gt(totalAmount)) {
             logger.error("Check admin payout percentages!");
             return [];
         }
 
-        for (const item of adminTransactions) {
-            const admin: string = item.recipientId;
-            const amount: BigNumber = new BigNumber(item.amount.toString());
-            logger.info(
-                `Administrative Payout to ${admin} prepared: ${amount
-                    .div(ARKTOSHI)
-                    .toFixed(8)}`
-            );
-        }
+        //for (const item of adminTransactions) {
+        //    const admin: string = item.recipientId;
+        //    const amount: BigNumber = new BigNumber(item.amount.toString());
+        //}
         return adminTransactions;
     }
 

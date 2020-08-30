@@ -264,6 +264,10 @@ export class DatabaseAPI {
             endBlockHeight
         );
 
+        if(voters.length === 0) {
+            throw new Error("There are no voters, please check blacklist/whitelist in your configuration.");
+        }
+
         await this.psql.connect();
         const result: Result = await this.psql.query(getTransactionsQuery);
         await this.psql.close();
