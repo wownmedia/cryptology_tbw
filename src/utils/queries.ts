@@ -118,7 +118,7 @@ export const getDelegateTransactions = (
     delegatePublicKey: string
 ): string => {
     let query = `SELECT transactions."asset", transactions."recipient_id" AS "recipientId", transactions."timestamp", \
-          blocks."height" \
+          transactions.type, blocks."height" \
           FROM transactions INNER JOIN blocks ON blocks."id" = transactions."block_id"  
           WHERE blocks."height" >= ${startBlockHeight} \
           AND transactions."type_group" = 1 \

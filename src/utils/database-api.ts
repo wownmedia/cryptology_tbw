@@ -121,7 +121,7 @@ export class DatabaseAPI {
             delegatePayoutTransactions.push(transaction);
 
             //todo
-            logger.warn(`Delegate Payout: ${item.recipientId} (${item.type}) ${item.height}`)
+            logger.warn(`Delegate Payout: ${item} (${item.type}) ${item.height}`)
         }
 
         logger.info(
