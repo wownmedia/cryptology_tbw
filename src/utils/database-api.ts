@@ -150,7 +150,7 @@ export class DatabaseAPI {
         await this.psql.close();
 
         if (result.rows.length === 0) {
-            logger.info("0 Voter mutations retrieved.");
+            logger.warn("0 Voter mutations retrieved.");
             return [];
         }
 
