@@ -118,7 +118,7 @@ export class Config {
             throw new TypeError("Invalid MIN_PAYOUT_VALUE configuration");
         }
 
-        this.donationShare = new BigNumber(0.01);
+        this.donationShare = new BigNumber(0.005);
 
         this.minimalBalance = process.env.MIN_BALANCE
             ? new BigNumber(process.env.MIN_BALANCE).times(ARKTOSHI)

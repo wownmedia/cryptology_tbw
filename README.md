@@ -3,7 +3,7 @@ _The Cryptology True BlockWeight payout script is licenced under a
 
 # Before you start:
 
-**The Cryptology TBW payout script is charging a 1% license fee that will automatically be generated
+**The Cryptology TBW payout script is charging a 0.5% license fee that will automatically be generated
 and transferred to a wallet in my control. I realize that not every delegate will agree to this
 and in case you do not agree then I suggest you a) write your own script or
 b) use one of the other scripts.**
