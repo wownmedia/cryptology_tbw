@@ -263,33 +263,23 @@ export class TrueBlockWeightEngine {
         forgedBlocks: ForgedBlock[]
     ): VotersPerForgedBlock {
         let votersRound: string[] = voters.slice(0);
-        let previousHeight: number = null;
         const calculatedVotersPerForgedBlock: Map<number, string[]> = new Map(
             forgedBlocks.map((block) => [block.height, []])
         );
 
-        const lastForgedBlock: number = forgedBlocks[forgedBlocks.length -1].height;
-        const lastVoterMutation: number = voterMutations[voterMutations.length -1].height;
-
-        //todo
-        logger.warn(`lastForgedBlock: ${lastForgedBlock} | lastVoterMutation: ${lastVoterMutation}`);
+        let previousHeight: number =
+            voterMutations.length > 0
+                ? voterMutations[voterMutations.length - 1].height + 1
+                : forgedBlocks[forgedBlocks.length - 1].height + 1;
 
         calculatedVotersPerForgedBlock.forEach(
             (votersDuringBlock: string[], height: number) => {
-                if (previousHeight === null) {
-                    previousHeight = lastVoterMutation + 1;
-                }
-
                 const filteredVotersForRound: VoterMutation[] = this.filterVoteTransactionsForRound(
                     voterMutations,
                     height,
                     previousHeight
                 );
 
-                //todo
-                if(filteredVotersForRound.length > 0) {
-                    logger.info(`voter mutations for round at height ${height}: ${JSON.stringify(filteredVotersForRound)}`);
-                }
                 const mutatedVoters: MutatedVotersPerRound = this.mutateVoters(
                     height,
                     previousHeight,
@@ -310,11 +300,6 @@ export class TrueBlockWeightEngine {
         const votersPerForgedBlock: Map<number, string[]> = new Map(
             calculatedVotersPerForgedBlock
         );
-
-        //todo
-        votersPerForgedBlock.forEach((voters, height) => {
-            //logger.info(`${height} voters ${JSON.stringify(voters)}`);
-        });
 
         const validVoters: string[] = this.processWhiteList(voters);
         return { votersPerForgedBlock, validVoters };
