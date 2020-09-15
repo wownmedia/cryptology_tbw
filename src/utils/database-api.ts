@@ -132,18 +132,15 @@ export class DatabaseAPI {
      * Get all the votes/unvotes for this delegate that are within range.
      * @param delegatePublicKey
      * @param startBlockHeight
-     * @param endBlockHeight
      * @param networkVersion
      */
     public async getVoterMutations(
         delegatePublicKey: string,
         startBlockHeight: number,
-        endBlockHeight: number,
         networkVersion: number
     ): Promise<VoterMutation[]> {
         const getVoterSinceHeightQuery: string = getVoterSinceHeight(
-            startBlockHeight,
-            endBlockHeight
+            startBlockHeight
         );
         await this.psql.connect();
         const result: Result = await this.psql.query(getVoterSinceHeightQuery);
