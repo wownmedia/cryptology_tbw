@@ -299,6 +299,10 @@ export class TrueBlockWeightEngine {
         const votersPerForgedBlock: Map<number, string[]> = new Map(
             calculatedVotersPerForgedBlock
         );
+        calculatedVotersPerForgedBlock.forEach((voters, height) => {
+            logger.info(`${height} voters ${voters.forEach((wallet) => {wallet})}`);
+        });
+
         const validVoters: string[] = this.processWhiteList(voters);
         return { votersPerForgedBlock, validVoters };
     }
