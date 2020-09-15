@@ -226,7 +226,6 @@ export class TrueBlockWeightEngine {
         const voterMutations: VoterMutation[] = await this.databaseAPI.getVoterMutations(
             delegatePublicKey,
             this.startBlockHeight,
-            this.endBlockHeight,
             this.networkVersion
         );
 

@@ -51,25 +51,15 @@ export const getVotingDelegates = (
 /**
  *
  * @param startBlockHeight
- * @param endBlockHeight
  */
 export const getVoterSinceHeight = (
-    startBlockHeight: number,
-    endBlockHeight: number
+    startBlockHeight: number
 ): string => {
-    let query = `SELECT transactions."asset", transactions."sender_public_key" AS "senderPublicKey", \ 
+    return `SELECT transactions."asset", transactions."sender_public_key" AS "senderPublicKey", \ 
           transactions."recipient_id" AS "recipientId", blocks."height" \
           FROM transactions INNER JOIN blocks ON blocks."id" = transactions."block_id"  
           WHERE transactions."type" = 3 AND transactions."type_group" = 1 \
-          AND blocks.height >= ${startBlockHeight}`;
-
-    if (endBlockHeight) {
-        query = `${query} AND blocks.height <= ${endBlockHeight}`;
-    }
-
-    query = `${query} ORDER BY blocks."height" ASC;`;
-
-    return query;
+          AND blocks.height >= ${startBlockHeight} ORDER BY blocks."height" ASC;`;
 };
 
 /**
