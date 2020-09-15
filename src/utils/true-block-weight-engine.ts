@@ -317,7 +317,7 @@ export class TrueBlockWeightEngine {
 
         //todo
         votersPerForgedBlock.forEach((voters, height) => {
-            logger.info(`${height} voters ${JSON.stringify(voters)}`);
+            //logger.info(`${height} voters ${JSON.stringify(voters)}`);
         });
 
         const validVoters: string[] = this.processWhiteList(voters);
