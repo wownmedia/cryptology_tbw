@@ -271,22 +271,18 @@ export class TrueBlockWeightEngine {
         const lastForgedBlock: number = forgedBlocks[forgedBlocks.length -1].height;
         const lastVoterMutation: number = voterMutations[voterMutations.length -1].height;
 
+        //todo
+        logger.warn(`lastForgedBlock: ${lastForgedBlock} | lastVoterMutation: ${lastVoterMutation}`);
+
         calculatedVotersPerForgedBlock.forEach(
             (votersDuringBlock: string[], height: number) => {
                 if (previousHeight === null) {
-                    previousHeight = height + 1;
-                }
-
-                // Process votes that might have happened after last block was forged
-                // These wallets are otherwise in the voters list for the whole ride.
-                let filterUpToHeight: number = height;
-                if (height === lastForgedBlock) {
-                    filterUpToHeight = lastVoterMutation;
+                    previousHeight = lastVoterMutation + 1;
                 }
 
                 const filteredVotersForRound: VoterMutation[] = this.filterVoteTransactionsForRound(
                     voterMutations,
-                    filterUpToHeight,
+                    height,
                     previousHeight
                 );
 
