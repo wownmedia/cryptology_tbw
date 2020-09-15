@@ -279,6 +279,11 @@ export class TrueBlockWeightEngine {
                     height,
                     previousHeight
                 );
+
+                //todo
+                if(filteredVotersForRound.length > 0) {
+                    logger.info(`voter mutations for round at height ${height}: ${JSON.stringify(filteredVotersForRound)}`);
+                }
                 const mutatedVoters: MutatedVotersPerRound = this.mutateVoters(
                     height,
                     previousHeight,
@@ -299,6 +304,8 @@ export class TrueBlockWeightEngine {
         const votersPerForgedBlock: Map<number, string[]> = new Map(
             calculatedVotersPerForgedBlock
         );
+
+        //todo
         votersPerForgedBlock.forEach((voters, height) => {
             logger.info(`${height} voters ${JSON.stringify(voters)}`);
         });
