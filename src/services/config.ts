@@ -84,9 +84,9 @@ export class Config {
         if (
             this.voterShare.isNaN() ||
             this.voterShare.gt(1) ||
-            this.voterShare.lte(0)
+            this.voterShare.lt(0)
         ) {
-            throw new TypeError("Invalid PAYOUT configuration: must be larger than 0");
+            throw new TypeError("Invalid PAYOUT configuration: must be between 0 and 1");
         }
 
         this.voterFeeShare = process.env.PAYOUT_FEES
