@@ -52,9 +52,7 @@ export const getVotingDelegates = (
  *
  * @param startBlockHeight
  */
-export const getVoterSinceHeight = (
-    startBlockHeight: number
-): string => {
+export const getVoterSinceHeight = (startBlockHeight: number): string => {
     return `SELECT transactions."asset", transactions."sender_public_key" AS "senderPublicKey", \ 
           transactions."recipient_id" AS "recipientId", blocks."height" \
           FROM transactions INNER JOIN blocks ON blocks."id" = transactions."block_id"  

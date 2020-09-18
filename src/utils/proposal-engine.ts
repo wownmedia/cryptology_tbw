@@ -171,7 +171,7 @@ export class ProposalEngine {
                 .div(totalPayout)
                 .times(totalFees);
             if (!this.config.adminFees) {
-                if(balance.minus(fairFees).lt(0)) {
+                if (balance.minus(fairFees).lt(0)) {
                     totalPayout = totalPayout.minus(balance);
                     payouts.set(address, new BigNumber(0));
                 } else {
@@ -179,14 +179,13 @@ export class ProposalEngine {
                     totalPayout = totalPayout.minus(fairFees);
                 }
             }
-            let businessPayout: BigNumber = businessPayouts.get(address).minus(fairFees);
+            let businessPayout: BigNumber = businessPayouts
+                .get(address)
+                .minus(fairFees);
             if (businessPayout.lt(0)) {
                 businessPayout = new BigNumber(0);
             }
-            businessPayouts.set(
-                address,
-                businessPayout
-            );
+            businessPayouts.set(address, businessPayout);
         }
 
         logger.info(SEPARATOR);
