@@ -136,7 +136,9 @@ export class TrueBlockWeight {
     }
 
     private static printTransferJSON(transfers: Transfers) {
-        logger.info(`${transfers.transactions.length} Transactions have been generated.`);
+        logger.info(
+            `${transfers.transactions.length} Transactions have been generated.`
+        );
         for (const transaction of transfers.transactions) {
             console.log(JSON.stringify(transaction));
         }
@@ -166,7 +168,7 @@ export class TrueBlockWeight {
                 amount,
                 wallet,
             };
-            if(amount.gt(0)) {
+            if (amount.gt(0)) {
                 totalAmount = totalAmount.plus(amount);
                 receivers.push(receiver);
 
@@ -174,12 +176,14 @@ export class TrueBlockWeight {
                     address
                 );
                 if (businessAmount.gt(0)) {
-                    totalBusinessAmount = totalBusinessAmount.plus(businessAmount);
+                    totalBusinessAmount = totalBusinessAmount.plus(
+                        businessAmount
+                    );
                     const receiver: Receiver = {
                         amount: businessAmount,
                         wallet,
                     };
-                    if(businessAmount.gt(0)) {
+                    if (businessAmount.gt(0)) {
                         businessReceivers.push(receiver);
                         logger.info(
                             `Business Share to ${wallet} prepared: ${businessAmount
@@ -260,7 +264,7 @@ export class TrueBlockWeight {
                 vendorField,
                 wallet: admin.wallet,
             };
-            if(receiver.amount.gt(0)) {
+            if (receiver.amount.gt(0)) {
                 adminReceivers.push(receiver);
                 payoutAmount = payoutAmount.plus(amount);
                 logger.info(
