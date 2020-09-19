@@ -10,7 +10,7 @@ b) use one of the other scripts.**
 
 ## Why the license fee?
 
-This script now charges a license fee for 2 reasons; firstly I want to stimulate and enable a new kind of proposal model where a delegate can offer to share payouts from a different income stream. In case of `cryptology` this income stream will be the license fee that will be distributed to my voters. We probably all can agree that ARK will thrive well when we can apply new and creative ideas that might draw attention to the project.
+This script now charges a license fee for 2 reasons; firstly I want to stimulate and enable a new kind of proposal model where a delegate can offer to share payouts from a different income stream. In case of `cryptology` _(on ARK)_ this income stream will be the license fee that will be distributed to my voters. We probably all can agree that ARK will thrive well when we can apply new and creative ideas that might draw attention to the project.
 
 Secondly I think a payout script is an essential tool for a delegate, similar to the need of a server and voters.
 Part of a delegate skillset would be the ability to create such a script, in case you lack this skillset (or to prevent double work) you can invest in the usage of a 3rd party script such as this one. Nobody questions the need to spend money on their server(s), nor the need to invest in voters (% share and other contributions); so why should the, essential tool, payout script be any different?
