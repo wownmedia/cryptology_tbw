@@ -137,7 +137,7 @@ export class TrueBlockWeightEngine {
                 voters.voterWallets
             );
 
-            logger.info("Retrieving Voters forged blocks.");
+            logger.info("Retrieving Blocks Forged by voters.");
             const votingDelegateBlocks: VoterBlock[] = await this.databaseAPI.getVotingDelegateBlocks(
                 voters.voterWallets,
                 this.startBlockHeight,
@@ -870,6 +870,22 @@ export class TrueBlockWeightEngine {
                 );
             }
 
+            // Get latest payouts to admins in case share = 0 and calculate from there
+            let latestAdminPayout: BigNumber = new BigNumber(0);
+            if (this.config.voterShare.eq(0)) {
+                logger.warn(
+                    "Not sharing with voters, latest payout to admins will be used to calculate."
+                );
+                for (const admin of this.config.admins) {
+                    const latestPayout: BigNumber = latestPayoutsTimeStamp.get(
+                        admin.wallet
+                    );
+                    if (latestPayout.gt(latestAdminPayout)) {
+                        latestAdminPayout = new BigNumber(latestPayout);
+                    }
+                }
+            }
+
             for (const address of validVoters) {
                 const payoutAddress: string = this.getRedirectAddress(address);
                 const latestPayout: BigNumber = latestPayoutsTimeStamp.get(
@@ -877,8 +893,9 @@ export class TrueBlockWeightEngine {
                 );
 
                 if (
-                    typeof latestPayout === "undefined" ||
-                    latestPayout.lte(timestamp)
+                    timestamp.gt(latestAdminPayout) &&
+                    (typeof latestPayout === "undefined" ||
+                        latestPayout.lte(timestamp))
                 ) {
                     let pendingPayout: BigNumber =
                         typeof payouts.get(address) !== "undefined"
