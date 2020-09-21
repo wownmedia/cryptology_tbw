@@ -137,7 +137,7 @@ export class TrueBlockWeightEngine {
                 voters.voterWallets
             );
 
-            logger.info("Retrieving Voters forged blocks.");
+            logger.info("Retrieving Blocks Forged by voters.");
             const votingDelegateBlocks: VoterBlock[] = await this.databaseAPI.getVotingDelegateBlocks(
                 voters.voterWallets,
                 this.startBlockHeight,
@@ -818,6 +818,28 @@ export class TrueBlockWeightEngine {
         return stakeRedeemAmount.div(2);
     }
 
+    private getAdminPayoutTimestamp(
+        latestPayoutsTimeStamp: Map<string, BigNumber>
+    ): BigNumber {
+        // Get latest payouts to admins in case share = 0 and calculate from there
+        let latestAdminPayout: BigNumber = new BigNumber(0);
+        if (this.config.voterShare.eq(0)) {
+            logger.warn(
+                "Not sharing with voters, latest payout to admins will be used to calculate."
+            );
+            for (const admin of this.config.admins) {
+                const latestPayout: BigNumber = latestPayoutsTimeStamp.get(
+                    admin.wallet
+                );
+                if (latestPayout && latestPayout.gt(latestAdminPayout)) {
+                    latestAdminPayout = new BigNumber(latestPayout);
+                }
+            }
+        }
+
+        return latestAdminPayout;
+    }
+
     /**
      *
      * @param votersPerForgedBlock
@@ -839,7 +861,9 @@ export class TrueBlockWeightEngine {
         const payouts: Map<string, BigNumber> = new Map();
         const feesPayouts: Map<string, BigNumber> = new Map();
         const businessPayouts: Map<string, BigNumber> = new Map();
-
+        const latestAdminPayout: BigNumber = this.getAdminPayoutTimestamp(
+            latestPayoutsTimeStamp
+        );
         const currentBalances: Map<
             string,
             BigNumber
@@ -877,8 +901,9 @@ export class TrueBlockWeightEngine {
                 );
 
                 if (
-                    typeof latestPayout === "undefined" ||
-                    latestPayout.lte(timestamp)
+                    timestamp.gt(latestAdminPayout) &&
+                    (typeof latestPayout === "undefined" ||
+                        latestPayout.lte(timestamp))
                 ) {
                     let pendingPayout: BigNumber =
                         typeof payouts.get(address) !== "undefined"

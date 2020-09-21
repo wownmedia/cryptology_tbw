@@ -91,6 +91,10 @@ export class Config {
             );
         }
 
+        if(this.voterShare.eq(0)) {
+            this.adminFees = true;
+        }
+
         this.voterFeeShare = process.env.PAYOUT_FEES
             ? new BigNumber(process.env.PAYOUT_FEES)
             : this.voterShare;
