@@ -880,7 +880,7 @@ export class TrueBlockWeightEngine {
                     const latestPayout: BigNumber = latestPayoutsTimeStamp.get(
                         admin.wallet
                     );
-                    if (latestPayout.gt(latestAdminPayout)) {
+                    if (latestPayout && latestPayout.gt(latestAdminPayout)) {
                         latestAdminPayout = new BigNumber(latestPayout);
                     }
                 }
