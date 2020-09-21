@@ -818,6 +818,28 @@ export class TrueBlockWeightEngine {
         return stakeRedeemAmount.div(2);
     }
 
+    private getAdminPayoutTimestamp(latestPayoutsTimeStamp: Map<string, BigNumber>):BigNumber {
+        // Get latest payouts to admins in case share = 0 and calculate from there
+        let latestAdminPayout: BigNumber = new BigNumber(0);
+        if (this.config.voterShare.eq(0)) {
+            logger.warn(
+                "Not sharing with voters, latest payout to admins will be used to calculate."
+            );
+            for (const admin of this.config.admins) {
+                logger.warn(`ADMIN: ${admin.wallet}`)
+                const latestPayout: BigNumber = latestPayoutsTimeStamp.get(
+                    admin.wallet
+                );
+                if (latestPayout && latestPayout.gt(latestAdminPayout)) {
+                    latestAdminPayout = new BigNumber(latestPayout);
+                }
+            }
+        }
+        //todo
+        logger.warn(`ADMIN timestamp: ${latestAdminPayout}`)
+        return latestAdminPayout;
+    }
+
     /**
      *
      * @param votersPerForgedBlock
@@ -839,25 +861,7 @@ export class TrueBlockWeightEngine {
         const payouts: Map<string, BigNumber> = new Map();
         const feesPayouts: Map<string, BigNumber> = new Map();
         const businessPayouts: Map<string, BigNumber> = new Map();
-
-        // Get latest payouts to admins in case share = 0 and calculate from there
-        let latestAdminPayout: BigNumber = new BigNumber(0);
-        if (this.config.voterShare.eq(0)) {
-            logger.warn(
-                "Not sharing with voters, latest payout to admins will be used to calculate."
-            );
-            for (const admin of this.config.admins) {
-                logger.warn(`ADMIN: ${admin.wallet}`)
-                const latestPayout: BigNumber = latestPayoutsTimeStamp.get(
-                    admin.wallet
-                );
-                if (latestPayout && latestPayout.gt(latestAdminPayout)) {
-                    latestAdminPayout = new BigNumber(latestPayout);
-                }
-            }
-        }
-        logger.warn(`ADMIN timestamp: ${latestAdminPayout}`)
-
+        const latestAdminPayout: BigNumber = this.getAdminPayoutTimestamp(latestPayoutsTimeStamp);
         const currentBalances: Map<
             string,
             BigNumber
