@@ -1,8 +1,11 @@
 #!/usr/bin/env node
+import { logger } from "../dist/services";
 const {TrueBlockWeight} = require("../dist");
+import { version } from '../package.json';
 const args = process.argv.slice(2);
 
 try {
+  logger.info(`Cryptology TBW version ${version}`);
   const trueBlockWeight = new TrueBlockWeight();
   if (args.length >= 1 && args[0] === "payout") {
     const check = args.length >=2 && args[1] === "check"
