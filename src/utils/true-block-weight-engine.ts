@@ -836,8 +836,7 @@ export class TrueBlockWeightEngine {
                 }
             }
         }
-        // todo
-        logger.warn(`ADMIN timestamp: ${latestAdminPayout}`);
+
         return latestAdminPayout;
     }
 
