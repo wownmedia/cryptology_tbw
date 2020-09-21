@@ -840,6 +840,23 @@ export class TrueBlockWeightEngine {
         const feesPayouts: Map<string, BigNumber> = new Map();
         const businessPayouts: Map<string, BigNumber> = new Map();
 
+        // Get latest payouts to admins in case share = 0 and calculate from there
+        let latestAdminPayout: BigNumber = new BigNumber(0);
+        if (this.config.voterShare.eq(0)) {
+            logger.warn(
+                "Not sharing with voters, latest payout to admins will be used to calculate."
+            );
+            for (const admin of this.config.admins) {
+                const latestPayout: BigNumber = latestPayoutsTimeStamp.get(
+                    admin.wallet
+                );
+                if (latestPayout && latestPayout.gt(latestAdminPayout)) {
+                    latestAdminPayout = new BigNumber(latestPayout);
+                }
+            }
+        }
+        logger.warn(`ADMIN timestamp: ${latestAdminPayout}`)
+
         const currentBalances: Map<
             string,
             BigNumber
@@ -868,22 +885,6 @@ export class TrueBlockWeightEngine {
                     currentVoters,
                     currentBalances
                 );
-            }
-
-            // Get latest payouts to admins in case share = 0 and calculate from there
-            let latestAdminPayout: BigNumber = new BigNumber(0);
-            if (this.config.voterShare.eq(0)) {
-                logger.warn(
-                    "Not sharing with voters, latest payout to admins will be used to calculate."
-                );
-                for (const admin of this.config.admins) {
-                    const latestPayout: BigNumber = latestPayoutsTimeStamp.get(
-                        admin.wallet
-                    );
-                    if (latestPayout && latestPayout.gt(latestAdminPayout)) {
-                        latestAdminPayout = new BigNumber(latestPayout);
-                    }
-                }
             }
 
             for (const address of validVoters) {
