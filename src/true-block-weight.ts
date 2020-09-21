@@ -5,7 +5,7 @@ import { BroadcastResult, Payouts, Receiver, Transfers } from "./interfaces";
 import { Config, logger, Network } from "./services";
 import { TransactionEngine, TrueBlockWeightEngine } from "./utils";
 import { ProposalEngine } from "./utils/proposal-engine";
-//import {version} from '../package.json';
+import { version } from '../package.json';
 
 export class TrueBlockWeight {
     private readonly config: Config;
@@ -14,7 +14,7 @@ export class TrueBlockWeight {
 
     constructor() {
         try {
-            logger.info(`Cryptology TBW version ${process.env.npm_package_version}`);
+            logger.info(`Cryptology TBW version ${version}`);
             this.config = new Config();
             this.network = new Network(this.config.server, this.config.nodes);
             this.transactionEngine = new TransactionEngine();
