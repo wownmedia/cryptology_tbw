@@ -847,6 +847,7 @@ export class TrueBlockWeightEngine {
                 "Not sharing with voters, latest payout to admins will be used to calculate."
             );
             for (const admin of this.config.admins) {
+                logger.warn(`ADMIN: admin.wallet`)
                 const latestPayout: BigNumber = latestPayoutsTimeStamp.get(
                     admin.wallet
                 );
